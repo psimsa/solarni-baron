@@ -2,4 +2,4 @@
 
 namespace SolarniBaron.Domain.Ote.Queries.GetPricelist;
 
-public record GetPricelistQuery(DateOnly date) : IQuery<GetPricelistQueryResponse>;
+public record GetPricelistQuery(DateOnly Date) : IQuery<GetPricelistQuery, GetPricelistQueryResponse>;

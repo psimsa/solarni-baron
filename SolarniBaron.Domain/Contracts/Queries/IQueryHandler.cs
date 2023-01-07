@@ -1,6 +1,6 @@
 ﻿namespace SolarniBaron.Domain.Contracts;
 
-public interface IQueryHandler<in TQuery, TResponse> where TQuery : IQuery<TResponse>
+public interface IQueryHandler<TQuery, TResponse> where TQuery : class, IQuery<TQuery, TResponse>
 {
-    Task<TResponse> Get(IQuery<TResponse> query);
+    Task<TResponse> Get(IQuery<TQuery, TResponse> query);
 }

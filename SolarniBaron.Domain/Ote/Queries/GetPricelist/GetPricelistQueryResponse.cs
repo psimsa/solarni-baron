@@ -1,16 +1,10 @@
-﻿using SolarniBaron.Domain.Contracts;
+﻿using SolarniBaron.Domain.CNB.Queries.GetExchangeRate;
+using SolarniBaron.Domain.Contracts;
 
 namespace SolarniBaron.Domain.Ote.Queries.GetPricelist;
 
-public record GetPricelistQueryResponse()
+public record GetPricelistQueryResponse(ResponseStatus Status, GetPricelistQueryResponseItem[] Items, decimal ExchangeRate)
 {
-    public static GetPricelistQueryResponse Empty() => new GetPricelistQueryResponse();
+    public static GetPricelistQueryResponse Empty() =>
+        new GetPricelistQueryResponse(ResponseStatus.Error, Array.Empty<GetPricelistQueryResponseItem>(), 0);
 };
-
-public class GetPricelistQueryHandler : IQueryHandler<IQuery<GetPricelistQueryResponse>, GetPricelistQueryResponse>
-{
-    public Task<GetPricelistQueryResponse> Get(IQuery<GetPricelistQueryResponse> query)
-    {
-        throw new NotImplementedException();
-    }
-}

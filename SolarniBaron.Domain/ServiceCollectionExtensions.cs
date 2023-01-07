@@ -9,13 +9,11 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddDomain(this IServiceCollection services)
     {
+        services.AddTransient<IQueryHandler<GetPricelistQuery, GetPricelistQueryResponse>, GetPricelistQueryHandler>();
         services
-            .AddTransient<IQueryHandler<IQuery<GetExchangeRateQueryResponse>, GetExchangeRateQueryResponse>,
+            .AddTransient<IQueryHandler<GetExchangeRateQuery, GetExchangeRateQueryResponse>,
                 GetExchangeRateQueryHandler>();
-        services
-            .AddTransient<IQueryHandler<IQuery<GetPricelistQueryResponse>, GetPricelistQueryResponse>,
-                GetPricelistQueryHandler>();
-        
+
         return services;
     }
 }
