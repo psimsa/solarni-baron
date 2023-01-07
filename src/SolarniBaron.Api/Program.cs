@@ -1,5 +1,8 @@
+using Microsoft.AspNetCore.Mvc;
 using SolarniBaron.Api.Models;
 using SolarniBaron.Domain;
+using SolarniBaron.Domain.BatteryBox.Models;
+using SolarniBaron.Domain.BatteryBox.Queries.GetStats;
 using SolarniBaron.Domain.Contracts;
 using SolarniBaron.Domain.Extensions;
 using SolarniBaron.Domain.Ote.Queries.GetPricelist;
@@ -44,7 +47,25 @@ app.MapGet("/api/ote/{date}",
             var response = new ApiResponse<GetPricelistQueryResponse>(result, result.Status, "");
             return Results.Ok(response);
         })
+    .WithName("GetPricelist")
+    .Produces<ApiResponse<GetPricelistQueryResponse>>()
     .WithOpenApi()
     ;
+
+app.MapPost("api/batterybox/getstats",
+        async ([FromBody] LoginInfo loginInfo, IQueryHandler<GetStatsQuery, GetStatsQueryResponse> queryHandler, ILogger<Program> logger) =>
+        {
+            var data = await queryHandler.Get(new GetStatsQuery(loginInfo.Email, loginInfo.Password, loginInfo.UnitId));
+            if (data.ResponseStatus == ResponseStatus.Error)
+            {
+                logger.LogError(data.Error);
+                return Results.BadRequest(data.Error);
+            }
+
+            return Results.Ok(data.FveStatus);
+        })
+    .WithName("GetStats")
+    .Produces<FveStatus>()
+    .WithOpenApi();
 
 app.Run();

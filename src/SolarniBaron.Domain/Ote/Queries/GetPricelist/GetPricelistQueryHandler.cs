@@ -39,8 +39,7 @@ public class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery, GetPric
                 var exchangeRate = exchangeRateResponse.Rate;
 
                 var baseUrl = "https://www.ote-cr.cz/cs/kratkodobe-trhy/elektrina/denni-trh";
-                var sourceDate = DateTime.Parse("2022-01-30");
-                var date = sourceDate.ToString("yyyy-MM-dd");
+                var date = query.Query.Date.ToString("yyyy-MM-dd");
                 var url = $"{baseUrl}/?date={date}";
                 var content = await _client.GetStringAsync(url);
                 var config = Configuration.Default.WithDefaultLoader();
