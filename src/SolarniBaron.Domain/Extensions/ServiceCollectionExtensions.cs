@@ -3,7 +3,7 @@ using SolarniBaron.Domain.CNB.Queries.GetExchangeRate;
 using SolarniBaron.Domain.Contracts;
 using SolarniBaron.Domain.Ote.Queries.GetPricelist;
 
-namespace SolarniBaron.Domain;
+namespace SolarniBaron.Domain.Extensions;
 
 public static class ServiceCollectionExtensions
 {

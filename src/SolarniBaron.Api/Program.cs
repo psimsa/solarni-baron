@@ -1,6 +1,7 @@
 using SolarniBaron.Api.Models;
 using SolarniBaron.Domain;
 using SolarniBaron.Domain.Contracts;
+using SolarniBaron.Domain.Extensions;
 using SolarniBaron.Domain.Ote.Queries.GetPricelist;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDomain();
 
 builder.Services.AddHttpClient();
+builder.Services.AddDistributedMemoryCache();
 
 var app = builder.Build();
 

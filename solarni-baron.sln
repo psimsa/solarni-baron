@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolarniBaron.Api.Tests", "t
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolarniBaron.Api.IntegrationTests", "test\SolarniBaron.Api.IntegrationTests\SolarniBaron.Api.IntegrationTests.csproj", "{D801DB3F-4A4B-4803-B5DA-A0BDE1AF476E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolarniBaron.Domain", "SolarniBaron.Domain\SolarniBaron.Domain.csproj", "{E87B2074-0BB6-41DD-BE8B-83505D189CEC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolarniBaron.Domain", "src\SolarniBaron.Domain\SolarniBaron.Domain.csproj", "{B95C6576-3F00-45F9-ADA6-E5D1AA68A5D3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,10 +33,10 @@ Global
 		{D801DB3F-4A4B-4803-B5DA-A0BDE1AF476E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D801DB3F-4A4B-4803-B5DA-A0BDE1AF476E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D801DB3F-4A4B-4803-B5DA-A0BDE1AF476E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E87B2074-0BB6-41DD-BE8B-83505D189CEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E87B2074-0BB6-41DD-BE8B-83505D189CEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E87B2074-0BB6-41DD-BE8B-83505D189CEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E87B2074-0BB6-41DD-BE8B-83505D189CEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B95C6576-3F00-45F9-ADA6-E5D1AA68A5D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B95C6576-3F00-45F9-ADA6-E5D1AA68A5D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B95C6576-3F00-45F9-ADA6-E5D1AA68A5D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B95C6576-3F00-45F9-ADA6-E5D1AA68A5D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -45,7 +45,7 @@ Global
 		{3262F8D8-A503-404B-AE7C-92D79BC34E2F} = {9DA209FC-896B-4320-8EAD-1F51486D8383}
 		{C39A58AE-EF8D-4E35-B53A-EA9E5215C745} = {5FD01C16-ED92-4D53-8C3B-712F9BEC0F95}
 		{D801DB3F-4A4B-4803-B5DA-A0BDE1AF476E} = {5FD01C16-ED92-4D53-8C3B-712F9BEC0F95}
-		{E87B2074-0BB6-41DD-BE8B-83505D189CEC} = {9DA209FC-896B-4320-8EAD-1F51486D8383}
+		{B95C6576-3F00-45F9-ADA6-E5D1AA68A5D3} = {9DA209FC-896B-4320-8EAD-1F51486D8383}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {22D3069A-09E9-4308-B98B-77C191F66495}
