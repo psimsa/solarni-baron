@@ -64,7 +64,7 @@ app.MapPost("api/batterybox/getstats",
             return Results.Ok(data.FveStatus);
         })
     .WithName("GetStats")
-    .Produces<FveStatus>()
+    .Produces<BatteryBoxStatus>()
     .WithOpenApi();
 
 app.Run();

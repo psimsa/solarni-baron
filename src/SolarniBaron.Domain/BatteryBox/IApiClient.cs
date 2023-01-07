@@ -1,6 +1,6 @@
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
-using SolarniBaron.Domain.BatteryBox.Models.Fve;
+using SolarniBaron.Domain.BatteryBox.Models.BatteryBox;
 
 namespace SolarniBaron.Domain.BatteryBox;
 
@@ -14,7 +14,7 @@ public interface IDataConnector
 {
     Task<string> GetRawStats(string username, string password);
 
-    Task<FveObject> GetStatsForUnit(string username, string password, string? unitId);
+    Task<BatteryBoxUnitData> GetStatsForUnit(string username, string password, string? unitId);
 
     Task<(bool, string?)> SetMode(string username, string password, string unitId, string mode);
 }
@@ -25,7 +25,7 @@ public partial class OigDataConnector : IDisposable, IDataConnector
     private readonly IApiClient _client;
 
     [LoggerMessage(1102, LogLevel.Debug, "Deserialized status response {statusResponse}")]
-    public partial void LogDeserializedStatusResponse(FveObject statusResponse);
+    public partial void LogDeserializedStatusResponse(BatteryBoxUnitData statusResponse);
 
     [LoggerMessage(1103, LogLevel.Debug, "Converting response to FveStatus")]
     public partial void LogConvertingResponseToFveStatus();
@@ -59,13 +59,13 @@ public partial class OigDataConnector : IDisposable, IDataConnector
         return await _client.GetRawStats(username, password);
     }
 
-    public async Task<FveObject> GetStatsForUnit(string username, string password, string? unitId)
+    public async Task<BatteryBoxUnitData> GetStatsForUnit(string username, string password, string? unitId)
     {
         var currentState = await _client.GetRawStats(username, password);
         try
         {
             var stateObject = JsonSerializer.Deserialize(currentState,
-                CommonSerializationContext.Default.DictionaryStringFveObject);
+                CommonSerializationContext.Default.DictionaryStringBatteryBoxUnitData);
 
             if (stateObject is null)
             {

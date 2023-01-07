@@ -1,9 +1,9 @@
-using System.Text.Json.Serialization;
-using SolarniBaron.Domain.BatteryBox.Models.Fve;
+﻿using System.Text.Json.Serialization;
+using SolarniBaron.Domain.BatteryBox.Models.BatteryBox;
 
 namespace SolarniBaron.Domain.BatteryBox.Models;
 
-public record FveStatus(
+public record BatteryBoxStatus(
     [property: JsonPropertyName("unitId")] string UnitId,
     [property: JsonPropertyName("panelsOutputL1")]
     decimal PanelsOutputL1,
@@ -38,12 +38,12 @@ public record FveStatus(
     [property: JsonPropertyName("lastCall")]
     DateTimeOffset LastCall,
     [property: JsonPropertyName("fveMode")]
-    FveMode FveMode = FveMode.Home1)
+    OperationMode FveMode = OperationMode.Home1)
 
 {
-    public static FveStatus FromFveObject(FveObject fve)
+    public static BatteryBoxStatus FromBatteryBoxUnitData(BatteryBoxUnitData fve)
     {
-        return new FveStatus(
+        return new BatteryBoxStatus(
             "",
             fve.DcIn.FvP1,
             fve.DcIn.FvP2,
@@ -65,8 +65,8 @@ public record FveStatus(
         );
     }
 
-    public static FveStatus Empty() =>
-        new FveStatus("",
+    public static BatteryBoxStatus Empty() =>
+        new BatteryBoxStatus("",
             0,
             0,
             0,
