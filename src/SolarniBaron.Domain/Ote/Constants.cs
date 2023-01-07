@@ -1,4 +1,4 @@
-﻿namespace SolarniBaron.Domain.Ote;
+namespace SolarniBaron.Domain.Ote;
 
 public static class Constants
 {

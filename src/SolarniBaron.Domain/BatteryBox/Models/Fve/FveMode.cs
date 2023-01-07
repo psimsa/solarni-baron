@@ -1,4 +1,4 @@
-﻿namespace SolarniBaron.Domain.BatteryBox.Models.Fve;
+namespace SolarniBaron.Domain.BatteryBox.Models.Fve;
 
 public enum FveMode
 {

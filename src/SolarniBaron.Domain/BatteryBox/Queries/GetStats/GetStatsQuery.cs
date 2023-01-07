@@ -1,4 +1,4 @@
-﻿using SolarniBaron.Domain.Contracts.Queries;
+using SolarniBaron.Domain.Contracts.Queries;
 
 namespace SolarniBaron.Domain.BatteryBox.Queries.GetStats;
 

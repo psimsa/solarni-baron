@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using SolarniBaron.Domain.BatteryBox;
 using SolarniBaron.Domain.BatteryBox.Commands.SetMode;
 using SolarniBaron.Domain.BatteryBox.Queries.GetStats;
