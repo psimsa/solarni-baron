@@ -1,3 +1,4 @@
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -20,6 +21,12 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-app.MapControllers();
+// app.MapControllers();
+app.MapGet("/api/ote/{date}", (DateOnly date) =>
+{
+    return Results.Ok(new { year = date.Year, month = date.Month, day = date.Day });
+})
+.WithOpenApi()
+;
 
 app.Run();
