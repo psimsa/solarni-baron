@@ -1,0 +1,84 @@
+@using SolarniBaron.Domain.BatteryBox.Models
+@using SolarniBaron.Domain.BatteryBox.Models.BatteryBox
+<table class="table">
+    <thead>
+    <tr>
+        <th class="col col-sm-6 col-md-5 col-lg-4 col-xl-3" scope="col">Název</th>
+        <th scope="col">Hodnota</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>Výkon celkem:</td>
+        <td style="@Helpers.GetGradient(CurrentStatus.PanelsOutputL2 + CurrentStatus.PanelsOutputL1, 9600)">
+            @Helpers.FormatMetric(CurrentStatus.PanelsOutputL2 + CurrentStatus.PanelsOutputL1, "W")
+            @if (CurrentStatus.PanelsOutputL1 > 0 || CurrentStatus.PanelsOutputL2 > 0)
+            {
+                var max = Math.Max(CurrentStatus.PanelsOutputL1, CurrentStatus.PanelsOutputL2);
+                var diff = Math.Abs(CurrentStatus.PanelsOutputL1 - CurrentStatus.PanelsOutputL2);
+                var perc = diff / max * 100;
+                if (perc > 10 && max > 120)
+                {
+                    <span class="badge bg-warning" style="text-shadow: none">Nevyrovnáno</span>
+                }
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>Výkon %:</td>
+        <td style="@Helpers.GetGradient(CurrentStatus.PanelsOutputPct, 100)">
+            @CurrentStatus.PanelsOutputPct%
+        </td>
+    </tr>
+    <tr>
+        <td>Zátěž celkem:</td>
+        <td style="@Helpers.GetGradient(CurrentStatus.ConsumptionTotal, 10000)">@Helpers.FormatMetric(CurrentStatus.ConsumptionTotal, "W")</td>
+    </tr>
+    <tr>
+        <td>Síť celkem:</td>
+        <td style="@Helpers.GetGradient(CurrentStatus.GridOutputTotal, 10000)">@Helpers.FormatMetric(CurrentStatus.GridOutputTotal, "W")</td>
+    </tr>
+    <tr>
+        <td>Baterie %:</td>
+        <td style="@Helpers.GetGradient(CurrentStatus.BatteryPct, 100)">
+            @CurrentStatus.BatteryPct%
+        </td>
+    </tr>
+    <tr>
+        <td>Dnes vyrobeno:</td>
+        <td>@Helpers.FormatMetric(CurrentStatus.OutputToday, "Wh")</td>
+    </tr>
+    <tr>
+        <td>Dnes spotřebováno:</td>
+        <td>@Helpers.FormatMetric(CurrentStatus.ConsumptionToday, "Wh")</td>
+    </tr>
+    <tr>
+        <td>Dnes ze sítě:</td>
+        <td>@Helpers.FormatMetric(CurrentStatus.GridOutput, "Wh")</td>
+    </tr>
+    <tr>
+        <td>Poslední aktualizace:</td>
+        <td>@(CurrentStatus.LastCall.LocalDateTime.ToString("dd-MM-yyyy HH:mm"))</td>
+    </tr>
+    <tr>
+        <td>Pracovní režim:</td>
+        <td>
+            @(CurrentStatus.OperationMode switch
+            {
+                OperationMode.Home1 => "Home 1",
+                OperationMode.Home2 => "Domácí 2",
+                OperationMode.Home3 => "Domácí 3",
+                OperationMode.HomeIVUPS => "UPS",
+                _ => "Neznámý"
+                })
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+@code {
+
+    [Parameter]
+    public BatteryBoxStatus CurrentStatus { get; set; }
+
+}

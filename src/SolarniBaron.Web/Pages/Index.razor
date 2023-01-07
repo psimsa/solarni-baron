@@ -1,0 +1,169 @@
+@page "/"
+@using SolarniBaron.Domain.BatteryBox.Models
+@using SolarniBaron.Domain
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@inject LocalStorage Storage
+@inject ClientConfig Config
+
+@if (ShowOfflineLogin)
+{
+    <NotConnectedComponent GoToLogin="GoToLogin" RefreshPage="RefreshPage"/>
+}
+
+<div class="accordion" id="fve-data">
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="heading-stats">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-stats" aria-expanded="true" aria-controls="collapse-stats">
+                Základní info
+            </button>
+        </h2>
+        <div id="collapse-stats" class="accordion-collapse collapse show" aria-labelledby="heading-stats" data-bs-parent="#fve-data">
+            <div class="accordion-body">
+                <GeneralSection CurrentStatus="CurrentStatus"/>
+            </div>
+        </div>
+    </div>
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="heading-output">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-output" aria-expanded="false" aria-controls="collapse-output">
+                Výkon
+            </button>
+        </h2>
+        <div id="collapse-output" class="accordion-collapse collapse" aria-labelledby="heading-output" data-bs-parent="#fve-data">
+            <div class="accordion-body">
+                <PvOutputSection CurrentStatus="CurrentStatus"/>
+            </div>
+        </div>
+    </div>
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="heading-consumption">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-consumption" aria-expanded="false" aria-controls="collapse-consumption">
+                Zátěž
+            </button>
+        </h2>
+        <div id="collapse-consumption" class="accordion-collapse collapse" aria-labelledby="heading-consumption" data-bs-parent="#fve-data">
+            <div class="accordion-body">
+                <HouseLoadSection CurrentStatus="CurrentStatus"/>
+            </div>
+        </div>
+    </div>
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="heading-grid">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-grid" aria-expanded="false" aria-controls="collapse-grid">
+                Síť
+            </button>
+        </h2>
+        <div id="collapse-grid" class="accordion-collapse collapse" aria-labelledby="heading-grid" data-bs-parent="#fve-data">
+            <div class="accordion-body">
+                <AcGridSection CurrentStatus="CurrentStatus"/>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="progress" style="@(_progressHidden ? "display: none" : "")">
+    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+</div>
+
+
+@code {
+    private BatteryBoxStatus CurrentStatus { get; set; } = DefaultStatus();
+    private LoginInfo LoginInfo { get; set; }
+    private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
+    private bool _progressHidden = false;
+
+    private bool ShowOfflineLogin { get; set; }
+
+    private Task? _refresher;
+
+    protected override async Task OnInitializedAsync()
+    {
+        LoginInfo = await Storage.GetItem<LoginInfo>("loginInfo") ?? LoginInfo.Empty;
+
+        _refresher = UpdateTask(_cancellationTokenSource.Token);
+
+        ShowOfflineLogin = false;
+        CurrentStatus = await Storage.GetItem<BatteryBoxStatus>("status") ?? DefaultStatus();
+    }
+
+    private async Task UpdateTask(CancellationToken token)
+    {
+        await Task.Yield();
+        string url = "/api/batterybox/getstats";
+        try
+        {
+            var checkLocalUrl = await Http.PostAsync(Config.LocalGetStatsUrl, JsonContent.Create(LoginInfo), token);
+            if (checkLocalUrl.IsSuccessStatusCode)
+            {
+                url = Config.LocalGetStatsUrl;
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+
+
+        while (!token.IsCancellationRequested)
+        {
+            try
+            {
+    /*if (ShowOfflineLogin)
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(10), token);
+                    continue;
+                }*/
+                _progressHidden = false;
+                StateHasChanged();
+                var response = await Http.PostAsync(url, JsonContent.Create(LoginInfo), token);
+                response.EnsureSuccessStatusCode();
+
+                var messageResponse = await response.Content.ReadFromJsonAsync(CommonSerializationContext.Default.BatteryBoxStatus, _cancellationTokenSource.Token);
+                if (messageResponse != null)
+                {
+                    CurrentStatus = messageResponse;
+                    await Storage.SetItem("status", CurrentStatus);
+
+                    if (string.IsNullOrWhiteSpace(LoginInfo.UnitId))
+                    {
+                        LoginInfo = LoginInfo with {UnitId = messageResponse.UnitId};
+                        await Storage.SetItem("loginInfo", LoginInfo);
+                    }
+                }
+                ShowOfflineLogin = false;
+            }
+            catch (Exception e)
+            {
+                CurrentStatus = DefaultStatus();
+                ShowOfflineLogin = true;
+            }
+            finally
+            {
+                _progressHidden = true;
+                StateHasChanged();
+            }
+            await Task.Delay(10_000, _cancellationTokenSource.Token);
+        }
+    }
+
+    private void GoToLogin()
+    {
+        Navigation.NavigateTo("/login", true);
+    }
+
+    private static BatteryBoxStatus DefaultStatus() => BatteryBoxStatus.Empty();
+
+    public void Dispose()
+    {
+        _cancellationTokenSource.Cancel();
+        _refresher?.Wait();
+        _cancellationTokenSource.Dispose();
+    }
+
+    private void RefreshPage()
+    {
+        Navigation.NavigateTo(Navigation.Uri, true);
+    }
+
+}
