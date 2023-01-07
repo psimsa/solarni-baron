@@ -1,5 +1,4 @@
-﻿using SolarniBaron.Domain.CNB.Queries.GetExchangeRate;
-using SolarniBaron.Domain.Contracts;
+﻿using SolarniBaron.Domain.Contracts;
 
 namespace SolarniBaron.Domain.Ote.Queries.GetPricelist;
 

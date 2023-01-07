@@ -1,4 +1,4 @@
-﻿using SolarniBaron.Domain.Contracts;
+﻿using SolarniBaron.Domain.Contracts.Queries;
 
 namespace SolarniBaron.Domain.CNB.Queries.GetExchangeRate;
 
@@ -15,7 +15,7 @@ public class GetExchangeRateQueryHandler : IQueryHandler<GetExchangeRateQuery, G
         IQuery<GetExchangeRateQuery, GetExchangeRateQueryResponse> query)
     {
         var response = await _client.GetStringAsync(
-            $"https://www.cnb.cz/cs/financni-trhy/devizovy-trh/kurzy-devizoveho-trhu/kurzy-devizoveho-trhu/denni_kurz.txt?date={query.Query.Date.ToString("dd.MM.yyyy")}");
+            $"https://www.cnb.cz/cs/financni-trhy/devizovy-trh/kurzy-devizoveho-trhu/kurzy-devizoveho-trhu/denni_kurz.txt?date={query.Data.Date.ToString("dd.MM.yyyy")}");
         var euroLine = response.Split('\n').FirstOrDefault(line => line.Contains("EMU"));
         var euroRate = euroLine?.Split('|')[4];
         var success = decimal.TryParse(euroRate?.Replace(',', '.'), out var rateValue);

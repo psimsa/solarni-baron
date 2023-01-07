@@ -1,9 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using SolarniBaron.Api.Models;
-using SolarniBaron.Domain;
 using SolarniBaron.Domain.BatteryBox.Models;
 using SolarniBaron.Domain.BatteryBox.Queries.GetStats;
 using SolarniBaron.Domain.Contracts;
+using SolarniBaron.Domain.Contracts.Queries;
 using SolarniBaron.Domain.Extensions;
 using SolarniBaron.Domain.Ote.Queries.GetPricelist;
 

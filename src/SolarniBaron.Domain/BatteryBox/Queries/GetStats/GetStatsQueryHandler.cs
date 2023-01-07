@@ -1,7 +1,8 @@
 ﻿using System.Text.Json;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
-using SolarniBaron.Domain.Contracts;
+using SolarniBaron.Domain.BatteryBox.Models;
+using SolarniBaron.Domain.Contracts.Queries;
 using SolarniBaron.Domain.Extensions;
 
 namespace SolarniBaron.Domain.BatteryBox.Queries.GetStats;
@@ -22,7 +23,7 @@ public class GetStatsQueryHandler : IQueryHandler<GetStatsQuery, GetStatsQueryRe
 
     public async Task<GetStatsQueryResponse> Get(IQuery<GetStatsQuery, GetStatsQueryResponse> query)
     {
-        var getStatsQuery = query.Query;
+        var getStatsQuery = query.Data;
         if (getStatsQuery == null)
         {
             _logger.LogError("Query is not of type GetStatsQuery");

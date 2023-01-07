@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using SolarniBaron.Domain.BatteryBox.Models.Fve;
 
-namespace SolarniBaron.Domain.BatteryBox.Queries.GetStats;
+namespace SolarniBaron.Domain.BatteryBox.Models;
 
 public record FveStatus(
     [property: JsonPropertyName("unitId")] string UnitId,

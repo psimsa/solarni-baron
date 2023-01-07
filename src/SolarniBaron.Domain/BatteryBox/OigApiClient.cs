@@ -1,6 +1,5 @@
 ﻿using System.Net.Http.Headers;
 using System.Text.Json;
-using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.Logging;
 using SolarniBaron.Domain.BatteryBox.Models;
@@ -33,11 +32,6 @@ public partial class OigApiClient : IApiClient
     public async Task<string> GetRawStats(string username, string password)
     {
         await AuthenticateClient(username, password);
-
-        /*var loginResponseObject =
-            JsonSerializer.Deserialize(loginInfoResponseContent,
-                common.CommonSerializationContext.Default.JsonElementArrayArray);*/
-        // var requestResponse = loginResponseObject.First();
 
         var currentStateResponse =
             await _client.GetAsync(Constants.GetStatus + "?_nonce=" + DateTimeOffset.Now.ToUnixTimeMilliseconds());
