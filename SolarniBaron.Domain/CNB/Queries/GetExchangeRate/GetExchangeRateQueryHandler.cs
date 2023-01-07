@@ -1,10 +1,6 @@
 ﻿using SolarniBaron.Domain.Contracts;
 
-namespace SolarniBaron.Domain.Queries.Ote.GetExchangeRate;
-
-public record GetExchangeRateQuery(DateOnly date) : IQuery<GetExchangeRateQueryResponse>;
-
-public record GetExchangeRateQueryResponse(decimal Rate);
+namespace SolarniBaron.Domain.CNB.Queries.GetExchangeRate;
 
 public class GetExchangeRateQueryHandler : IQueryHandler<IQuery<GetExchangeRateQueryResponse>, GetExchangeRateQueryResponse>
 {
