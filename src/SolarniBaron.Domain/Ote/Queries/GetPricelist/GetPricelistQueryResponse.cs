@@ -6,5 +6,5 @@ public record GetPricelistQueryResponse(ResponseStatus Status, GetPricelistQuery
     decimal ExchangeRate)
 {
     public static GetPricelistQueryResponse Empty() =>
-        new GetPricelistQueryResponse(ResponseStatus.Error, Array.Empty<GetPricelistQueryResponseItem>(), 0);
+        new(ResponseStatus.Error, Array.Empty<GetPricelistQueryResponseItem>(), 0);
 };

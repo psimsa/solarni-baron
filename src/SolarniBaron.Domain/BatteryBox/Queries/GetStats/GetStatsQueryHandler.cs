@@ -23,12 +23,7 @@ public class GetStatsQueryHandler : IQueryHandler<GetStatsQuery, GetStatsQueryRe
 
     public async Task<GetStatsQueryResponse> Get(IQuery<GetStatsQuery, GetStatsQueryResponse> query)
     {
-        var getStatsQuery = query.Data;
-        if (getStatsQuery == null)
-        {
-            _logger.LogError("Query is not of type GetStatsQuery");
-            return GetStatsQueryResponse.Empty();
-        }
+        var getStatsQuery = query.Data ?? throw new ArgumentException("Invalid query type");
 
         (string username, string password, string? unitId) = getStatsQuery;
 
