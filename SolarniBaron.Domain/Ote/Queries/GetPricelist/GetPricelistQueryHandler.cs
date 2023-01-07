@@ -60,7 +60,7 @@ public class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery, GetPric
             hour++;
             return toReturn;
         });
-        
+
         return new GetPricelistQueryResponse(ResponseStatus.Ok, data.ToArray(), exchangeRate.Rate);
     }
 }
