@@ -9,11 +9,11 @@ namespace SolarniBaron.Domain.BatteryBox.Queries.GetStats;
 
 public class GetStatsQueryHandler : IQueryHandler<GetStatsQuery, GetStatsQueryResponse>
 {
-    private readonly IDataConnector _dataConnector;
+    private readonly IBatteryBoxDataConnector _dataConnector;
     private readonly IDistributedCache _cache;
     private readonly ILogger<GetStatsQueryHandler> _logger;
 
-    public GetStatsQueryHandler(IDataConnector dataConnector, IDistributedCache cache,
+    public GetStatsQueryHandler(IBatteryBoxDataConnector dataConnector, IDistributedCache cache,
         ILogger<GetStatsQueryHandler> logger)
     {
         _dataConnector = dataConnector;
@@ -27,7 +27,7 @@ public class GetStatsQueryHandler : IQueryHandler<GetStatsQuery, GetStatsQueryRe
 
         (string username, string password, string? unitId) = getStatsQuery;
 
-        var cacheKey = $"fvestats-{username}-{password}-{unitId ?? string.Empty}";
+        var cacheKey = $"bbstats-{username}-{password}-{unitId ?? string.Empty}";
 
         var cachedItem = _cache.Get(cacheKey);
         if (cachedItem is not null)

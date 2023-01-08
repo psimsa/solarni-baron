@@ -4,11 +4,11 @@ namespace SolarniBaron.Domain.Extensions;
 
 public static partial class LoggingExtensions
 {
-    [LoggerMessage(0, LogLevel.Information, "Cache not hit. Fetching stats from FVE...")]
+    [LoggerMessage(0, LogLevel.Information, "Cache not hit. Fetching stats from BatteryBox...")]
     public static partial void LogCacheNotHit(this ILogger logger);
 
-    [LoggerMessage(1, LogLevel.Information, "Fetching stats from FVE...")]
-    public static partial void LogFetchingStatsFromFve(this ILogger logger);
+    [LoggerMessage(1, LogLevel.Information, "Fetching stats from BatteryBox...")]
+    public static partial void LogFetchingStatsFromBatteryBox(this ILogger logger);
 
     [LoggerMessage(2, LogLevel.Information, "Stats fetched.")]
     public static partial void LogStatsFetched(this ILogger logger);

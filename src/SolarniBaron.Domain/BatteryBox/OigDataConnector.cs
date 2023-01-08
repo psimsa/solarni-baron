@@ -1,34 +1,19 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using SolarniBaron.Domain.BatteryBox.Models.BatteryBox;
 
 namespace SolarniBaron.Domain.BatteryBox;
 
-public interface IApiClient : IDisposable
-{
-    Task<string> GetRawStats(string username, string password);
-    Task<(bool, string?)> SetMode(string username, string password, string unitId, string mode);
-}
-
-public interface IDataConnector
-{
-    Task<string> GetRawStats(string username, string password);
-
-    Task<BatteryBoxUnitData> GetStatsForUnit(string username, string password, string? unitId);
-
-    Task<(bool, string?)> SetMode(string username, string password, string unitId, string mode);
-}
-
-public partial class OigDataConnector : IDisposable, IDataConnector
+public partial class OigDataConnector : IDisposable, IBatteryBoxDataConnector
 {
     private readonly ILogger<OigDataConnector> _logger;
-    private readonly IApiClient _client;
+    private readonly IBatteryBoxClient _client;
 
     [LoggerMessage(1102, LogLevel.Debug, "Deserialized status response {statusResponse}")]
     public partial void LogDeserializedStatusResponse(BatteryBoxUnitData statusResponse);
 
-    [LoggerMessage(1103, LogLevel.Debug, "Converting response to FveStatus")]
-    public partial void LogConvertingResponseToFveStatus();
+    [LoggerMessage(1103, LogLevel.Debug, "Converting response to BatteryBoxStatus")]
+    public partial void LogConvertingResponseToBatteryBoxStatus();
 
     [LoggerMessage(1104, LogLevel.Debug, "Setting mode of {unitId} to {mode}")]
     public partial void LogSettingModeToMode(string unitId, string mode);
@@ -47,7 +32,7 @@ public partial class OigDataConnector : IDisposable, IDataConnector
     [LoggerMessage(1303, LogLevel.Error, "Deserialized stats is null")]
     public partial void LogDeserializedStatsIsNull();
 
-    public OigDataConnector(IApiClient client, ILogger<OigDataConnector> logger)
+    public OigDataConnector(IBatteryBoxClient client, ILogger<OigDataConnector> logger)
     {
         _client = client;
         _logger = logger;
@@ -79,25 +64,13 @@ public partial class OigDataConnector : IDisposable, IDataConnector
                 throw new Exception($"Unit {unitId} not found");
             }
 
-            var fveObject = string.IsNullOrWhiteSpace(unitId)
+            var batteryBoxObject = string.IsNullOrWhiteSpace(unitId)
                 ? stateObject?.First().Value
                 : stateObject[unitId];
 
-            LogDeserializedStatusResponse(fveObject);
+            LogDeserializedStatusResponse(batteryBoxObject);
 
-            if (fveObject != null)
-            {
-                try
-                {
-                    // var result = await container.UpsertItemAsync(new CosmosEntity<FveObject>(o => o.Device.Lastcall.ToUnixTimeSeconds().ToString(), fveObject));
-                }
-                catch (Exception ex)
-                {
-                    LogErrorSavingStatsToCosmosDb();
-                }
-            }
-
-            return fveObject;
+            return batteryBoxObject;
         }
         catch (JsonException ex)
         {
@@ -117,4 +90,3 @@ public partial class OigDataConnector : IDisposable, IDataConnector
         _client.Dispose();
     }
 }
-

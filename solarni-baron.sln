@@ -1,4 +1,3 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
@@ -14,6 +13,22 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolarniBaron.Api.IntegrationTests", "test\SolarniBaron.Api.IntegrationTests\SolarniBaron.Api.IntegrationTests.csproj", "{D801DB3F-4A4B-4803-B5DA-A0BDE1AF476E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolarniBaron.Domain", "src\SolarniBaron.Domain\SolarniBaron.Domain.csproj", "{B95C6576-3F00-45F9-ADA6-E5D1AA68A5D3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{80EFBFB9-DBF9-4BAD-B450-250E8DA115A1}"
+	ProjectSection(SolutionItems) = preProject
+		.dockerignore = .dockerignore
+		.gitignore = .gitignore
+		.whitesource = .whitesource
+		LICENSE = LICENSE
+		README.md = README.md
+		renovate.json = renovate.json
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolarniBaron.Persistence", "src\SolarniBaron.Persistence\SolarniBaron.Persistence.csproj", "{AADB8456-E570-4D65-9E55-2A7F0A3234BD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolarniBaron.Persistence.Tests", "test\SolarniBaron.Persistence.Tests\SolarniBaron.Persistence.Tests.csproj", "{48CEA2AF-8C56-4F0E-A482-958D239D9546}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolarniBaron.Domain.Tests", "test\SolarniBaron.Domain.Tests\SolarniBaron.Domain.Tests.csproj", "{5551895D-0DFF-428B-B6E7-92E25A0C3E87}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,6 +52,18 @@ Global
 		{B95C6576-3F00-45F9-ADA6-E5D1AA68A5D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B95C6576-3F00-45F9-ADA6-E5D1AA68A5D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B95C6576-3F00-45F9-ADA6-E5D1AA68A5D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AADB8456-E570-4D65-9E55-2A7F0A3234BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AADB8456-E570-4D65-9E55-2A7F0A3234BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AADB8456-E570-4D65-9E55-2A7F0A3234BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AADB8456-E570-4D65-9E55-2A7F0A3234BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48CEA2AF-8C56-4F0E-A482-958D239D9546}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48CEA2AF-8C56-4F0E-A482-958D239D9546}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48CEA2AF-8C56-4F0E-A482-958D239D9546}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48CEA2AF-8C56-4F0E-A482-958D239D9546}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5551895D-0DFF-428B-B6E7-92E25A0C3E87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5551895D-0DFF-428B-B6E7-92E25A0C3E87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5551895D-0DFF-428B-B6E7-92E25A0C3E87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5551895D-0DFF-428B-B6E7-92E25A0C3E87}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -46,6 +73,9 @@ Global
 		{C39A58AE-EF8D-4E35-B53A-EA9E5215C745} = {5FD01C16-ED92-4D53-8C3B-712F9BEC0F95}
 		{D801DB3F-4A4B-4803-B5DA-A0BDE1AF476E} = {5FD01C16-ED92-4D53-8C3B-712F9BEC0F95}
 		{B95C6576-3F00-45F9-ADA6-E5D1AA68A5D3} = {9DA209FC-896B-4320-8EAD-1F51486D8383}
+		{AADB8456-E570-4D65-9E55-2A7F0A3234BD} = {9DA209FC-896B-4320-8EAD-1F51486D8383}
+		{48CEA2AF-8C56-4F0E-A482-958D239D9546} = {5FD01C16-ED92-4D53-8C3B-712F9BEC0F95}
+		{5551895D-0DFF-428B-B6E7-92E25A0C3E87} = {5FD01C16-ED92-4D53-8C3B-712F9BEC0F95}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {22D3069A-09E9-4308-B98B-77C191F66495}

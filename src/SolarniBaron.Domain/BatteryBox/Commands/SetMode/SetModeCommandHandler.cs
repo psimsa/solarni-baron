@@ -6,10 +6,10 @@ namespace SolarniBaron.Domain.BatteryBox.Commands.SetMode;
 
 public class SetModeCommandHandler : ICommandHandler<SetModeCommand, SetModeCommandResponse>
 {
-    private readonly IDataConnector _connector;
+    private readonly IBatteryBoxDataConnector _connector;
     private readonly ILogger<SetModeCommandHandler> _logger;
 
-    public SetModeCommandHandler(IDataConnector connector, ILogger<SetModeCommandHandler> logger)
+    public SetModeCommandHandler(IBatteryBoxDataConnector connector, ILogger<SetModeCommandHandler> logger)
     {
         _connector = connector;
         _logger = logger;

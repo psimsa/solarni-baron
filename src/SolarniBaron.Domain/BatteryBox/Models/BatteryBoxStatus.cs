@@ -37,31 +37,31 @@ public record BatteryBoxStatus(
     decimal GridOutput,
     [property: JsonPropertyName("lastCall")]
     DateTimeOffset LastCall,
-    [property: JsonPropertyName("fveMode")]
-    OperationMode FveMode = OperationMode.Home1)
+    [property: JsonPropertyName("operationMode")]
+    OperationMode OperationMode = OperationMode.Home1)
 
 {
-    public static BatteryBoxStatus FromBatteryBoxUnitData(BatteryBoxUnitData fve)
+    public static BatteryBoxStatus FromBatteryBoxUnitData(BatteryBoxUnitData bbUnitData)
     {
         return new BatteryBoxStatus(
             "",
-            fve.DcIn.FvP1,
-            fve.DcIn.FvP2,
-            fve.DcIn.FvProc,
-            fve.Batt.BatC,
-            fve.AcOut.AcoPr,
-            fve.AcOut.AcoPs,
-            fve.AcOut.AcoPt,
-            fve.AcOut.AcoP,
-            fve.AcIn.AciWr,
-            fve.AcIn.AciWs,
-            fve.AcIn.AciWt,
-            fve.AcIn.AciWr + fve.AcIn.AciWs + fve.AcIn.AciWt,
-            fve.DcIn.FvAd,
-            fve.AcOut.EnDay,
-            fve.AcIn.AcAd,
-            fve.Device.Lastcall,
-            fve.BoxPrms.Mode
+            bbUnitData.DcIn.FvP1,
+            bbUnitData.DcIn.FvP2,
+            bbUnitData.DcIn.FvProc,
+            bbUnitData.Batt.BatC,
+            bbUnitData.AcOut.AcoPr,
+            bbUnitData.AcOut.AcoPs,
+            bbUnitData.AcOut.AcoPt,
+            bbUnitData.AcOut.AcoP,
+            bbUnitData.AcIn.AciWr,
+            bbUnitData.AcIn.AciWs,
+            bbUnitData.AcIn.AciWt,
+            bbUnitData.AcIn.AciWr + bbUnitData.AcIn.AciWs + bbUnitData.AcIn.AciWt,
+            bbUnitData.DcIn.FvAd,
+            bbUnitData.AcOut.EnDay,
+            bbUnitData.AcIn.AcAd,
+            bbUnitData.Device.Lastcall,
+            bbUnitData.BoxPrms.Mode
         );
     }
 

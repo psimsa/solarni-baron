@@ -3,7 +3,7 @@ using SolarniBaron.Domain.Contracts;
 
 namespace SolarniBaron.Domain.BatteryBox.Queries.GetStats;
 
-public record GetStatsQueryResponse(BatteryBoxStatus FveStatus, ResponseStatus ResponseStatus = ResponseStatus.Ok,
+public record GetStatsQueryResponse(BatteryBoxStatus BatteryBoxStatus, ResponseStatus ResponseStatus = ResponseStatus.Ok,
     string? Error = null)
 {
     public static GetStatsQueryResponse Empty() =>

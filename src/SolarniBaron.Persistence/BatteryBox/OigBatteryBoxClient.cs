@@ -2,14 +2,15 @@ using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.Logging;
+using SolarniBaron.Domain.BatteryBox;
 using SolarniBaron.Domain.BatteryBox.Models;
 
-namespace SolarniBaron.Domain.BatteryBox;
+namespace SolarniBaron.Persistence.BatteryBox;
 
-public partial class OigApiClient : IApiClient
+public partial class OigBatteryBoxClient : IBatteryBoxClient
 {
     private readonly HttpClient _client;
-    private readonly ILogger<OigApiClient> _logger;
+    private readonly ILogger<OigBatteryBoxClient> _logger;
 
     [LoggerMessage(1150, LogLevel.Debug, "Attempting to login...")]
     public partial void LogAttemptingToLogin();
@@ -23,7 +24,7 @@ public partial class OigApiClient : IApiClient
     [LoggerMessage(1351, LogLevel.Error, "Api call failed with code {code} and response {apiReponseString}")]
     public partial void LogApiCallFailed(int code, string apiReponseString);
 
-    public OigApiClient(HttpClient client, ILogger<OigApiClient> logger)
+    public OigBatteryBoxClient(HttpClient client, ILogger<OigBatteryBoxClient> logger)
     {
         _client = client;
         _logger = logger;
@@ -77,7 +78,7 @@ public partial class OigApiClient : IApiClient
         var loginInfo = new LoginInfo(username, password);
 
         var serializedLoginInfo =
-            JsonSerializer.Serialize(loginInfo, CommonSerializationContext.Default.LoginInfo);
+            JsonSerializer.Serialize(loginInfo, PersistenceSerializationContext.Default.LoginInfo);
 
         var content = new StringContent(serializedLoginInfo);
         content.Headers.ContentType = new MediaTypeHeaderValue("application/json");

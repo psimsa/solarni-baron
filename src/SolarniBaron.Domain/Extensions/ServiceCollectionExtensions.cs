@@ -20,9 +20,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<IQueryHandler<GetStatsQuery, GetStatsQueryResponse>, GetStatsQueryHandler>();
         services.AddTransient<ICommandHandler<SetModeCommand, SetModeCommandResponse>, SetModeCommandHandler>();
         
-        services.AddHttpClient<IApiClient, OigApiClient>();
-        
-        services.AddTransient<IDataConnector, OigDataConnector>();
+        services.AddTransient<IBatteryBoxDataConnector, OigDataConnector>();
 
         return services;
     }
