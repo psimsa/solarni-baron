@@ -1,6 +1,6 @@
-﻿namespace SolarniBaron.Domain.Contracts;
+namespace SolarniBaron.Domain.Contracts.Commands;
 
-public interface ICommandHandler<in TCommand, TResponse> where TCommand : ICommand<TResponse>
+public interface ICommandHandler<TCommand, TResponse> where TCommand : class, ICommand<TCommand, TResponse>
 {
-    Task<TResponse> Execute(ICommand<TResponse> command);
+    Task<TResponse> Execute(ICommand<TCommand, TResponse> command);
 }

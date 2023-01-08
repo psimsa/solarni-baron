@@ -1,6 +1,6 @@
-﻿namespace SolarniBaron.Domain.Contracts;
+namespace SolarniBaron.Domain.Contracts.Queries;
 
 public interface IQuery<TQuery, out TResponse> where TQuery : class
 {
-    TQuery? Query => this as TQuery;
+    TQuery? Data => this as TQuery;
 }

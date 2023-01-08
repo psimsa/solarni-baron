@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
-using SolarniBaron.Api.Models;
-using SolarniBaron.Domain;
 using SolarniBaron.Domain.BatteryBox.Models;
 using SolarniBaron.Domain.BatteryBox.Queries.GetStats;
 using SolarniBaron.Domain.Contracts;
+using SolarniBaron.Domain.Contracts.Queries;
 using SolarniBaron.Domain.Extensions;
 using SolarniBaron.Domain.Ote.Queries.GetPricelist;
+using SolarniBaron.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +17,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDomain();
+builder.Services.AddPersistence();
 
 builder.Services.AddHttpClient();
 builder.Services.AddDistributedMemoryCache();
@@ -35,7 +36,10 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 // app.MapControllers();
-app.MapGet("/api/ote/{date}",
+
+app.MapGet("/healthz", () => Results.Text("OK"));
+
+app.MapGet("api/ote/{date}",
         async (DateOnly date, IQueryHandler<GetPricelistQuery, GetPricelistQueryResponse> query) =>
         {
             var result = await query.Get(new GetPricelistQuery(date));
@@ -62,10 +66,15 @@ app.MapPost("api/batterybox/getstats",
                 return Results.BadRequest(data.Error);
             }
 
-            return Results.Ok(data.FveStatus);
+            return Results.Ok(data.BatteryBoxStatus);
         })
     .WithName("GetStats")
-    .Produces<FveStatus>()
+    .Produces<BatteryBoxStatus>()
     .WithOpenApi();
 
 app.Run();
+
+namespace SolarniBaron.Api
+{
+    public partial class Program { }
+}

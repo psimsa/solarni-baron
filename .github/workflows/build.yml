@@ -1,4 +1,4 @@
-﻿name: Build solution
+name: Build solution
 
 on:
   push:

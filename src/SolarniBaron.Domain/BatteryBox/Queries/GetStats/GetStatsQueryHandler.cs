@@ -1,18 +1,19 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
-using SolarniBaron.Domain.Contracts;
+using SolarniBaron.Domain.BatteryBox.Models;
+using SolarniBaron.Domain.Contracts.Queries;
 using SolarniBaron.Domain.Extensions;
 
 namespace SolarniBaron.Domain.BatteryBox.Queries.GetStats;
 
 public class GetStatsQueryHandler : IQueryHandler<GetStatsQuery, GetStatsQueryResponse>
 {
-    private readonly IDataConnector _dataConnector;
+    private readonly IBatteryBoxDataConnector _dataConnector;
     private readonly IDistributedCache _cache;
     private readonly ILogger<GetStatsQueryHandler> _logger;
 
-    public GetStatsQueryHandler(IDataConnector dataConnector, IDistributedCache cache,
+    public GetStatsQueryHandler(IBatteryBoxDataConnector dataConnector, IDistributedCache cache,
         ILogger<GetStatsQueryHandler> logger)
     {
         _dataConnector = dataConnector;
@@ -22,28 +23,23 @@ public class GetStatsQueryHandler : IQueryHandler<GetStatsQuery, GetStatsQueryRe
 
     public async Task<GetStatsQueryResponse> Get(IQuery<GetStatsQuery, GetStatsQueryResponse> query)
     {
-        var getStatsQuery = query.Query;
-        if (getStatsQuery == null)
-        {
-            _logger.LogError("Query is not of type GetStatsQuery");
-            return GetStatsQueryResponse.Empty();
-        }
+        var getStatsQuery = query.Data ?? throw new ArgumentException("Invalid query type");
 
         (string username, string password, string? unitId) = getStatsQuery;
 
-        var cacheKey = $"fvestats-{username}-{password}-{unitId ?? string.Empty}";
+        var cacheKey = $"bbstats-{username}-{password}-{unitId ?? string.Empty}";
 
-        var cachedItem = _cache.Get(cacheKey);
+        var cachedItem = await _cache.GetAsync(cacheKey);
         if (cachedItem is not null)
         {
             _logger.LogCacheHit();
-            return new GetStatsQueryResponse(JsonSerializer.Deserialize<FveStatus>(cachedItem)!);
+            return new GetStatsQueryResponse(JsonSerializer.Deserialize<BatteryBoxStatus>(cachedItem)!);
         }
 
         _logger.LogCacheNotHit();
 
         var fromApi = await _dataConnector.GetStatsForUnit(username, password, unitId);
-        var stats = FveStatus.FromFveObject(fromApi);
+        var stats = BatteryBoxStatus.FromBatteryBoxUnitData(fromApi);
 
         var nextRefresh = stats.LastCall.AddSeconds(110) - DateTime.Now;
         nextRefresh = nextRefresh.TotalSeconds > 9 ? nextRefresh : TimeSpan.FromSeconds(9);

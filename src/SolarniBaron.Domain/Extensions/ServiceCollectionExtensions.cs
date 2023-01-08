@@ -1,8 +1,10 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using SolarniBaron.Domain.BatteryBox;
+using SolarniBaron.Domain.BatteryBox.Commands.SetMode;
 using SolarniBaron.Domain.BatteryBox.Queries.GetStats;
 using SolarniBaron.Domain.CNB.Queries.GetExchangeRate;
-using SolarniBaron.Domain.Contracts;
+using SolarniBaron.Domain.Contracts.Commands;
+using SolarniBaron.Domain.Contracts.Queries;
 using SolarniBaron.Domain.Ote.Queries.GetPricelist;
 
 namespace SolarniBaron.Domain.Extensions;
@@ -16,10 +18,11 @@ public static class ServiceCollectionExtensions
             .AddTransient<IQueryHandler<GetExchangeRateQuery, GetExchangeRateQueryResponse>,
                 GetExchangeRateQueryHandler>();
         services.AddTransient<IQueryHandler<GetStatsQuery, GetStatsQueryResponse>, GetStatsQueryHandler>();
+        services.AddTransient<ICommandHandler<SetModeCommand, SetModeCommandResponse>, SetModeCommandHandler>();
         
-        services.AddHttpClient<IApiClient, OigApiClient>();
-        
-        services.AddTransient<IDataConnector, OigDataConnector>();
+        services.AddTransient<IBatteryBoxDataConnector, OigDataConnector>();
+
+        services.AddHttpClient<IApiHttpClient, ApiHttpClient>();
 
         return services;
     }

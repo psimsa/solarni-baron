@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SolarniBaron.Domain\SolarniBaron.Domain.csproj" />
+    <ProjectReference Include="..\SolarniBaron.Persistence\SolarniBaron.Persistence.csproj" />
   </ItemGroup>
 
 </Project>

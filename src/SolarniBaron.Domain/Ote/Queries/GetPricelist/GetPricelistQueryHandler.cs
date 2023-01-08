@@ -1,9 +1,9 @@
-﻿using System.Text.Json;
 using AngleSharp;
 using AngleSharp.Html.Dom;
 using Microsoft.Extensions.Caching.Distributed;
 using SolarniBaron.Domain.CNB.Queries.GetExchangeRate;
 using SolarniBaron.Domain.Contracts;
+using SolarniBaron.Domain.Contracts.Queries;
 using SolarniBaron.Domain.Extensions;
 
 namespace SolarniBaron.Domain.Ote.Queries.GetPricelist;
@@ -11,12 +11,12 @@ namespace SolarniBaron.Domain.Ote.Queries.GetPricelist;
 public class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery, GetPricelistQueryResponse>
 {
     private readonly IQueryHandler<GetExchangeRateQuery, GetExchangeRateQueryResponse> _getExchangeRateQueryHandler;
-    private readonly HttpClient _client;
+    private readonly IApiHttpClient _client;
     private readonly IDistributedCache _cache;
 
     public GetPricelistQueryHandler(
         IQueryHandler<GetExchangeRateQuery, GetExchangeRateQueryResponse> getExchangeRateQueryHandler,
-        HttpClient client, IDistributedCache cache)
+        IApiHttpClient client, IDistributedCache cache)
     {
         _getExchangeRateQueryHandler = getExchangeRateQueryHandler;
         _client = client;
@@ -25,22 +25,17 @@ public class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery, GetPric
 
     public async Task<GetPricelistQueryResponse> Get(IQuery<GetPricelistQuery, GetPricelistQueryResponse> query)
     {
-        var tr = await _cache.GetOrCreateAsync($"pricelist-{query.Query.Date:yyyy-MM-dd}",
+        var getPricelistQuery = query.Data ?? throw new ArgumentException("Invalid query type");
+        var queryResponse = await _cache.GetOrCreateAsync($"pricelist-{getPricelistQuery.Date:yyyy-MM-dd}",
             async () =>
             {
-                var exchangeRateResponse = await _cache.GetOrCreateAsync($"exchangeRate-{query.Query.Date:yyyy-MM-dd}",
-                    async () =>
-                    {
-                        var exchangeRateQuery = new GetExchangeRateQuery(query.Query.Date);
-                        var exchangeRateQueryResponse = await _getExchangeRateQueryHandler.Get(exchangeRateQuery);
-                        return exchangeRateQueryResponse;
-                    });
+                var exchangeRateQuery = new GetExchangeRateQuery(getPricelistQuery.Date);
+                var exchangeRateQueryResponse = await _getExchangeRateQueryHandler.Get(exchangeRateQuery);
 
-                var exchangeRate = exchangeRateResponse.Rate;
+                var exchangeRate = exchangeRateQueryResponse.Rate;
 
-                var baseUrl = "https://www.ote-cr.cz/cs/kratkodobe-trhy/elektrina/denni-trh";
-                var date = query.Query.Date.ToString("yyyy-MM-dd");
-                var url = $"{baseUrl}/?date={date}";
+                var date = getPricelistQuery.Date.ToString("yyyy-MM-dd");
+                var url = $"{Constants.OteUrl}/?date={date}";
                 var content = await _client.GetStringAsync(url);
                 var config = Configuration.Default.WithDefaultLoader();
                 var context = BrowsingContext.New(config);
@@ -80,6 +75,6 @@ public class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery, GetPric
                     new GetPricelistQueryResponse(ResponseStatus.Ok, data.ToArray(), exchangeRate);
                 return getPricelistQueryResponse;
             });
-        return tr;
+        return queryResponse ?? GetPricelistQueryResponse.Empty();
     }
 }
