@@ -2,6 +2,8 @@ using Microsoft.Extensions.Caching.Distributed;
 using Moq;
 using SolarniBaron.Domain.CNB.Queries.GetExchangeRate;
 using System.Net.Http;
+using System.Text;
+using System.Text.Json;
 using TestHelpers.TestData;
 
 namespace SolarniBaron.Domain.Tests;
@@ -30,6 +32,22 @@ public class GetExchangeRateQueryHandlerShould
 
         Assert.NotNull(response);
         _httpClientMock.VerifyAll();
+        _cacheMock.VerifyAll();
+        Assert.Equal(24.520m, response.Rate);
+    }
+
+    [Fact]
+    public async Task GetExchangeRateFromCache()
+    {
+        var cachedValue = new GetExchangeRateQueryResponse(24.520m);
+        _cacheMock.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(cachedValue))).Verifiable();
+        _httpClientMock.Setup(x => x.GetStringAsync(It.IsAny<string>())).ThrowsAsync(new NotImplementedException()).Verifiable();
+        var handler = new GetExchangeRateQueryHandler(_httpClientMock.Object, _cacheMock.Object);
+        var response = await handler.Get(new GetExchangeRateQuery(new DateOnly(2022, 10, 10)));
+
+        Assert.NotNull(response);
+        _httpClientMock.VerifyNoOtherCalls();
+
         _cacheMock.VerifyAll();
         Assert.Equal(24.520m, response.Rate);
     }

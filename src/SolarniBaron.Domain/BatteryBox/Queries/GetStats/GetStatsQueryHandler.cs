@@ -29,7 +29,7 @@ public class GetStatsQueryHandler : IQueryHandler<GetStatsQuery, GetStatsQueryRe
 
         var cacheKey = $"bbstats-{username}-{password}-{unitId ?? string.Empty}";
 
-        var cachedItem = _cache.Get(cacheKey);
+        var cachedItem = await _cache.GetAsync(cacheKey);
         if (cachedItem is not null)
         {
             _logger.LogCacheHit();
