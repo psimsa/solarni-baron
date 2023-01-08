@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using SolarniBaron.Domain.BatteryBox.Models;
 using SolarniBaron.Domain.BatteryBox.Queries.GetStats;
@@ -6,6 +7,13 @@ using SolarniBaron.Domain.Contracts.Queries;
 using SolarniBaron.Domain.Extensions;
 using SolarniBaron.Domain.Ote.Queries.GetPricelist;
 using SolarniBaron.Persistence;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using SolarniBaron.Api;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.IdentityModel.Logging;
+
+IdentityModelEventSource.ShowPII = true;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +30,10 @@ builder.Services.AddPersistence();
 builder.Services.AddHttpClient();
 builder.Services.AddDistributedMemoryCache();
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
+
+builder.Services.AddAuthorization();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -33,9 +45,13 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 // app.MapControllers();
+
+app.MapGet("api/protected", () => Results.Ok("hello world"))
+    .RequireAuthorization();
 
 app.MapGet("/healthz", () => Results.Text("OK"));
 

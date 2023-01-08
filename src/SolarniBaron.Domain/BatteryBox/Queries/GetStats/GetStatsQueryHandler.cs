@@ -39,7 +39,7 @@ public class GetStatsQueryHandler : IQueryHandler<GetStatsQuery, GetStatsQueryRe
         _logger.LogCacheNotHit();
 
         var fromApi = await _dataConnector.GetStatsForUnit(username, password, unitId);
-        var stats = BatteryBoxStatus.FromBatteryBoxUnitData(fromApi);
+        var stats = BatteryBoxStatus.FromBatteryBoxUnitData(fromApi, unitId);
 
         var nextRefresh = stats.LastCall.AddSeconds(110) - DateTime.Now;
         nextRefresh = nextRefresh.TotalSeconds > 9 ? nextRefresh : TimeSpan.FromSeconds(9);
