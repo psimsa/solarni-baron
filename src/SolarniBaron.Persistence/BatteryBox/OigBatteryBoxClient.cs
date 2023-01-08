@@ -2,6 +2,7 @@ using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.Logging;
+using SolarniBaron.Domain;
 using SolarniBaron.Domain.BatteryBox;
 using SolarniBaron.Domain.BatteryBox.Models;
 
@@ -9,7 +10,7 @@ namespace SolarniBaron.Persistence.BatteryBox;
 
 public partial class OigBatteryBoxClient : IBatteryBoxClient
 {
-    private readonly HttpClient _client;
+    private readonly IApiHttpClient _client;
     private readonly ILogger<OigBatteryBoxClient> _logger;
 
     [LoggerMessage(1150, LogLevel.Debug, "Attempting to login...")]
@@ -24,7 +25,7 @@ public partial class OigBatteryBoxClient : IBatteryBoxClient
     [LoggerMessage(1351, LogLevel.Error, "Api call failed with code {code} and response {apiReponseString}")]
     public partial void LogApiCallFailed(int code, string apiReponseString);
 
-    public OigBatteryBoxClient(HttpClient client, ILogger<OigBatteryBoxClient> logger)
+    public OigBatteryBoxClient(IApiHttpClient client, ILogger<OigBatteryBoxClient> logger)
     {
         _client = client;
         _logger = logger;

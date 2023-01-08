@@ -1,11 +1,15 @@
-namespace SolarniBaron.Persistence.Tests
-{
-    public class UnitTest1
-    {
-        [Fact]
-        public void Test1()
-        {
+namespace SolarniBaron.Persistence.Tests;
 
-        }
+public class OigBatteryBoxClientShould
+{
+    public OigBatteryBoxClientShould()
+    {
+
+    }
+    
+    [Fact]
+    public void Construct()
+    {
+
     }
 }

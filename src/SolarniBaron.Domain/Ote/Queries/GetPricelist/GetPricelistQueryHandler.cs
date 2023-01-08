@@ -11,12 +11,12 @@ namespace SolarniBaron.Domain.Ote.Queries.GetPricelist;
 public class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery, GetPricelistQueryResponse>
 {
     private readonly IQueryHandler<GetExchangeRateQuery, GetExchangeRateQueryResponse> _getExchangeRateQueryHandler;
-    private readonly HttpClient _client;
+    private readonly IApiHttpClient _client;
     private readonly IDistributedCache _cache;
 
     public GetPricelistQueryHandler(
         IQueryHandler<GetExchangeRateQuery, GetExchangeRateQueryResponse> getExchangeRateQueryHandler,
-        HttpClient client, IDistributedCache cache)
+        IApiHttpClient client, IDistributedCache cache)
     {
         _getExchangeRateQueryHandler = getExchangeRateQueryHandler;
         _client = client;

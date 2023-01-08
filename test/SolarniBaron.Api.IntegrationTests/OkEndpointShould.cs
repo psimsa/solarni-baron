@@ -1,4 +1,6 @@
-﻿namespace SolarniBaron.Api.IntegrationTests;
+﻿using System.Net.Http.Json;
+
+namespace SolarniBaron.Api.IntegrationTests;
 
 public class OkEndpointShould
 {

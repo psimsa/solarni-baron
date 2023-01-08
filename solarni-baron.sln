@@ -30,6 +30,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolarniBaron.Persistence.Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolarniBaron.Domain.Tests", "test\SolarniBaron.Domain.Tests\SolarniBaron.Domain.Tests.csproj", "{5551895D-0DFF-428B-B6E7-92E25A0C3E87}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestHelpers", "test\TestHelpers\TestHelpers.csproj", "{172BE558-6161-4207-BEB7-6C6260E65BA1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -64,6 +66,10 @@ Global
 		{5551895D-0DFF-428B-B6E7-92E25A0C3E87}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5551895D-0DFF-428B-B6E7-92E25A0C3E87}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5551895D-0DFF-428B-B6E7-92E25A0C3E87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{172BE558-6161-4207-BEB7-6C6260E65BA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{172BE558-6161-4207-BEB7-6C6260E65BA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{172BE558-6161-4207-BEB7-6C6260E65BA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{172BE558-6161-4207-BEB7-6C6260E65BA1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -76,6 +82,7 @@ Global
 		{AADB8456-E570-4D65-9E55-2A7F0A3234BD} = {9DA209FC-896B-4320-8EAD-1F51486D8383}
 		{48CEA2AF-8C56-4F0E-A482-958D239D9546} = {5FD01C16-ED92-4D53-8C3B-712F9BEC0F95}
 		{5551895D-0DFF-428B-B6E7-92E25A0C3E87} = {5FD01C16-ED92-4D53-8C3B-712F9BEC0F95}
+		{172BE558-6161-4207-BEB7-6C6260E65BA1} = {5FD01C16-ED92-4D53-8C3B-712F9BEC0F95}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {22D3069A-09E9-4308-B98B-77C191F66495}
