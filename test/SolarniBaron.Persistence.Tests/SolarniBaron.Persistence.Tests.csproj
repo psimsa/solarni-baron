@@ -27,6 +27,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\SolarniBaron.Domain\SolarniBaron.Domain.csproj" />
     <ProjectReference Include="..\..\src\SolarniBaron.Persistence\SolarniBaron.Persistence.csproj" />
+    <ProjectReference Include="..\TestHelpers\TestHelpers.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,10 +1,14 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Net;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
+using System.Security.Authentication;
+using System.Text.Json.Nodes;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-
 using Moq;
-
 using SolarniBaron.Domain;
 using SolarniBaron.Persistence.BatteryBox;
+using TestHelpers.TestData;
 
 namespace SolarniBaron.Persistence.Tests;
 
@@ -26,12 +30,58 @@ public class OigBatteryBoxClientShould
     [Fact]
     public async Task GetRawStats()
     {
-        Assert.True(false, "This test needs an implementation");
+        SetupValidAuthentication(_apiHttpClientMock);
+        _apiHttpClientMock.Setup(_ => _.GetAsync(It.IsAny<string>())).ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new StringContent(OigResponses.GetRawStatsResponse, new MediaTypeHeaderValue("application/json"))
+        });
+
+        var client = new OigBatteryBoxClient(_apiHttpClientMock.Object, NullLogger<OigBatteryBoxClient>.Instance);
+        var rawStats = await client.GetRawStats("hello", "world");
+        Assert.Equal(OigResponses.GetRawStatsResponse, rawStats);
+    }
+
+    [Fact]
+    public async Task Throw_IfAuthenticationFails()
+    {
+        SetupInvalidAuthentication(_apiHttpClientMock);
+        var client = new OigBatteryBoxClient(_apiHttpClientMock.Object, NullLogger<OigBatteryBoxClient>.Instance);
+        await Assert.ThrowsAsync<AuthenticationException>(() => client.GetRawStats("hello", "world"));
     }
 
     [Fact]
     public async Task SetMode()
     {
-        Assert.True(false, "This test needs an implementation");
+        SetupValidAuthentication(_apiHttpClientMock);
+        _apiHttpClientMock.Setup(_ => _.PostAsync(It.IsAny<string>(), It.IsAny<HttpContent>())).ReturnsAsync(
+            (string url, HttpContent content) =>
+            {
+                var data = content.ReadFromJsonAsync<JsonNode>().Result;
+                if (data!["value"]?.ToString() == "1"
+                    && data["id_device"]?.ToString() == "asdf"
+                    && data["table"]?.ToString() == "box_prms"
+                    && data["column"]?.ToString() == "mode")
+                {
+                    return new HttpResponseMessage() { StatusCode = HttpStatusCode.OK, Content = new StringContent("Ok") };
+                }
+                throw new ArgumentException(nameof(content));
+            });
+
+        var client = new OigBatteryBoxClient(_apiHttpClientMock.Object, NullLogger<OigBatteryBoxClient>.Instance);
+        var (result, message) = await client.SetMode("hello", "world", "asdf", "1");
+        Assert.True(result);
+        Assert.Null(message);
+    }
+
+    private void SetupValidAuthentication(Mock<IApiHttpClient> client)
+    {
+        client.Setup(_ => _.SendAsync(It.IsAny<HttpRequestMessage>()))
+            .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent("Here be dragons") });
+    }
+
+    private void SetupInvalidAuthentication(Mock<IApiHttpClient> client)
+    {
+        client.Setup(_ => _.SendAsync(It.IsAny<HttpRequestMessage>()))
+            .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent("") });
     }
 }

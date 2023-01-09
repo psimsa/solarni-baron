@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Headers;
+using System.Security.Authentication;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.Logging;
@@ -92,7 +93,7 @@ public partial class OigBatteryBoxClient : IBatteryBoxClient
         if (loginInfoResponse.Content.Headers.ContentLength == 0)
         {
             LogLoginFailed();
-            throw new Exception();
+            throw new AuthenticationException("Could not authenticate with OIG server");
         }
 
         var loginInfoResponseContent = await loginInfoResponse.Content.ReadAsStringAsync();
