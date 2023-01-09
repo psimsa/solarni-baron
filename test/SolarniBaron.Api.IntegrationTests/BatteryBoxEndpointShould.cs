@@ -1,6 +1,7 @@
 ﻿namespace SolarniBaron.Api.IntegrationTests;
 
-public class BatteryBoxEndpointShould {
+public class BatteryBoxEndpointShould
+{
     [Fact]
     public async Task GetStats()
     {
