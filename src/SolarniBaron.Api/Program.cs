@@ -1,5 +1,12 @@
+﻿using System.Text;
+
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Logging;
+using Microsoft.IdentityModel.Tokens;
+
+using SolarniBaron.Api;
 using SolarniBaron.Domain.BatteryBox.Models;
 using SolarniBaron.Domain.BatteryBox.Queries.GetStats;
 using SolarniBaron.Domain.Contracts;
@@ -7,11 +14,6 @@ using SolarniBaron.Domain.Contracts.Queries;
 using SolarniBaron.Domain.Extensions;
 using SolarniBaron.Domain.Ote.Queries.GetPricelist;
 using SolarniBaron.Persistence;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using SolarniBaron.Api;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using Microsoft.IdentityModel.Logging;
 
 IdentityModelEventSource.ShowPII = true;
 

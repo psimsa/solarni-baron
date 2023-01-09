@@ -1,10 +1,14 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
+﻿using System.Text.Json;
+
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.DependencyInjection;
+
 using Moq;
+
 using SolarniBaron.Domain;
 using SolarniBaron.Domain.Contracts;
 using SolarniBaron.Domain.Ote.Queries.GetPricelist;
-using System.Text.Json;
+
 using TestHelpers.TestData;
 
 namespace SolarniBaron.Api.IntegrationTests;
@@ -20,7 +24,7 @@ public class GetPricelistEndpointShould
     {
         _apiClientMock = new Mock<IApiHttpClient>();
         _cacheMock = new Mock<IDistributedCache>();
-        
+
         _client = TestHostBuilder.GetClient(services =>
         {
             services.AddSingleton(_apiClientMock.Object);

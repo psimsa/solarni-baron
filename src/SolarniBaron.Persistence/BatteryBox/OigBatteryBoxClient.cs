@@ -1,7 +1,9 @@
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+
 using Microsoft.Extensions.Logging;
+
 using SolarniBaron.Domain;
 using SolarniBaron.Domain.BatteryBox;
 using SolarniBaron.Domain.BatteryBox.Models;
@@ -57,7 +59,7 @@ public partial class OigBatteryBoxClient : IBatteryBoxClient
         var responseBody = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode)
         {
-            LogApiCallFailed((int) response.StatusCode, responseBody);
+            LogApiCallFailed((int)response.StatusCode, responseBody);
             return (false, responseBody);
         }
 
@@ -68,9 +70,14 @@ public partial class OigBatteryBoxClient : IBatteryBoxClient
     private async Task AuthenticateClient(string username, string password)
     {
         if (string.IsNullOrWhiteSpace(username))
+        {
             throw new ArgumentException("Username must be provided", nameof(username));
+        }
+
         if (string.IsNullOrWhiteSpace(password))
+        {
             throw new ArgumentException("Password must be provided", nameof(password));
+        }
 
         _client.BaseAddress = new Uri(Constants.baseUrl);
 

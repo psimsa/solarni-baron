@@ -1,4 +1,4 @@
-namespace SolarniBaron.Domain.Contracts.Commands;
+﻿namespace SolarniBaron.Domain.Contracts.Commands;
 
 public interface ICommandHandler<TCommand, TResponse> where TCommand : class, ICommand<TCommand, TResponse>
 {

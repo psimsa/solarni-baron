@@ -1,4 +1,4 @@
-using SolarniBaron.Domain.Contracts;
+﻿using SolarniBaron.Domain.Contracts;
 
 namespace SolarniBaron.Domain.BatteryBox.Commands.SetMode;
 

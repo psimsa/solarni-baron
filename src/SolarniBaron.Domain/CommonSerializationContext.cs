@@ -1,5 +1,7 @@
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
+
 using Microsoft.Extensions.Logging;
+
 using SolarniBaron.Domain.BatteryBox.Models;
 using SolarniBaron.Domain.BatteryBox.Models.BatteryBox;
 using SolarniBaron.Domain.Contracts;
@@ -16,12 +18,13 @@ public partial class CommonSerializationContext : JsonSerializerContext
 {
 }
 
-public interface IApiHttpClient : IDisposable {
+public interface IApiHttpClient : IDisposable
+{
     Uri BaseAddress { get; set; }
     Task<HttpResponseMessage> GetAsync(string url);
     Task<HttpResponseMessage> PostAsync(string url, HttpContent content);
     Task<HttpResponseMessage> SendAsync(HttpRequestMessage message);
-        Task<string> GetStringAsync(string url);
+    Task<string> GetStringAsync(string url);
 }
 public class ApiHttpClient : IApiHttpClient
 {

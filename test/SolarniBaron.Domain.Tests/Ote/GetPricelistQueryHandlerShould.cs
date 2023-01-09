@@ -1,10 +1,14 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
+﻿using System.Text;
+using System.Text.Json;
+
+using Microsoft.Extensions.Caching.Distributed;
+
 using Moq;
+
 using SolarniBaron.Domain.CNB.Queries.GetExchangeRate;
 using SolarniBaron.Domain.Contracts.Queries;
 using SolarniBaron.Domain.Ote.Queries.GetPricelist;
-using System.Text;
-using System.Text.Json;
+
 using TestHelpers;
 using TestHelpers.TestData;
 
@@ -52,14 +56,14 @@ public class GetPricelistQueryHandlerShould
             () => Assert.Equal(1926.53640m, responseItems[0].RateCzk),
             () => Assert.Equal(2226.53640m, responseItems[0].WithSurchargeCzk),
             () => Assert.Equal(467.572644m, responseItems[0].VatCzk),
-            () => Assert.Equal(2694.109044m, responseItems[0].TotalCzk)                                                    
+            () => Assert.Equal(2694.109044m, responseItems[0].TotalCzk)
             );
     }
 
     [Fact]
     public async Task GetPricelistFromCache()
     {
-        var cachedValue = new GetPricelistQueryResponse(Contracts.ResponseStatus.Ok, new[] {new GetPricelistQueryResponseItem(1, 2, 3, 4, 5, 6)}, 10.001m);
+        var cachedValue = new GetPricelistQueryResponse(Contracts.ResponseStatus.Ok, new[] { new GetPricelistQueryResponseItem(1, 2, 3, 4, 5, 6) }, 10.001m);
         _cacheMock.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(cachedValue))).Verifiable();
         _httpClientMock.Setup(x => x.GetStringAsync(It.IsAny<string>())).ThrowsAsync(new NotImplementedException()).Verifiable();
 

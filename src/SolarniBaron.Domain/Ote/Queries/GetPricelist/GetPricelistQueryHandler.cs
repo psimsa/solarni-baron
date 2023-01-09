@@ -1,6 +1,8 @@
-using AngleSharp;
+﻿using AngleSharp;
 using AngleSharp.Html.Dom;
+
 using Microsoft.Extensions.Caching.Distributed;
+
 using SolarniBaron.Domain.CNB.Queries.GetExchangeRate;
 using SolarniBaron.Domain.Contracts;
 using SolarniBaron.Domain.Contracts.Queries;

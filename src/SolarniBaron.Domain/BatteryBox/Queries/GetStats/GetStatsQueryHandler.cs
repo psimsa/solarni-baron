@@ -1,6 +1,8 @@
-using System.Text.Json;
+﻿using System.Text.Json;
+
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
+
 using SolarniBaron.Domain.BatteryBox.Models;
 using SolarniBaron.Domain.Contracts.Queries;
 using SolarniBaron.Domain.Extensions;

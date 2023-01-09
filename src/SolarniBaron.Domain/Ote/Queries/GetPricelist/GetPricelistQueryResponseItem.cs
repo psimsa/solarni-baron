@@ -1,4 +1,4 @@
-namespace SolarniBaron.Domain.Ote.Queries.GetPricelist;
+﻿namespace SolarniBaron.Domain.Ote.Queries.GetPricelist;
 
 public record GetPricelistQueryResponseItem(int Hour, decimal RateEur, decimal RateCzk,
     decimal WithSurchargeCzk, decimal VatCzk, decimal TotalCzk)

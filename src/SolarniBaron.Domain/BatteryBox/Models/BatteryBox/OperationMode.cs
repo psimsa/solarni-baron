@@ -1,4 +1,4 @@
-namespace SolarniBaron.Domain.BatteryBox.Models.BatteryBox;
+﻿namespace SolarniBaron.Domain.BatteryBox.Models.BatteryBox;
 
 public enum OperationMode
 {
