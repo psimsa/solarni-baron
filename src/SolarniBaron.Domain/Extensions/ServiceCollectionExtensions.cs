@@ -23,8 +23,6 @@ public static class ServiceCollectionExtensions
 
         services.AddTransient<IBatteryBoxDataConnector, OigDataConnector>();
 
-        services.AddHttpClient<IApiHttpClient, ApiHttpClient>();
-
         return services;
     }
 }
