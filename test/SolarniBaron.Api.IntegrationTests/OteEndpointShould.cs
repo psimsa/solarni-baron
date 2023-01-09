@@ -13,14 +13,14 @@ using TestHelpers.TestData;
 
 namespace SolarniBaron.Api.IntegrationTests;
 
-public class GetPricelistEndpointShould
+public class OteEndpointShould
 {
     private readonly HttpClient _client;
     private readonly Mock<IApiHttpClient> _apiClientMock;
     private readonly Mock<IDistributedCache> _cacheMock;
 
 
-    public GetPricelistEndpointShould()
+    public OteEndpointShould()
     {
         _apiClientMock = new Mock<IApiHttpClient>();
         _cacheMock = new Mock<IDistributedCache>();
@@ -33,7 +33,7 @@ public class GetPricelistEndpointShould
     }
 
     [Fact]
-    public async Task ReturnPricelist()
+    public async Task ReturnPricelist_GivenDate()
     {
         _cacheMock.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(null as byte[]).Verifiable();
         _apiClientMock.Setup(x => x.GetStringAsync("https://www.cnb.cz/cs/financni-trhy/devizovy-trh/kurzy-devizoveho-trhu/kurzy-devizoveho-trhu/denni_kurz.txt?date=10.10.2022")).ReturnsAsync(CnbResponses.ValidExchangeRateResponse).Verifiable();

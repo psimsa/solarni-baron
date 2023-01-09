@@ -2,11 +2,11 @@
 
 namespace SolarniBaron.Api.IntegrationTests;
 
-public class OkEndpointShould
+public class HealthzEndpointShould
 {
     private readonly HttpClient _client;
 
-    public OkEndpointShould()
+    public HealthzEndpointShould()
     {
         _client = TestHostBuilder.GetClient();
     }
