@@ -22,12 +22,14 @@ public class OigDataConnectorShould
         var connector = new OigDataConnector(_client.Object, _logger.Object);
         Assert.True(false, "This test needs an implementation");
     }
+
     [Fact]
     public async Task GetStatsForUnit()
     {
         var connector = new OigDataConnector(_client.Object, _logger.Object);
         Assert.True(false, "This test needs an implementation");
     }
+
     [Fact]
     public async Task SetMode()
     {
