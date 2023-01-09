@@ -73,6 +73,27 @@ public class OigBatteryBoxClientShould
         Assert.Null(message);
     }
 
+    [Fact]
+    public async Task NotSetMode_IfAuthenticationFails()
+    {
+        SetupInvalidAuthentication(_apiHttpClientMock);
+        var client = new OigBatteryBoxClient(_apiHttpClientMock.Object, NullLogger<OigBatteryBoxClient>.Instance);
+        await Assert.ThrowsAsync<AuthenticationException>(() =>  client.SetMode("hello", "world", "asdf", "1"));
+    }
+
+    [Fact]
+    public async Task NotSetMode_GivenInvalidMode()
+    {
+        SetupValidAuthentication(_apiHttpClientMock);
+        _apiHttpClientMock.Setup(_ => _.PostAsync(It.IsAny<string>(), It.IsAny<HttpContent>())).ReturnsAsync(
+             new HttpResponseMessage() { StatusCode = HttpStatusCode.BadRequest, Content = new StringContent("Something wrong happened") });
+
+        var client = new OigBatteryBoxClient(_apiHttpClientMock.Object, NullLogger<OigBatteryBoxClient>.Instance);
+        var (result, message) = await client.SetMode("hello", "world", "asdf", "4");
+        Assert.False(result);
+        Assert.Equal("Something wrong happened", message);
+    }
+
     private void SetupValidAuthentication(Mock<IApiHttpClient> client)
     {
         client.Setup(_ => _.SendAsync(It.IsAny<HttpRequestMessage>()))

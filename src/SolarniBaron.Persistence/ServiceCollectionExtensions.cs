@@ -9,7 +9,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddPersistence(this IServiceCollection services)
     {
-        services.AddHttpClient<IBatteryBoxClient, OigBatteryBoxClient>();
+        services.AddTransient<IBatteryBoxClient, OigBatteryBoxClient>();
         services.AddHttpClient<IApiHttpClient, ApiHttpClient>();
 
         return services;
