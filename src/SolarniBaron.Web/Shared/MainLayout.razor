@@ -1,0 +1,38 @@
+﻿@inherits LayoutComponentBase
+@inject HttpClient Http
+
+
+<PageTitle>@Title</PageTitle>
+
+<div class="page">
+    @*    <div class="sidebar">
+        <NavMenu />
+    </div>*@
+
+    <main>
+        @*
+        <div class="top-row px-4">
+            <a href="https://docs.microsoft.com/aspnet/" target="_blank">Hello</a>
+        </div>*@
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+<UpdateAvailableDetector/>
+
+@code{
+    public string Title { get; set; } = "ČBB";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var manifest = await Http.GetFromJsonAsync<Manifest>("/manifest.json");
+        Title = $"{manifest?.short_name} {manifest?.version}";
+
+    // StateHasChanged();
+    }
+
+    record Manifest(string version, string short_name);
+
+}

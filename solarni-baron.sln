@@ -39,6 +39,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		.github\workflows\codeql.yml = .github\workflows\codeql.yml
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolarniBaron.Web", "src\SolarniBaron.Web\SolarniBaron.Web.csproj", "{8ED6788A-0E5C-467C-A6E6-FB35E8918ACA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,6 +79,10 @@ Global
 		{172BE558-6161-4207-BEB7-6C6260E65BA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{172BE558-6161-4207-BEB7-6C6260E65BA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{172BE558-6161-4207-BEB7-6C6260E65BA1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8ED6788A-0E5C-467C-A6E6-FB35E8918ACA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8ED6788A-0E5C-467C-A6E6-FB35E8918ACA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8ED6788A-0E5C-467C-A6E6-FB35E8918ACA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8ED6788A-0E5C-467C-A6E6-FB35E8918ACA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -91,6 +97,7 @@ Global
 		{5551895D-0DFF-428B-B6E7-92E25A0C3E87} = {5FD01C16-ED92-4D53-8C3B-712F9BEC0F95}
 		{172BE558-6161-4207-BEB7-6C6260E65BA1} = {5FD01C16-ED92-4D53-8C3B-712F9BEC0F95}
 		{4AF65C04-8A4D-4087-8475-4C113EE78D47} = {80EFBFB9-DBF9-4BAD-B450-250E8DA115A1}
+		{8ED6788A-0E5C-467C-A6E6-FB35E8918ACA} = {9DA209FC-896B-4320-8EAD-1F51486D8383}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {22D3069A-09E9-4308-B98B-77C191F66495}

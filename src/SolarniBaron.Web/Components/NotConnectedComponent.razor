@@ -1,0 +1,15 @@
+﻿<div class="alert alert-warning">
+    Nejste připojeni k internetu nebo nejste přihlášeni.
+    <button class="btn btn-outline-primary" @onclick="GoToLogin">Přihlásit</button>
+    <button class="btn btn-outline-primary" @onclick="RefreshPage">Načíst znovu</button>
+</div>
+
+@code {
+
+    [Parameter]
+    public EventCallback GoToLogin { get; set; }
+
+    [Parameter]
+    public EventCallback RefreshPage { get; set; }
+
+}
