@@ -40,4 +40,4 @@ jobs:
         tags: kodiak.azurecr.io/fve/solarni-baron:${{env.VERSION}},kodiak.azurecr.io/fve/solarni-baron:latest
         file: ./src/SolarniBaron.Api/Dockerfile
         context: .
-        # platforms: linux/amd64,linux/arm64
+        platforms: linux/amd64,linux/arm64
