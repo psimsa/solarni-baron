@@ -32,9 +32,18 @@ builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
 
+builder.Services.AddCors();
+
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
+
+app.UseCors(cp =>
+{
+    cp.AllowAnyHeader();
+    cp.AllowAnyMethod();
+    cp.WithOrigins("https://cbb.simsa.cz", "http://localhost:5121", "https://localhost:7129");
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
