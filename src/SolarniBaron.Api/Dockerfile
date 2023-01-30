@@ -12,7 +12,7 @@ COPY ["src/SolarniBaron.Persistence/SolarniBaron.Persistence.csproj", "src/Solar
 COPY ["src/SolarniBaron.Domain/SolarniBaron.Domain.csproj", "src/SolarniBaron.Domain/"]
 RUN dotnet restore "src/SolarniBaron.Api/SolarniBaron.Api.csproj"
 COPY . .
-WORKDIR "/src/src/SolarniBaron.Api"
+WORKDIR "/src/SolarniBaron.Api"
 RUN dotnet build "SolarniBaron.Api.csproj" -c Release -o /app/build
 
 FROM build AS publish
