@@ -93,7 +93,7 @@
         string url = "/api/batterybox/getstats";
         try
         {
-            var checkLocalUrl = await Http.PostAsync(url, JsonContent.Create(LoginInfo), token);
+            var checkLocalUrl = await Http.PostAsync(Config.LocalGetStatsUrl, JsonContent.Create(LoginInfo), token);
             if (checkLocalUrl.IsSuccessStatusCode)
             {
                 url = Config.LocalGetStatsUrl;
