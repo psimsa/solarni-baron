@@ -109,11 +109,11 @@
         {
             try
             {
-                if (ShowOfflineLogin)
+                /*if (ShowOfflineLogin)
                 {
                     await Task.Delay(TimeSpan.FromSeconds(10), token);
                     continue;
-                }
+                }*/
                 _progressHidden = false;
                 StateHasChanged();
                 var response = await Http.PostAsync(url, JsonContent.Create(LoginInfo), token);
