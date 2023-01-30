@@ -4,7 +4,7 @@
 @inject HttpClient Http
 @inject NavigationManager Navigation
 @inject LocalStorage Storage
-@inject ClientConfig Config 
+@inject ClientConfig Config
 
 @if (ShowOfflineLogin)
 {
@@ -80,9 +80,9 @@
     protected override async Task OnInitializedAsync()
     {
         LoginInfo = await Storage.GetItem<LoginInfo>("loginInfo") ?? LoginInfo.Empty;
-        
+
         _refresher = UpdateTask(_cancellationTokenSource.Token);
-        
+
         ShowOfflineLogin = false;
         CurrentStatus = await Storage.GetItem<BatteryBoxStatus>("status") ?? DefaultStatus();
     }
@@ -109,11 +109,16 @@
         {
             try
             {
+                if (ShowOfflineLogin)
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(10), token);
+                    continue;
+                }
                 _progressHidden = false;
                 StateHasChanged();
                 var response = await Http.PostAsync(url, JsonContent.Create(LoginInfo), token);
                 response.EnsureSuccessStatusCode();
-                
+
                 var messageResponse = await response.Content.ReadFromJsonAsync(CommonSerializationContext.Default.BatteryBoxStatus, _cancellationTokenSource.Token);
                 if (messageResponse != null)
                 {

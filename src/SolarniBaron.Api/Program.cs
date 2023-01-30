@@ -56,15 +56,15 @@ app.MapGet("api/protected", () => Results.Ok("hello world"))
 app.MapGet("/healthz", () => Results.Text("OK"));
 
 app.MapGet("api/ote/{date?}",
-        async (DateOnly? date, IQueryHandler<GetPricelistQuery, GetPricelistQueryResponse> query) =>
+        async (DateOnly? date, IQueryHandler<GetPricelistQuery, GetPricelistQueryResponse> queryHandler) =>
         {
-            var result = await query.Get(new GetPricelistQuery(date ?? DateOnly.FromDateTime(DateTime.Now)));
-            if (result.Status == ResponseStatus.Error)
+            var result = await queryHandler.Get(new GetPricelistQuery(date ?? DateOnly.FromDateTime(DateTime.Now)));
+            if (result.ResponseStatus == ResponseStatus.Error)
             {
                 return Results.NotFound();
             }
 
-            var response = new ApiResponse<GetPricelistQueryResponse>(result, result.Status, "");
+            var response = new ApiResponse<GetPricelistQueryResponse>(result, result.ResponseStatus, "");
             return Results.Ok(response);
         })
     .WithName("GetPricelist")
@@ -88,10 +88,10 @@ app.MapPost("api/batterybox/getstats",
     .WithOpenApi();
 
 app.MapPost("api/batterybox/setmode",
-        async ([FromBody] SetModeInfo setModeInfo, ICommandHandler<SetModeCommand, SetModeCommandResponse> queryHandler,
+        async ([FromBody] SetModeInfo setModeInfo, ICommandHandler<SetModeCommand, SetModeCommandResponse> commandHandler,
             ILogger<Program> logger) =>
         {
-            var data = await queryHandler.Execute(new SetModeCommand(setModeInfo.Email, setModeInfo.Password, setModeInfo.UnitId,
+            var data = await commandHandler.Execute(new SetModeCommand(setModeInfo.Email, setModeInfo.Password, setModeInfo.UnitId,
                 setModeInfo.Mode));
             if (data.ResponseStatus == ResponseStatus.Error)
             {
