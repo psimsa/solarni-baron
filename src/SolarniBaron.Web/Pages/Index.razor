@@ -4,7 +4,7 @@
 @inject HttpClient Http
 @inject NavigationManager Navigation
 @inject LocalStorage Storage
-@inject ClientConfig Config 
+@inject ClientConfig Config
 
 @if (ShowOfflineLogin)
 {
@@ -80,9 +80,9 @@
     protected override async Task OnInitializedAsync()
     {
         LoginInfo = await Storage.GetItem<LoginInfo>("loginInfo") ?? LoginInfo.Empty;
-        
+
         _refresher = UpdateTask(_cancellationTokenSource.Token);
-        
+
         ShowOfflineLogin = false;
         CurrentStatus = await Storage.GetItem<BatteryBoxStatus>("status") ?? DefaultStatus();
     }
@@ -93,7 +93,7 @@
         string url = "/api/batterybox/getstats";
         try
         {
-            var checkLocalUrl = await Http.GetAsync(Config.LocalGetStatsUrl, token);
+            var checkLocalUrl = await Http.PostAsync(url, JsonContent.Create(LoginInfo), token);
             if (checkLocalUrl.IsSuccessStatusCode)
             {
                 url = Config.LocalGetStatsUrl;
@@ -109,16 +109,27 @@
         {
             try
             {
+                if (ShowOfflineLogin)
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(10), token);
+                    continue;
+                }
                 _progressHidden = false;
                 StateHasChanged();
                 var response = await Http.PostAsync(url, JsonContent.Create(LoginInfo), token);
                 response.EnsureSuccessStatusCode();
-                
+
                 var messageResponse = await response.Content.ReadFromJsonAsync(CommonSerializationContext.Default.BatteryBoxStatus, _cancellationTokenSource.Token);
                 if (messageResponse != null)
                 {
                     CurrentStatus = messageResponse;
                     await Storage.SetItem("status", CurrentStatus);
+
+                    if (string.IsNullOrWhiteSpace(LoginInfo.UnitId))
+                    {
+                        LoginInfo = LoginInfo with {UnitId = messageResponse.UnitId};
+                        await Storage.SetItem("loginInfo", LoginInfo);
+                    }
                 }
                 ShowOfflineLogin = false;
             }

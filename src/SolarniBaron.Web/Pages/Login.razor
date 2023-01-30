@@ -1,4 +1,5 @@
-@page "/login"
+﻿@page "/login"
+@using System.Text.Json.Serialization
 @inject NavigationManager Navigation
 @inject LocalStorage Storage
 
@@ -13,7 +14,7 @@
     <div class="row">
         <div class="col">Heslo: </div>
         <div class="col">
-            <input @bind="_loginData.Password"/>
+            <input @bind="_loginData.Password" type="password"/>
         </div>
     </div>
     <div class="row">
@@ -27,9 +28,11 @@
 
     private LoginData _loginData = new LoginData();
 
-    private class LoginData
+    public class LoginData
     {
+        [JsonPropertyName("email")]
         public string Email { get; set; }
+        [JsonPropertyName("password")]
         public string Password { get; set; }
     }
 
@@ -37,5 +40,5 @@
     {
         await Storage.SetItem("loginInfo", _loginData);
         Navigation.NavigateTo("/", forceLoad: true);
-    }         
+    }
 }

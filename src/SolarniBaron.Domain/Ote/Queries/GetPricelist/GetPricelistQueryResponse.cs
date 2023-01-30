@@ -2,7 +2,7 @@
 
 namespace SolarniBaron.Domain.Ote.Queries.GetPricelist;
 
-public record GetPricelistQueryResponse(ResponseStatus Status, GetPricelistQueryResponseItem[] Items,
+public record GetPricelistQueryResponse(ResponseStatus ResponseStatus, GetPricelistQueryResponseItem[] Items,
     decimal ExchangeRate)
 {
     public static GetPricelistQueryResponse Empty() =>
