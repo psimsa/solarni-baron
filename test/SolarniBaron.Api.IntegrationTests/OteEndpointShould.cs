@@ -6,9 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 
 using SolarniBaron.Domain;
-using SolarniBaron.Domain.Contracts;
-using SolarniBaron.Domain.Ote.Queries.GetPricelist;
-
 using TestHelpers.TestData;
 
 namespace SolarniBaron.Api.IntegrationTests;

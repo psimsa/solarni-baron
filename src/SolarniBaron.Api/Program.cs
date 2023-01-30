@@ -1,12 +1,6 @@
-﻿using System.Text;
-
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Logging;
-using Microsoft.IdentityModel.Tokens;
-
-using SolarniBaron.Api;
 using SolarniBaron.Domain.BatteryBox.Commands.SetMode;
 using SolarniBaron.Domain.BatteryBox.Models;
 using SolarniBaron.Domain.BatteryBox.Queries.GetStats;
@@ -73,8 +67,7 @@ app.MapGet("api/ote/{date?}",
         })
     .WithName("GetPricelist")
     .Produces<ApiResponse<GetPricelistQueryResponse>>()
-    .WithOpenApi()
-    ;
+    .WithOpenApi();
 
 app.MapPost("api/batterybox/getstats",
         async ([FromBody] LoginInfo loginInfo, IQueryHandler<GetStatsQuery, GetStatsQueryResponse> queryHandler, ILogger<Program> logger) =>
@@ -93,9 +86,11 @@ app.MapPost("api/batterybox/getstats",
     .WithOpenApi();
 
 app.MapPost("api/batterybox/setmode",
-        async ([FromBody] SetModeInfo setModeInfo, ICommandHandler<SetModeCommand, SetModeCommandResponse> queryHandler, ILogger<Program> logger) =>
+        async ([FromBody] SetModeInfo setModeInfo, ICommandHandler<SetModeCommand, SetModeCommandResponse> queryHandler,
+            ILogger<Program> logger) =>
         {
-            var data = await queryHandler.Execute(new SetModeCommand(setModeInfo.Email, setModeInfo.Password, setModeInfo.UnitId, setModeInfo.Mode));
+            var data = await queryHandler.Execute(new SetModeCommand(setModeInfo.Email, setModeInfo.Password, setModeInfo.UnitId,
+                setModeInfo.Mode));
             if (data.ResponseStatus == ResponseStatus.Error)
             {
                 logger.LogError(data.Error);
@@ -112,5 +107,7 @@ app.Run();
 
 namespace SolarniBaron.Api
 {
-    public partial class Program { }
+    public partial class Program
+    {
+    }
 }

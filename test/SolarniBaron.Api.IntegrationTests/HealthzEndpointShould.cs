@@ -1,6 +1,4 @@
-﻿using System.Net.Http.Json;
-
-namespace SolarniBaron.Api.IntegrationTests;
+﻿namespace SolarniBaron.Api.IntegrationTests;
 
 public class HealthzEndpointShould
 {
