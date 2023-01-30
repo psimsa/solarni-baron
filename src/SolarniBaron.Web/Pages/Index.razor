@@ -69,6 +69,7 @@
 
 @code {
     private BatteryBoxStatus CurrentStatus { get; set; } = DefaultStatus();
+    private LoginInfo LoginInfo { get; set; }
     private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
     private bool _progressHidden = false;
 
@@ -78,7 +79,10 @@
 
     protected override async Task OnInitializedAsync()
     {
+        LoginInfo = await Storage.GetItem<LoginInfo>("loginInfo") ?? LoginInfo.Empty;
+        
         _refresher = UpdateTask(_cancellationTokenSource.Token);
+        
         ShowOfflineLogin = false;
         CurrentStatus = await Storage.GetItem<BatteryBoxStatus>("status") ?? DefaultStatus();
     }
@@ -86,7 +90,7 @@
     private async Task UpdateTask(CancellationToken token)
     {
         await Task.Yield();
-        string url = "/api/getstats";
+        string url = "/api/batterybox/getstats";
         try
         {
             var checkLocalUrl = await Http.GetAsync(Config.LocalGetStatsUrl, token);
@@ -132,7 +136,7 @@
 
     private void GoToLogin()
     {
-        Navigation.NavigateTo("/.auth/login/auth0", true);
+        Navigation.NavigateTo("/login", true);
     }
 
     private static BatteryBoxStatus DefaultStatus() => BatteryBoxStatus.Empty();

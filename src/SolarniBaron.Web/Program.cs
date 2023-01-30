@@ -22,7 +22,7 @@ builder.Services.AddSingleton<LocalStorage>();
 
 builder.Services.AddBlazorApplicationInsights();
 
-builder.Services.AddSingleton(new ClientConfig(clientConfig["LocalGetStatsUrl"] ?? "api/getstats"));
+builder.Services.AddSingleton(new ClientConfig(clientConfig["LocalGetStatsUrl"] ?? "api/batterybox/getstats"));
 
 builder.Services.AddScoped(sp => new HttpClient {BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)});
 
