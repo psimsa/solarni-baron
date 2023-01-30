@@ -93,7 +93,7 @@
         string url = "/api/batterybox/getstats";
         try
         {
-            var checkLocalUrl = await Http.GetAsync(Config.LocalGetStatsUrl, token);
+            var checkLocalUrl = await Http.PostAsync(url, JsonContent.Create(LoginInfo), token);
             if (checkLocalUrl.IsSuccessStatusCode)
             {
                 url = Config.LocalGetStatsUrl;
@@ -124,6 +124,12 @@
                 {
                     CurrentStatus = messageResponse;
                     await Storage.SetItem("status", CurrentStatus);
+
+                    if (string.IsNullOrWhiteSpace(LoginInfo.UnitId))
+                    {
+                        LoginInfo = LoginInfo with {UnitId = messageResponse.UnitId};
+                        await Storage.SetItem("loginInfo", LoginInfo);
+                    }
                 }
                 ShowOfflineLogin = false;
             }
