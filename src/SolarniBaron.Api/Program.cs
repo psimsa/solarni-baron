@@ -42,7 +42,7 @@ app.UseCors(cp =>
 {
     cp.AllowAnyHeader();
     cp.AllowAnyMethod();
-    cp.WithOrigins("https://cbb.simsa.cz", "http://localhost:5121", "https://localhost:7129");
+    cp.WithOrigins(app.Configuration["AllowedOrigins"]?.Split(",") ?? Array.Empty<string>());
 });
 
 // Configure the HTTP request pipeline.
