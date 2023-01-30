@@ -69,4 +69,10 @@ public class BatteryBoxEndpointShould
         var responseBody = await response.Content.ReadAsStringAsync();
         Assert.Equal("\"Could not authenticate with OIG server\"", responseBody);
     }
+
+    [Fact]
+    public async Task SetMode()
+    {
+        Assert.True(false, "Not implemented");
+    }
 }

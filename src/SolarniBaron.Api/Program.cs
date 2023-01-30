@@ -7,9 +7,11 @@ using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 
 using SolarniBaron.Api;
+using SolarniBaron.Domain.BatteryBox.Commands.SetMode;
 using SolarniBaron.Domain.BatteryBox.Models;
 using SolarniBaron.Domain.BatteryBox.Queries.GetStats;
 using SolarniBaron.Domain.Contracts;
+using SolarniBaron.Domain.Contracts.Commands;
 using SolarniBaron.Domain.Contracts.Queries;
 using SolarniBaron.Domain.Extensions;
 using SolarniBaron.Domain.Ote.Queries.GetPricelist;
@@ -57,10 +59,10 @@ app.MapGet("api/protected", () => Results.Ok("hello world"))
 
 app.MapGet("/healthz", () => Results.Text("OK"));
 
-app.MapGet("api/ote/{date}",
-        async (DateOnly date, IQueryHandler<GetPricelistQuery, GetPricelistQueryResponse> query) =>
+app.MapGet("api/ote/{date?}",
+        async (DateOnly? date, IQueryHandler<GetPricelistQuery, GetPricelistQueryResponse> query) =>
         {
-            var result = await query.Get(new GetPricelistQuery(date));
+            var result = await query.Get(new GetPricelistQuery(date ?? DateOnly.FromDateTime(DateTime.Now)));
             if (result.Status == ResponseStatus.Error)
             {
                 return Results.NotFound();
@@ -88,6 +90,22 @@ app.MapPost("api/batterybox/getstats",
         })
     .WithName("GetStats")
     .Produces<BatteryBoxStatus>()
+    .WithOpenApi();
+
+app.MapPost("api/batterybox/setmode",
+        async ([FromBody] SetModeInfo setModeInfo, ICommandHandler<SetModeCommand, SetModeCommandResponse> queryHandler, ILogger<Program> logger) =>
+        {
+            var data = await queryHandler.Execute(new SetModeCommand(setModeInfo.Email, setModeInfo.Password, setModeInfo.UnitId, setModeInfo.Mode));
+            if (data.ResponseStatus == ResponseStatus.Error)
+            {
+                logger.LogError(data.Error);
+                return Results.BadRequest(data.Error);
+            }
+
+            return Results.Ok(data);
+        })
+    .WithName("SetMode")
+    .Produces<SetModeCommandResponse>()
     .WithOpenApi();
 
 app.Run();

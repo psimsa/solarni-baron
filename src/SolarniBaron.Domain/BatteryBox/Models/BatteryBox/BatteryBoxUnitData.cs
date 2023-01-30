@@ -4,6 +4,7 @@ namespace SolarniBaron.Domain.BatteryBox.Models.BatteryBox;
 
 public record BatteryBoxUnitData
 (
+    [property: JsonPropertyName("unitId")] string? UnitId,
     [property: JsonPropertyName("ac_in")] AcIn AcIn,
     [property: JsonPropertyName("ac_in_b")]
     AcInB AcInB,
