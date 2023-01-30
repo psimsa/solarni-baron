@@ -32,7 +32,7 @@ public class GetStatsQueryHandlerShould
 
         var returnedObject = JsonSerializer.Deserialize(OigResponses.GetRawStatsResponse, CommonSerializationContext.Default.DictionaryStringBatteryBoxUnitData);
         _batteryBoxDataConnectorMock.Setup(_ => _.GetStatsForUnit(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string?>()))
-            .ReturnsAsync(returnedObject!.First().Value).Verifiable();
+            .ReturnsAsync(returnedObject!.First().Value with {UnitId = "asdf"}).Verifiable();
 
 
         var handler = new GetStatsQueryHandler(_batteryBoxDataConnectorMock.Object, _cacheMock.Object, NullLogger<GetStatsQueryHandler>.Instance);

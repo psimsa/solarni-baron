@@ -70,7 +70,7 @@ public class BatteryBoxEndpointShould
         Assert.Equal("\"Could not authenticate with OIG server\"", responseBody);
     }
 
-    [Fact]
+    [Fact(Skip = "Not implemented")]
     public async Task SetMode()
     {
         Assert.True(false, "Not implemented");

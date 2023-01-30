@@ -1,5 +1,4 @@
-﻿/*
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Moq;
 using SolarniBaron.Domain.BatteryBox;
 
@@ -17,26 +16,25 @@ public class OigDataConnectorShould
         _logger = new Mock<ILogger<OigDataConnector>>();
     }
 
-    [Fact]
+    [Fact(Skip = "Not implemented")]
     public async Task GetRawStats()
     {
-        _client.Setup()
+        // _client.Setup()
         var connector = new OigDataConnector(_client.Object, _logger.Object);
         Assert.True(false, "This test needs an implementation");
     }
 
-    [Fact]
+    [Fact(Skip = "Not implemented")]
     public async Task GetStatsForUnit()
     {
         var connector = new OigDataConnector(_client.Object, _logger.Object);
         Assert.True(false, "This test needs an implementation");
     }
 
-    [Fact]
+    [Fact(Skip = "Not implemented")]
     public async Task SetMode()
     {
         var connector = new OigDataConnector(_client.Object, _logger.Object);
         Assert.True(false, "This test needs an implementation");
     }
 }
-*/
