@@ -111,7 +111,7 @@
             {
                 _progressHidden = false;
                 StateHasChanged();
-                var response = await Http.GetAsync(url, token);
+                var response = await Http.PostAsync(url, JsonContent.Create(LoginInfo), token);
                 var messageResponse = await response.Content.ReadFromJsonAsync(CommonSerializationContext.Default.BatteryBoxStatus, _cancellationTokenSource.Token);
                 if (messageResponse != null)
                 {
