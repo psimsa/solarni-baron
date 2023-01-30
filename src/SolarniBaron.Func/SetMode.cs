@@ -3,29 +3,31 @@ using System.Text.Json;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
+using SolarniBaron.Domain.BatteryBox.Commands.SetMode;
 using SolarniBaron.Domain.BatteryBox.Models;
 using SolarniBaron.Domain.BatteryBox.Queries.GetStats;
 using SolarniBaron.Domain.Contracts;
-using SolarniBaron.Domain.Contracts.Queries;
+using SolarniBaron.Domain.Contracts.Commands;
 
 namespace SolarniBaron.Func
 {
-    public class GetStats
+    public class SetMode
     {
-        private readonly IQueryHandler<GetStatsQuery, GetStatsQueryResponse> _queryHandler;
+        private readonly ICommandHandler<SetModeCommand, SetModeCommandResponse> _commandHandler;
         private readonly ILogger _logger;
 
-        public GetStats(IQueryHandler<GetStatsQuery, GetStatsQueryResponse> queryHandler, ILoggerFactory loggerFactory)
+        public SetMode(ICommandHandler<SetModeCommand, SetModeCommandResponse> commandHandler, ILoggerFactory loggerFactory)
         {
-            _queryHandler = queryHandler;
-            _logger = loggerFactory.CreateLogger<GetStats>();
+            _commandHandler = commandHandler;
+            _logger = loggerFactory.CreateLogger<SetMode>();
         }
 
-        [Function("batterybox/getstats")]
+        [Function("batterybox/setmode")]
         public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData req)
         {
-            var loginInfo = JsonSerializer.Deserialize<LoginInfo>(req.Body);
-            var data = await _queryHandler.Get(new GetStatsQuery(loginInfo.Email, loginInfo.Password, loginInfo.UnitId));
+            var setModeInfo = JsonSerializer.Deserialize<SetModeInfo>(req.Body);
+            var data = await _commandHandler.Execute(new SetModeCommand(setModeInfo.Email, setModeInfo.Password, setModeInfo.UnitId,
+                setModeInfo.Mode));
             if (data.ResponseStatus == ResponseStatus.Error)
             {
                 _logger.LogError(data.Error);
@@ -34,9 +36,10 @@ namespace SolarniBaron.Func
                 errorResponse.WriteString(data.Error);
                 return errorResponse;
             }
+
             var response = req.CreateResponse(HttpStatusCode.OK);
             response.Headers.Add("Content-Type", "application/json; charset=utf-8");
-            response.WriteString(JsonSerializer.Serialize(data.BatteryBoxStatus));
+            response.WriteString(JsonSerializer.Serialize(data.ResponseStatus));
             return response;
         }
     }
