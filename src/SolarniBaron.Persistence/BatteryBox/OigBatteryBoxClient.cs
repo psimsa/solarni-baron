@@ -1,4 +1,5 @@
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
+using System.Security.Authentication;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.Logging;
@@ -72,7 +73,7 @@ public partial class OigBatteryBoxClient : IBatteryBoxClient
         if (string.IsNullOrWhiteSpace(password))
             throw new ArgumentException("Password must be provided", nameof(password));
 
-        _client.BaseAddress = new Uri(Constants.baseUrl);
+        _client.BaseAddress = new Uri(Constants.BaseUrl);
 
         LogAttemptingToLogin();
 
@@ -83,7 +84,7 @@ public partial class OigBatteryBoxClient : IBatteryBoxClient
 
         var content = new StringContent(serializedLoginInfo);
         content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-        var message = new HttpRequestMessage(HttpMethod.Post, Constants.loginUrl)
+        var message = new HttpRequestMessage(HttpMethod.Post, Constants.LoginUrl)
         {
             Content = content,
         };
@@ -92,7 +93,7 @@ public partial class OigBatteryBoxClient : IBatteryBoxClient
         if (loginInfoResponse.Content.Headers.ContentLength == 0)
         {
             LogLoginFailed();
-            throw new Exception();
+            throw new AuthenticationException("Could not authenticate with OIG server");
         }
 
         var loginInfoResponseContent = await loginInfoResponse.Content.ReadAsStringAsync();

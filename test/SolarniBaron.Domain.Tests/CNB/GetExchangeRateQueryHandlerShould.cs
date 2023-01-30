@@ -1,9 +1,12 @@
-using Microsoft.Extensions.Caching.Distributed;
-using Moq;
-using SolarniBaron.Domain.CNB.Queries.GetExchangeRate;
-using System.Net.Http;
-using System.Text;
+﻿using System.Text;
 using System.Text.Json;
+
+using Microsoft.Extensions.Caching.Distributed;
+
+using Moq;
+
+using SolarniBaron.Domain.CNB.Queries.GetExchangeRate;
+
 using TestHelpers.TestData;
 
 namespace SolarniBaron.Domain.Tests;

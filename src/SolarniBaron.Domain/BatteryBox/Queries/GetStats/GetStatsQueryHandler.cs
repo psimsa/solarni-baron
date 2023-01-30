@@ -1,7 +1,10 @@
-using System.Text.Json;
+﻿using System.Text.Json;
+
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
+
 using SolarniBaron.Domain.BatteryBox.Models;
+using SolarniBaron.Domain.Contracts;
 using SolarniBaron.Domain.Contracts.Queries;
 using SolarniBaron.Domain.Extensions;
 
@@ -37,20 +40,28 @@ public class GetStatsQueryHandler : IQueryHandler<GetStatsQuery, GetStatsQueryRe
         }
 
         _logger.LogCacheNotHit();
+        try
+        {
+           var fromApi = await _dataConnector.GetStatsForUnit(username, password, unitId);
+                   var stats = BatteryBoxStatus.FromBatteryBoxUnitData(fromApi, unitId);
 
-        var fromApi = await _dataConnector.GetStatsForUnit(username, password, unitId);
-        var stats = BatteryBoxStatus.FromBatteryBoxUnitData(fromApi);
+                   var nextRefresh = stats.LastCall.AddSeconds(110) - DateTime.Now;
+                   nextRefresh = nextRefresh.TotalSeconds > 9 ? nextRefresh : TimeSpan.FromSeconds(9);
 
-        var nextRefresh = stats.LastCall.AddSeconds(110) - DateTime.Now;
-        nextRefresh = nextRefresh.TotalSeconds > 9 ? nextRefresh : TimeSpan.FromSeconds(9);
+                   var absoluteExpiration = DateTimeOffset.UtcNow.Add(nextRefresh);
 
-        var absoluteExpiration = DateTimeOffset.UtcNow.Add(nextRefresh);
+                   await _cache.SetAsync(cacheKey, JsonSerializer.SerializeToUtf8Bytes(stats),
+                       new DistributedCacheEntryOptions() { AbsoluteExpiration = absoluteExpiration });
 
-        await _cache.SetAsync(cacheKey, JsonSerializer.SerializeToUtf8Bytes(stats),
-            new DistributedCacheEntryOptions() { AbsoluteExpiration = absoluteExpiration });
+                   _logger.LogDateInfo(stats.LastCall, nextRefresh, absoluteExpiration);
 
-        _logger.LogDateInfo(stats.LastCall, nextRefresh, absoluteExpiration);
+                   return new GetStatsQueryResponse(stats);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error while getting stats");
+            return new GetStatsQueryResponse(BatteryBoxStatus.Empty(), ResponseStatus.Error, e.Message);
+        }
 
-        return new GetStatsQueryResponse(stats);
     }
 }

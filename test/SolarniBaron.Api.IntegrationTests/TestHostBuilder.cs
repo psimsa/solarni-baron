@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc.Testing;
+﻿using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,7 +12,9 @@ internal static class TestHostBuilder
             .WithWebHostBuilder(builder =>
             {
                 if (testServiceSetup != null)
+                {
                     builder.ConfigureTestServices(testServiceSetup);
+                }
             });
 
         var client = application.CreateClient();

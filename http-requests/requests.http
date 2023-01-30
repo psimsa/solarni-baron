@@ -1,0 +1,26 @@
+﻿### Health Check
+GET https://{{baseUrl}}/healthz
+
+### OTE Data
+GET https://{{baseUrl}}/api/ote
+
+### Get stats for box
+POST https://{{baseUrl}}/api/batterybox/getstats
+Content-Type: application/json
+
+{
+    "email": "{{email}}",
+    "password": "{{password}}",
+    "unitId": "{{unitId}}"
+}
+
+### Set box mode
+POST https://{{baseUrl}}/api/batterybox/setmode
+Content-Type: application/json
+
+{
+    "email": "{{email}}",
+    "password": "{{password}}",
+    "unitId": "{{unitId}}",
+    "mode": "0"
+}

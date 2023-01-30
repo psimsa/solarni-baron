@@ -1,4 +1,4 @@
-namespace SolarniBaron.Domain.BatteryBox;
+﻿namespace SolarniBaron.Domain.BatteryBox;
 
 public interface IBatteryBoxClient : IDisposable
 {

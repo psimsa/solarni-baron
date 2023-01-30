@@ -1,26 +1,27 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
+﻿using System.Text.Json;
+
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.DependencyInjection;
+
 using Moq;
+
 using SolarniBaron.Domain;
-using SolarniBaron.Domain.Contracts;
-using SolarniBaron.Domain.Ote.Queries.GetPricelist;
-using System.Text.Json;
 using TestHelpers.TestData;
 
 namespace SolarniBaron.Api.IntegrationTests;
 
-public class GetPricelistEndpointShould
+public class OteEndpointShould
 {
     private readonly HttpClient _client;
     private readonly Mock<IApiHttpClient> _apiClientMock;
     private readonly Mock<IDistributedCache> _cacheMock;
 
 
-    public GetPricelistEndpointShould()
+    public OteEndpointShould()
     {
         _apiClientMock = new Mock<IApiHttpClient>();
         _cacheMock = new Mock<IDistributedCache>();
-        
+
         _client = TestHostBuilder.GetClient(services =>
         {
             services.AddSingleton(_apiClientMock.Object);
@@ -29,7 +30,7 @@ public class GetPricelistEndpointShould
     }
 
     [Fact]
-    public async Task ReturnPricelist()
+    public async Task ReturnPricelist_GivenDate()
     {
         _cacheMock.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(null as byte[]).Verifiable();
         _apiClientMock.Setup(x => x.GetStringAsync("https://www.cnb.cz/cs/financni-trhy/devizovy-trh/kurzy-devizoveho-trhu/kurzy-devizoveho-trhu/denni_kurz.txt?date=10.10.2022")).ReturnsAsync(CnbResponses.ValidExchangeRateResponse).Verifiable();

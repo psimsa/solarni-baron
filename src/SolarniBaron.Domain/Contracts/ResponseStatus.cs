@@ -1,4 +1,4 @@
-namespace SolarniBaron.Domain.Contracts;
+﻿namespace SolarniBaron.Domain.Contracts;
 
 public enum ResponseStatus
 {

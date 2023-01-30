@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+
 using SolarniBaron.Domain.BatteryBox.Models.BatteryBox;
 
 namespace SolarniBaron.Domain.BatteryBox.Models;
@@ -41,10 +42,10 @@ public record BatteryBoxStatus(
     OperationMode OperationMode = OperationMode.Home1)
 
 {
-    public static BatteryBoxStatus FromBatteryBoxUnitData(BatteryBoxUnitData bbUnitData)
+    public static BatteryBoxStatus FromBatteryBoxUnitData(BatteryBoxUnitData bbUnitData, string? unitId)
     {
         return new BatteryBoxStatus(
-            "",
+            bbUnitData.UnitId ?? "",
             bbUnitData.DcIn.FvP1,
             bbUnitData.DcIn.FvP2,
             bbUnitData.DcIn.FvProc,

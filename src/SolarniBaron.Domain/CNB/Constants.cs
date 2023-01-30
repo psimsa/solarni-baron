@@ -1,4 +1,4 @@
-namespace SolarniBaron.Domain.CNB;
+﻿namespace SolarniBaron.Domain.CNB;
 
 public static class Constants
 {

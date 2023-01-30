@@ -64,9 +64,9 @@ public partial class OigDataConnector : IDisposable, IBatteryBoxDataConnector
                 throw new Exception($"Unit {unitId} not found");
             }
 
-            var batteryBoxObject = string.IsNullOrWhiteSpace(unitId)
-                ? stateObject?.First().Value
-                : stateObject[unitId];
+            var actualUnitId = string.IsNullOrWhiteSpace(unitId) ? stateObject.First().Key : unitId;
+
+            var batteryBoxObject = stateObject[actualUnitId] with { UnitId = actualUnitId };
 
             LogDeserializedStatusResponse(batteryBoxObject);
 
