@@ -32,9 +32,18 @@ builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
 
+builder.Services.AddCors();
+
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
+
+app.UseCors(cp =>
+{
+    cp.AllowAnyHeader();
+    cp.AllowAnyMethod();
+    cp.WithOrigins(app.Configuration["AllowedOrigins"]?.Split(",") ?? Array.Empty<string>());
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
