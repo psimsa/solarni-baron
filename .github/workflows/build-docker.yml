@@ -40,6 +40,4 @@ jobs:
         tags: kodiak.azurecr.io/fve/solarni-baron:${{env.VERSION}},kodiak.azurecr.io/fve/solarni-baron:latest
         file: ./src/SolarniBaron.Api/Dockerfile
         context: .
-        cache-to: type=local,dest=/caches/solarni-baron
-        cache-from: type=local,src=/caches/solarni-baron
         # platforms: linux/amd64,linux/arm64
