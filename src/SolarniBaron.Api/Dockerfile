@@ -8,6 +8,7 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 COPY ["src/SolarniBaron.Api/SolarniBaron.Api.csproj", "src/SolarniBaron.Api/"]
+COPY ["src/SolarniBaron.Persistence/SolarniBaron.Persistence.csproj", "src/SolarniBaron.Persistence/"]
 COPY ["src/SolarniBaron.Domain/SolarniBaron.Domain.csproj", "src/SolarniBaron.Domain/"]
 RUN dotnet restore "src/SolarniBaron.Api/SolarniBaron.Api.csproj"
 COPY . .
