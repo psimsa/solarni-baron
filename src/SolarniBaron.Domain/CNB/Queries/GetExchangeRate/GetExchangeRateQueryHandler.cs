@@ -28,6 +28,6 @@ public class GetExchangeRateQueryHandler : IQueryHandler<GetExchangeRateQuery, G
             var euroRate = euroLine?.Split('|')[4];
             var success = decimal.TryParse(euroRate?.Replace(',', '.'), out var rateValue);
             return new GetExchangeRateQueryResponse(success ? rateValue : 0);
-        }) ?? GetExchangeRateQueryResponse.Empty;
+        }) ?? GetExchangeRateQueryResponse.Empty();
     }
 }

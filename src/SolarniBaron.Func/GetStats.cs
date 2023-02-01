@@ -10,10 +10,12 @@ using SolarniBaron.Domain.Contracts.Queries;
 
 namespace SolarniBaron.Func;
 
-public class GetStats
+public partial class GetStats
 {
     private readonly IQueryHandler<GetStatsQuery, GetStatsQueryResponse> _queryHandler;
     private readonly ILogger _logger;
+
+    [LoggerMessage(EventId = 0, Level = LogLevel.Error, Message = "Error getting stats: {Error}")] private partial void LogErrorGettingStats(string error);
 
     public GetStats(IQueryHandler<GetStatsQuery, GetStatsQueryResponse> queryHandler, ILoggerFactory loggerFactory)
     {
@@ -28,7 +30,7 @@ public class GetStats
         var data = await _queryHandler.Get(new GetStatsQuery(loginInfo.Email, loginInfo.Password, loginInfo.UnitId));
         if (data.ResponseStatus == ResponseStatus.Error)
         {
-            _logger.LogError(data.Error);
+            LogErrorGettingStats(data.Error);
             var errorResponse = req.CreateResponse(HttpStatusCode.BadRequest);
             errorResponse.Headers.Add("Content-Type", "text/plain; charset=utf-8");
             errorResponse.WriteString(data.Error);

@@ -59,8 +59,8 @@ app.UseAuthorization();
 
 // app.MapControllers();
 
-app.MapGet("api/protected", () => Results.Ok("hello world"))
-    .RequireAuthorization();
+/* app.MapGet("api/protected", () => Results.Ok("hello world"))
+    .RequireAuthorization(); */
 
 app.MapGet("/healthz", () => Results.Text("OK"));
 
@@ -73,8 +73,7 @@ app.MapGet("api/ote/{date?}",
                 return Results.NotFound();
             }
 
-            var response = new ApiResponse<GetPricelistQueryResponse>(result, result.ResponseStatus, "");
-            return Results.Ok(response);
+            return Results.Ok(result);
         })
     .WithName("GetPricelist")
     .Produces<ApiResponse<GetPricelistQueryResponse>>()

@@ -10,10 +10,13 @@ using SolarniBaron.Domain.Ote.Queries.GetPricelist;
 
 namespace SolarniBaron.Func;
 
-public class Ote
+public partial class Ote
 {
     private readonly IQueryHandler<GetPricelistQuery, GetPricelistQueryResponse> _queryHandler;
     private readonly ILogger _logger;
+
+    [LoggerMessage(EventId = 0, Level = LogLevel.Error, Message = "Error getting OTE data: {Error}")] private partial void LogErrorGettingOteData(string error);
+
 
     public Ote(IQueryHandler<GetPricelistQuery, GetPricelistQueryResponse> queryHandler, ILoggerFactory loggerFactory)
     {
@@ -28,6 +31,7 @@ public class Ote
 
         if (result.ResponseStatus == ResponseStatus.Error)
         {
+            LogErrorGettingOteData(result.Error);
             var errorResponse = req.CreateResponse(HttpStatusCode.NotFound);
             return errorResponse;
         }

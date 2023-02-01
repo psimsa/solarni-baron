@@ -74,9 +74,9 @@ public class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery, GetPric
                 });
 
                 var getPricelistQueryResponse =
-                    new GetPricelistQueryResponse(ResponseStatus.Ok, data.ToArray(), exchangeRate);
+                    new GetPricelistQueryResponse(new GetPricelistQueryResponseData(data.ToArray(), exchangeRate), ResponseStatus.Ok);
                 return getPricelistQueryResponse;
             });
-        return queryResponse ?? GetPricelistQueryResponse.Empty();
+        return queryResponse ?? new GetPricelistQueryResponse(null, ResponseStatus.Error, "Error getting pricelist");
     }
 }
