@@ -45,24 +45,24 @@ public class GetPricelistQueryHandlerShould
         _cacheMock.VerifyAll();
         _getExchangeRateQueryHandlerMock.VerifyAll();
         Assert.Equal(24.520m, response.Data.ExchangeRate);
-        Assert.Equal(24, response.Data.Items.Length);
+        Assert.Equal(24, response.Data.HourlyRateBreakdown.Length);
 
-        var responseItems = response.Data.Items;
+        var responseItems = response.Data.HourlyRateBreakdown;
 
         AssertWrapper.AssertAll(
             () => Assert.Equal(1, responseItems[0].Hour),
-            () => Assert.Equal(78.57m, responseItems[0].RateEur),
-            () => Assert.Equal(1926.53640m, responseItems[0].RateCzk),
+            () => Assert.Equal(78.57m, responseItems[0].BasePriceEur),
+            () => Assert.Equal(1926.53640m, responseItems[0].BasePriceCzk),
             () => Assert.Equal(2226.53640m, responseItems[0].WithSurchargeCzk),
-            () => Assert.Equal(467.572644m, responseItems[0].VatCzk),
-            () => Assert.Equal(2694.109044m, responseItems[0].TotalCzk)
+            () => Assert.Equal(467.572644m, responseItems[0].WithSurchargeCzkVat),
+            () => Assert.Equal(2694.109044m, responseItems[0].WithSurchargeCzkTotal)
             );
     }
 
     [Fact]
     public async Task GetPricelistFromCache()
     {
-        var cachedValue = new GetPricelistQueryResponse(new GetPricelistQueryResponseData(new[] { new GetPricelistQueryResponseItem(1, 2, 3, 4, 5, 6) }, 10.001m), ResponseStatus.Ok);
+        var cachedValue = new GetPricelistQueryResponse(new GetPricelistQueryResponseData(new[] { new GetPricelistQueryResponseItem(1, 2, 3, 4, 5, 6, 7, 8) }, 10.001m), ResponseStatus.Ok);
         _cacheMock.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(cachedValue))).Verifiable();
         _httpClientMock.Setup(x => x.GetStringAsync(It.IsAny<string>())).ThrowsAsync(new NotImplementedException()).Verifiable();
 
@@ -75,17 +75,17 @@ public class GetPricelistQueryHandlerShould
         _cacheMock.VerifyAll();
         _getExchangeRateQueryHandlerMock.VerifyAll();
         Assert.Equal(10.001m, response.Data.ExchangeRate);
-        Assert.Single(response.Data.Items);
+        Assert.Single(response.Data.HourlyRateBreakdown);
 
-        var responseItems = response.Data.Items;
+        var responseItems = response.Data.HourlyRateBreakdown;
 
         AssertWrapper.AssertAll(
             () => Assert.Equal(1, responseItems[0].Hour),
-            () => Assert.Equal(2, responseItems[0].RateEur),
-            () => Assert.Equal(3, responseItems[0].RateCzk),
-            () => Assert.Equal(4, responseItems[0].WithSurchargeCzk),
-            () => Assert.Equal(5, responseItems[0].VatCzk),
-            () => Assert.Equal(6, responseItems[0].TotalCzk)
+            () => Assert.Equal(2, responseItems[0].BasePriceEur),
+            () => Assert.Equal(3, responseItems[0].BasePriceCzk),
+            () => Assert.Equal(6, responseItems[0].WithSurchargeCzk),
+            () => Assert.Equal(7, responseItems[0].WithSurchargeCzkVat),
+            () => Assert.Equal(8, responseItems[0].WithSurchargeCzkTotal)
             );
     }
 }

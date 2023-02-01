@@ -69,16 +69,24 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
                     {
                         var toReturn = GetPricelistQueryResponseItem.Empty;
                         var data = row.Cells[1].TextContent;
-                        var isValid = decimal.TryParse(data.Replace(',', '.'), out var decimalData);
+                        var isValid = decimal.TryParse(data.Replace(',', '.'), out var basePriceEur);
                         if (isValid)
                         {
-                            var price = decimalData * exchangeRate;
-                            var withSurcharge = price + surcharge;
-                            var vat = withSurcharge * vatPct / 100;
-                            var total = withSurcharge + vat;
+                            decimal basePriceCzk = basePriceEur * exchangeRate;
+                            decimal basePriceCzkVat = basePriceCzk * vatPct / 100;
+                            decimal basePriceCzkTotal = basePriceCzk + basePriceCzkVat;
+                            decimal withSurchargeCzk = basePriceCzk + surcharge;
+                            decimal withSurchargeCzkVat = withSurchargeCzk * vatPct / 100;
+                            decimal withSurchargeCzkTotal = withSurchargeCzk + withSurchargeCzkVat;
 
-                            toReturn = new GetPricelistQueryResponseItem(hour, decimalData, price, withSurcharge,
-                                vat, total);
+                            toReturn = new GetPricelistQueryResponseItem(hour,
+                                basePriceEur,
+                                basePriceCzk,
+                                basePriceCzkVat,
+                                basePriceCzkTotal,
+                                withSurchargeCzk,
+                                withSurchargeCzkVat,
+                                withSurchargeCzkTotal);
                         }
 
                         hour++;
