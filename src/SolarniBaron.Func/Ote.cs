@@ -7,33 +7,32 @@ using SolarniBaron.Domain.Contracts;
 using SolarniBaron.Domain.Contracts.Queries;
 using SolarniBaron.Domain.Ote.Queries.GetPricelist;
 
-namespace SolarniBaron.Func
+namespace SolarniBaron.Func;
+
+public class Ote
 {
-    public class Ote
+    private readonly IQueryHandler<GetPricelistQuery, GetPricelistQueryResponse> _queryHandler;
+    private readonly ILogger _logger;
+
+    public Ote(IQueryHandler<GetPricelistQuery, GetPricelistQueryResponse> queryHandler, ILoggerFactory loggerFactory)
     {
-        private readonly IQueryHandler<GetPricelistQuery, GetPricelistQueryResponse> _queryHandler;
-        private readonly ILogger _logger;
+        _queryHandler = queryHandler;
+        _logger = loggerFactory.CreateLogger<Ote>();
+    }
 
-        public Ote(IQueryHandler<GetPricelistQuery, GetPricelistQueryResponse> queryHandler, ILoggerFactory loggerFactory)
+    [Function("ote/{date}")]
+    public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequestData req, DateOnly? Date)
+    {
+        var result = await _queryHandler.Get(new GetPricelistQuery(Date ?? DateOnly.FromDateTime(DateTime.Now)));
+
+        if (result.ResponseStatus == ResponseStatus.Error)
         {
-            _queryHandler = queryHandler;
-            _logger = loggerFactory.CreateLogger<Ote>();
+            var errorResponse = req.CreateResponse(HttpStatusCode.NotFound);
+            return errorResponse;
         }
-
-        [Function("ote/{date}")]
-        public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequestData req, DateOnly? Date)
-        {
-            var result = await _queryHandler.Get(new GetPricelistQuery(Date ?? DateOnly.FromDateTime(DateTime.Now)));
-
-            if (result.ResponseStatus == ResponseStatus.Error)
-            {
-                var errorResponse = req.CreateResponse(HttpStatusCode.NotFound);
-                return errorResponse;
-            }
-            var response = req.CreateResponse(HttpStatusCode.OK);
-            response.Headers.Add("Content-Type", "application/json; charset=utf-8");
-            response.WriteString(JsonSerializer.Serialize(result));
-            return response;
-        }
+        var response = req.CreateResponse(HttpStatusCode.OK);
+        response.Headers.Add("Content-Type", "application/json; charset=utf-8");
+        response.WriteString(JsonSerializer.Serialize(result));
+        return response;
     }
 }
