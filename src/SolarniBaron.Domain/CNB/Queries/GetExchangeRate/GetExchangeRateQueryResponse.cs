@@ -1,5 +1,4 @@
-﻿using SolarniBaron.Domain.BatteryBox.Models;
-using SolarniBaron.Domain.Contracts;
+﻿using SolarniBaron.Domain.Contracts;
 using SolarniBaron.Domain.Contracts.Queries;
 
 namespace SolarniBaron.Domain.CNB.Queries.GetExchangeRate;

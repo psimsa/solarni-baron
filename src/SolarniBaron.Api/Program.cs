@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Cosmos.Fluent;
-using Microsoft.Extensions.Caching.Cosmos;
 using Microsoft.IdentityModel.Logging;
 using SolarniBaron.Caching;
 using SolarniBaron.Domain.BatteryBox.Commands.SetMode;

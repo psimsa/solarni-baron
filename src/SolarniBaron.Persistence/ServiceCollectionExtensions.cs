@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using SolarniBaron.Domain;
 using SolarniBaron.Domain.BatteryBox;
 using SolarniBaron.Domain.Contracts;
 using SolarniBaron.Persistence.BatteryBox;

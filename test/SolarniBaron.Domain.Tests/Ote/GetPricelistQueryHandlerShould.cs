@@ -31,7 +31,7 @@ public class GetPricelistQueryHandlerShould
         _httpClientMock.Setup(x => x.GetStringAsync(It.IsAny<string>()))
             .ReturnsAsync(OteResponses.ValidPricelistResponse).Verifiable();
 
-        _cacheMock.Setup(x => x.GetAsync("pricelist-2022-10-11", It.IsAny<CancellationToken>())).ReturnsAsync(null as byte[]).Verifiable();
+        _cacheMock.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(null as byte[]).Verifiable();
 
         _getExchangeRateQueryHandlerMock.Setup(x => x.Get(It.IsAny<IQuery<GetExchangeRateQuery, GetExchangeRateQueryResponse>>()))
             .ReturnsAsync(new GetExchangeRateQueryResponse(24.520m)).Verifiable();
@@ -63,7 +63,7 @@ public class GetPricelistQueryHandlerShould
     public async Task GetPricelistFromCache()
     {
         var cachedValue = new GetPricelistQueryResponse(new GetPricelistQueryResponseData(new[] { new GetPricelistQueryResponseItem(1, 2, 3, 4, 5, 6, 7, 8) }, 10.001m), ResponseStatus.Ok);
-        _cacheMock.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(cachedValue))).Verifiable();
+        _cacheMock.Setup(x => x.GetAsync("Zxxz1VZY6g9HW3QPXnS3JxbJfJc=", It.IsAny<CancellationToken>())).ReturnsAsync(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(cachedValue))).Verifiable();
         _httpClientMock.Setup(x => x.GetStringAsync(It.IsAny<string>())).ThrowsAsync(new NotImplementedException()).Verifiable();
 
         var handler = new GetPricelistQueryHandler(_getExchangeRateQueryHandlerMock.Object, _httpClientMock.Object, _cacheMock.Object,

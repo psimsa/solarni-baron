@@ -1,6 +1,4 @@
-﻿using Microsoft.Azure.Cosmos.Fluent;
-using Microsoft.Extensions.Caching.Cosmos;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SolarniBaron.Caching;
 using SolarniBaron.Domain.Extensions;
