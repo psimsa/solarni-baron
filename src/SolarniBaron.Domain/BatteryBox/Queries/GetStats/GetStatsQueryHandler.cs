@@ -30,7 +30,7 @@ public class GetStatsQueryHandler : IQueryHandler<GetStatsQuery, GetStatsQueryRe
 
         (string username, string password, string? unitId) = getStatsQuery;
 
-        var cacheKeyBytes = MD5.HashData(Encoding.UTF8.GetBytes($"bbstats-{username}-{password}-{unitId ?? string.Empty}"));
+        var cacheKeyBytes = SHA1.HashData(Encoding.UTF8.GetBytes($"bbstats-{username}-{password}-{unitId ?? string.Empty}"));
         var cacheKey = Convert.ToBase64String(cacheKeyBytes);
 
         var cachedItem = await _cache.GetAsync(cacheKey);

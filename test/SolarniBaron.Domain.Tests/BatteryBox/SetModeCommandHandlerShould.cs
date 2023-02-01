@@ -3,7 +3,7 @@ using Moq;
 using SolarniBaron.Domain.BatteryBox;
 using SolarniBaron.Domain.BatteryBox.Commands.SetMode;
 
-namespace SolarniBaron.Domain.Tests;
+namespace SolarniBaron.Domain.Tests.BatteryBox;
 
 public class SetModeCommandHandlerShould
 {

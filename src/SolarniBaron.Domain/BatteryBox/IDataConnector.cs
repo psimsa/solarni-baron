@@ -1,4 +1,5 @@
-﻿using SolarniBaron.Domain.BatteryBox.Models.BatteryBox;
+﻿using SolarniBaron.Domain.BatteryBox.Commands.SetMode;
+using SolarniBaron.Domain.BatteryBox.Models.BatteryBox;
 
 namespace SolarniBaron.Domain.BatteryBox;
 
@@ -8,5 +9,5 @@ public interface IBatteryBoxDataConnector
 
     Task<BatteryBoxUnitData> GetStatsForUnit(string username, string password, string? unitId);
 
-    Task<(bool, string?)> SetMode(string username, string password, string unitId, string mode);
+    Task<SetModeResponseData> SetMode(string username, string password, string unitId, string mode);
 }

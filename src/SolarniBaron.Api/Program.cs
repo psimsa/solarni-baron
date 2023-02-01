@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Logging;
+using SolarniBaron.Caching;
 using SolarniBaron.Domain.BatteryBox.Commands.SetMode;
 using SolarniBaron.Domain.BatteryBox.Models;
 using SolarniBaron.Domain.BatteryBox.Queries.GetStats;
@@ -28,7 +29,11 @@ builder.Services.AddDomain();
 builder.Services.AddPersistence();
 
 builder.Services.AddHttpClient();
-builder.Services.AddDistributedMemoryCache();
+
+var configuration = builder.Configuration;
+var services = builder.Services;
+
+services.RegisterCache(configuration);
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
 
@@ -59,8 +64,8 @@ app.UseAuthorization();
 
 // app.MapControllers();
 
-app.MapGet("api/protected", () => Results.Ok("hello world"))
-    .RequireAuthorization();
+/* app.MapGet("api/protected", () => Results.Ok("hello world"))
+    .RequireAuthorization(); */
 
 app.MapGet("/healthz", () => Results.Text("OK"));
 
@@ -73,8 +78,7 @@ app.MapGet("api/ote/{date?}",
                 return Results.NotFound();
             }
 
-            var response = new ApiResponse<GetPricelistQueryResponse>(result, result.ResponseStatus, "");
-            return Results.Ok(response);
+            return Results.Ok(result);
         })
     .WithName("GetPricelist")
     .Produces<ApiResponse<GetPricelistQueryResponse>>()
@@ -115,6 +119,8 @@ app.MapPost("api/batterybox/setmode",
     .WithOpenApi();
 
 app.Run();
+
+
 
 namespace SolarniBaron.Api
 {

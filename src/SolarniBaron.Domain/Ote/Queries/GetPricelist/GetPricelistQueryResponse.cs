@@ -1,10 +1,7 @@
 ﻿using SolarniBaron.Domain.Contracts;
+using SolarniBaron.Domain.Contracts.Queries;
 
 namespace SolarniBaron.Domain.Ote.Queries.GetPricelist;
 
-public record GetPricelistQueryResponse(ResponseStatus ResponseStatus, GetPricelistQueryResponseItem[] Items,
-    decimal ExchangeRate)
-{
-    public static GetPricelistQueryResponse Empty() =>
-        new(ResponseStatus.Error, Array.Empty<GetPricelistQueryResponseItem>(), 0);
-};
+public record GetPricelistQueryResponse(GetPricelistQueryResponseData? Data = null, ResponseStatus ResponseStatus = ResponseStatus.Ok, string? Error = null) :
+    QueryResponse<GetPricelistQueryResponseData>(Data, ResponseStatus, Error);

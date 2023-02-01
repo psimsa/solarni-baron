@@ -3,5 +3,6 @@
 public enum ResponseStatus
 {
     Ok,
-    Error
+    Error,
+    Empty = 99
 }

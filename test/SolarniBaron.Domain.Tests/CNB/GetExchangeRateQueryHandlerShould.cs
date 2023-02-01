@@ -1,15 +1,12 @@
 ﻿using System.Text;
 using System.Text.Json;
-
 using Microsoft.Extensions.Caching.Distributed;
-
 using Moq;
-
 using SolarniBaron.Domain.CNB.Queries.GetExchangeRate;
-
+using SolarniBaron.Domain.Contracts;
 using TestHelpers.TestData;
 
-namespace SolarniBaron.Domain.Tests;
+namespace SolarniBaron.Domain.Tests.CNB;
 
 public class GetExchangeRateQueryHandlerShould
 {
@@ -43,7 +40,8 @@ public class GetExchangeRateQueryHandlerShould
     public async Task GetExchangeRateFromCache()
     {
         var cachedValue = new GetExchangeRateQueryResponse(24.520m);
-        _cacheMock.Setup(x => x.GetAsync("pricelist-2022-10-11", It.IsAny<CancellationToken>())).ReturnsAsync(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(cachedValue))).Verifiable();
+        
+        _cacheMock.Setup(x => x.GetAsync("YCk7uzh3crKVAlzKoXkQPP/qRtI=", It.IsAny<CancellationToken>())).ReturnsAsync(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(cachedValue))).Verifiable();
         _httpClientMock.Setup(x => x.GetStringAsync(It.IsAny<string>())).ThrowsAsync(new NotImplementedException()).Verifiable();
         var handler = new GetExchangeRateQueryHandler(_httpClientMock.Object, _cacheMock.Object);
         var response = await handler.Get(new GetExchangeRateQuery(new DateOnly(2022, 10, 11)));

@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 
 using SolarniBaron.Domain;
+using SolarniBaron.Domain.Contracts;
 using TestHelpers.TestData;
 
 namespace SolarniBaron.Api.IntegrationTests;

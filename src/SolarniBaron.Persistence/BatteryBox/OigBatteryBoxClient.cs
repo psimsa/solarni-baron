@@ -3,9 +3,9 @@ using System.Security.Authentication;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.Logging;
-using SolarniBaron.Domain;
 using SolarniBaron.Domain.BatteryBox;
 using SolarniBaron.Domain.BatteryBox.Models;
+using SolarniBaron.Domain.Contracts;
 
 namespace SolarniBaron.Persistence.BatteryBox;
 

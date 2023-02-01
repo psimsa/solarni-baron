@@ -5,7 +5,7 @@ using System.Security.Authentication;
 using System.Text.Json.Nodes;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
-using SolarniBaron.Domain;
+using SolarniBaron.Domain.Contracts;
 using SolarniBaron.Persistence.BatteryBox;
 using TestHelpers.TestData;
 

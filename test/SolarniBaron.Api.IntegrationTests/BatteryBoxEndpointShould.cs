@@ -4,8 +4,8 @@ using System.Text.Json;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
-using SolarniBaron.Domain;
 using SolarniBaron.Domain.BatteryBox.Models;
+using SolarniBaron.Domain.Contracts;
 using TestHelpers.TestData;
 
 namespace SolarniBaron.Api.IntegrationTests;
