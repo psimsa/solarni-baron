@@ -42,6 +42,6 @@ public partial class GetExchangeRateQueryHandler : IQueryHandler<GetExchangeRate
             var euroRate = euroLine?.Split('|')[4];
             var success = decimal.TryParse(euroRate?.Replace(',', '.'), out var rateValue);
             return new GetExchangeRateQueryResponse(success ? rateValue : 0);
-        }, new DistributedCacheEntryOptions(){AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(14)}) ?? GetExchangeRateQueryResponse.Empty();
+        }, new DistributedCacheEntryOptions(){ AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(2) }) ?? GetExchangeRateQueryResponse.Empty();
     }
 }

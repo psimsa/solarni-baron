@@ -11,7 +11,7 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Caching.Cosmos" Version="1.4.0" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="7.0.0" />
-
+    <PackageReference Include="Tingle.Extensions.Caching.MongoDB" Version="3.8.1" />
   </ItemGroup>
 
 </Project>
