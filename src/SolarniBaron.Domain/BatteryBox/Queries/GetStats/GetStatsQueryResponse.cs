@@ -1,11 +1,8 @@
 ﻿using SolarniBaron.Domain.BatteryBox.Models;
 using SolarniBaron.Domain.Contracts;
+using SolarniBaron.Domain.Contracts.Queries;
 
 namespace SolarniBaron.Domain.BatteryBox.Queries.GetStats;
 
 public record GetStatsQueryResponse(BatteryBoxStatus BatteryBoxStatus, ResponseStatus ResponseStatus = ResponseStatus.Ok,
-    string? Error = null)
-{
-    public static GetStatsQueryResponse Empty() =>
-        new GetStatsQueryResponse(BatteryBoxStatus.Empty(), ResponseStatus.Error);
-}
+    string? Error = null) : QueryResponse<BatteryBoxStatus>(BatteryBoxStatus, ResponseStatus, Error);

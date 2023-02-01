@@ -79,10 +79,11 @@ public partial class OigDataConnector : IDisposable, IBatteryBoxDataConnector
         }
     }
 
-    public async Task<(bool, string?)> SetMode(string username, string password, string unitId, string mode)
+    public async Task<SetModeResponseData> SetMode(string username, string password, string unitId, string mode)
     {
         LogSettingModeToMode(unitId, mode);
-        return await _client.SetMode(username, password, unitId, mode);
+        var response= await _client.SetMode(username, password, unitId, mode);
+        return new SetModeResponseData(response.Item1, response.Item2);
     }
 
     public void Dispose()

@@ -1,4 +1,4 @@
-using System.Net;
+﻿using System.Net;
 using System.Text.Json;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using SolarniBaron.Domain.Contracts;
 using SolarniBaron.Domain.Contracts.Queries;
 using SolarniBaron.Domain.Ote.Queries.GetPricelist;
+#pragma warning disable CA2007
 
 namespace SolarniBaron.Func;
 
@@ -21,9 +22,9 @@ public class Ote
     }
 
     [Function("ote/{date}")]
-    public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequestData req, DateOnly? Date)
+    public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequestData req, DateOnly? date)
     {
-        var result = await _queryHandler.Get(new GetPricelistQuery(Date ?? DateOnly.FromDateTime(DateTime.Now)));
+        var result = await _queryHandler.Get(new GetPricelistQuery(date ?? DateOnly.FromDateTime(DateTime.Now)));
 
         if (result.ResponseStatus == ResponseStatus.Error)
         {
@@ -32,7 +33,7 @@ public class Ote
         }
         var response = req.CreateResponse(HttpStatusCode.OK);
         response.Headers.Add("Content-Type", "application/json; charset=utf-8");
-        response.WriteString(JsonSerializer.Serialize(result));
+        await response.WriteStringAsync(JsonSerializer.Serialize(result));
         return response;
     }
 }

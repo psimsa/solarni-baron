@@ -22,7 +22,7 @@ public class SetModeCommandHandler : ICommandHandler<SetModeCommand, SetModeComm
         var mode = await _connector.SetMode(setModeCommand.Username, setModeCommand.Password, setModeCommand.UnitId,
             setModeCommand.Mode);
 
-        return new SetModeCommandResponse(mode.Item1 ? ResponseStatus.Ok : ResponseStatus.Error,
-            mode.Item2);
+        return new SetModeCommandResponse(mode, mode.Success ? ResponseStatus.Ok : ResponseStatus.Error,
+            mode.Error);
     }
 }

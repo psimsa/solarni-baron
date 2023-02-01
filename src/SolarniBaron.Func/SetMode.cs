@@ -32,13 +32,13 @@ public class SetMode
             _logger.LogError(data.Error);
             var errorResponse = req.CreateResponse(HttpStatusCode.BadRequest);
             errorResponse.Headers.Add("Content-Type", "text/plain; charset=utf-8");
-            errorResponse.WriteString(data.Error);
+            await errorResponse.WriteStringAsync(data.Error);
             return errorResponse;
         }
 
         var response = req.CreateResponse(HttpStatusCode.OK);
         response.Headers.Add("Content-Type", "application/json; charset=utf-8");
-        response.WriteString(JsonSerializer.Serialize(data.ResponseStatus));
+        await response.WriteStringAsync(JsonSerializer.Serialize(data.ResponseStatus));
         return response;
     }
 }

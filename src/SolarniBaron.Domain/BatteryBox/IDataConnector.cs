@@ -8,5 +8,5 @@ public interface IBatteryBoxDataConnector
 
     Task<BatteryBoxUnitData> GetStatsForUnit(string username, string password, string? unitId);
 
-    Task<(bool, string?)> SetMode(string username, string password, string unitId, string mode);
+    Task<SetModeResponseData> SetMode(string username, string password, string unitId, string mode);
 }
