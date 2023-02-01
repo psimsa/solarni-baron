@@ -48,7 +48,14 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
                 var document = await context.OpenAsync(req => req.Content(content));
                 try
                 {
-                    var table = document.QuerySelectorAll("div.bigtable table.report_table")[1];
+                    var reportTables = document.QuerySelectorAll("div.bigtable table.report_table");
+                    if (reportTables.Length < 2)
+                    {
+                        LogErrorGettingOteData("No data found");
+                        return null;
+                    }
+
+                    var table = reportTables[1];
 
                     var rows = table.QuerySelectorAll("tr");
 
@@ -60,7 +67,7 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
 
                     var data = dataRows.Take(dataRows.Count() - 1).Select(row =>
                     {
-                        GetPricelistQueryResponseItem toReturn = GetPricelistQueryResponseItem.Empty;
+                        var toReturn = GetPricelistQueryResponseItem.Empty;
                         var data = row.Cells[1].TextContent;
                         var isValid = decimal.TryParse(data.Replace(',', '.'), out var decimalData);
                         if (isValid)
