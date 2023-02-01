@@ -3,6 +3,7 @@ using System.Text.Json;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
+using SolarniBaron.Domain;
 using SolarniBaron.Domain.Contracts;
 using SolarniBaron.Domain.Contracts.Queries;
 using SolarniBaron.Domain.Ote.Queries.GetPricelist;
@@ -42,7 +43,7 @@ public partial class Ote
         }
         var response = req.CreateResponse(HttpStatusCode.OK);
         response.Headers.Add("Content-Type", "application/json; charset=utf-8");
-        await response.WriteStringAsync(JsonSerializer.Serialize(result));
+        await response.WriteStringAsync(JsonSerializer.Serialize(result, CommonSerializationContext.Default.GetPricelistQueryResponse));
         return response;
     }
 }

@@ -3,6 +3,7 @@ using System.Text.Json;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
+using SolarniBaron.Domain;
 using SolarniBaron.Domain.BatteryBox.Commands.SetMode;
 using SolarniBaron.Domain.BatteryBox.Models;
 using SolarniBaron.Domain.Contracts;
@@ -38,7 +39,7 @@ public class SetMode
 
         var response = req.CreateResponse(HttpStatusCode.OK);
         response.Headers.Add("Content-Type", "application/json; charset=utf-8");
-        await response.WriteStringAsync(JsonSerializer.Serialize(data.ResponseStatus));
+        await response.WriteStringAsync(JsonSerializer.Serialize(data, CommonSerializationContext.Default.SetModeCommandResponse));
         return response;
     }
 }

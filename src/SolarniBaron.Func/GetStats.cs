@@ -3,6 +3,7 @@ using System.Text.Json;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
+using SolarniBaron.Domain;
 using SolarniBaron.Domain.BatteryBox.Models;
 using SolarniBaron.Domain.BatteryBox.Queries.GetStats;
 using SolarniBaron.Domain.Contracts;
@@ -38,7 +39,7 @@ public partial class GetStats
         }
         var response = req.CreateResponse(HttpStatusCode.OK);
         response.Headers.Add("Content-Type", "application/json; charset=utf-8");
-        response.WriteString(JsonSerializer.Serialize(data.BatteryBoxStatus));
+        response.WriteString(JsonSerializer.Serialize(data.BatteryBoxStatus, CommonSerializationContext.Default.BatteryBoxStatus));
         return response;
     }
 }
