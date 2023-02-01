@@ -1,15 +1,19 @@
+﻿using Microsoft.Azure.Cosmos.Fluent;
+using Microsoft.Extensions.Caching.Cosmos;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SolarniBaron.Caching;
 using SolarniBaron.Domain.Extensions;
 using SolarniBaron.Persistence;
 
 HostBuilder builder = new HostBuilder();
-builder.ConfigureServices(services =>
+builder.ConfigureServices((context, services)=>
 {
     services.AddDomain();
     services.AddPersistence();
     services.AddHttpClient();
-    services.AddDistributedMemoryCache();
+
+    services.RegisterCache(context.Configuration);
 });
 
 var host = builder

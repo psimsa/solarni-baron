@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Cosmos.Fluent;
+using Microsoft.Extensions.Caching.Cosmos;
 using Microsoft.IdentityModel.Logging;
+using SolarniBaron.Caching;
 using SolarniBaron.Domain.BatteryBox.Commands.SetMode;
 using SolarniBaron.Domain.BatteryBox.Models;
 using SolarniBaron.Domain.BatteryBox.Queries.GetStats;
@@ -28,7 +31,11 @@ builder.Services.AddDomain();
 builder.Services.AddPersistence();
 
 builder.Services.AddHttpClient();
-builder.Services.AddDistributedMemoryCache();
+
+var configuration = builder.Configuration;
+var services = builder.Services;
+
+services.RegisterCache(configuration);
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
 
@@ -114,6 +121,8 @@ app.MapPost("api/batterybox/setmode",
     .WithOpenApi();
 
 app.Run();
+
+
 
 namespace SolarniBaron.Api
 {
