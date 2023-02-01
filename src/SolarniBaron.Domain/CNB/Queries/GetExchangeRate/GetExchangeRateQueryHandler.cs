@@ -15,7 +15,7 @@ public partial class GetExchangeRateQueryHandler : IQueryHandler<GetExchangeRate
     private readonly IDistributedCache _cache;
     private readonly ILogger<GetExchangeRateQueryHandler> _logger;
 
-    [LoggerMessage(EventId = 1, Level = LogLevel.Information, Message = "Cache not hit when getting exchange rate data for {date}")] private partial void LogCacheNotHit(string date);
+    [LoggerMessage(EventId = 1, Level = LogLevel.Information, Message = "Cache not hit when getting exchange rate data for {date} with key {key}")] private partial void LogCacheNotHit(string date, string key);
 
 
     public GetExchangeRateQueryHandler(IApiHttpClient client, IDistributedCache cache, ILogger<GetExchangeRateQueryHandler> logger)
@@ -35,7 +35,7 @@ public partial class GetExchangeRateQueryHandler : IQueryHandler<GetExchangeRate
         
         return await _cache.GetOrCreateAsync(cacheKey, async () =>
         {
-            LogCacheNotHit(getExchangeRateQuery.Date.ToString("yyyy-MM-dd"));
+            LogCacheNotHit(getExchangeRateQuery.Date.ToString("yyyy-MM-dd"), cacheKey);
             var response = await _client.GetStringAsync(
                 $"{Constants.CnbUrl}?date={getExchangeRateQuery.Date:dd.MM.yyyy}");
             var euroLine = response.Split('\n').FirstOrDefault(line => line.StartsWith("EMU"));

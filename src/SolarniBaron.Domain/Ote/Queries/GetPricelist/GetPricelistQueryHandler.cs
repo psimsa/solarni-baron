@@ -20,7 +20,7 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
     private readonly ILogger<GetPricelistQueryHandler> _logger;
 
     [LoggerMessage(EventId = 0, Level = LogLevel.Error, Message = "Error getting OTE data: {Error}")] private partial void LogErrorGettingOteData(string error);
-    [LoggerMessage(EventId = 1, Level = LogLevel.Information, Message = "Cache not hit when getting OTE data for {date}")] private partial void LogCacheNotHit(string date);
+    [LoggerMessage(EventId = 1, Level = LogLevel.Information, Message = "Cache not hit when getting OTE data for {date} with key {key}")] private partial void LogCacheNotHit(string date, string key);
 
     public GetPricelistQueryHandler(
         IQueryHandler<GetExchangeRateQuery, GetExchangeRateQueryResponse> getExchangeRateQueryHandler,
@@ -42,7 +42,7 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
         var queryResponse = await _cache.GetOrCreateAsync(cacheKey,
             async () =>
             {
-                LogCacheNotHit(getPricelistQuery.Date.ToString("yyyy-MM-dd"));
+                LogCacheNotHit(getPricelistQuery.Date.ToString("yyyy-MM-dd"), cacheKey);
                 var exchangeRateQuery = new GetExchangeRateQuery(getPricelistQuery.Date);
                 var exchangeRateQueryResponse = await _getExchangeRateQueryHandler.Get(exchangeRateQuery);
 
