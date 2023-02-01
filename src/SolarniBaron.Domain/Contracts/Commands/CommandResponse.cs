@@ -1,6 +1,4 @@
-using SolarniBaron.Domain.Contracts;
-
-namespace SolarniBaron.Domain.BatteryBox.Models;
+namespace SolarniBaron.Domain.Contracts.Commands;
 
 public record CommandResponse<T>(T? Data, ResponseStatus ResponseStatus = ResponseStatus.Ok, string? Error = null)
 {

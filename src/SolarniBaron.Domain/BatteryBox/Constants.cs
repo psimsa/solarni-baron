@@ -1,4 +1,4 @@
-﻿namespace SolarniBaron.Domain.BatteryBox.Models;
+﻿namespace SolarniBaron.Domain.BatteryBox;
 
 public static class Constants
 {

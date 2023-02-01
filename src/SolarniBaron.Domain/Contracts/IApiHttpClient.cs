@@ -1,4 +1,4 @@
-﻿namespace SolarniBaron.Domain;
+﻿namespace SolarniBaron.Domain.Contracts;
 
 public interface IApiHttpClient : IDisposable
 {

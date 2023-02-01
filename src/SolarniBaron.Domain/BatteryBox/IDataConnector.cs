@@ -1,4 +1,5 @@
-﻿using SolarniBaron.Domain.BatteryBox.Models.BatteryBox;
+﻿using SolarniBaron.Domain.BatteryBox.Commands.SetMode;
+using SolarniBaron.Domain.BatteryBox.Models.BatteryBox;
 
 namespace SolarniBaron.Domain.BatteryBox;
 

@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
-
+using SolarniBaron.Domain.Contracts;
 using SolarniBaron.Domain.Contracts.Queries;
 using SolarniBaron.Domain.Extensions;
 
@@ -19,11 +19,11 @@ public class GetExchangeRateQueryHandler : IQueryHandler<GetExchangeRateQuery, G
     public async Task<GetExchangeRateQueryResponse> Get(
         IQuery<GetExchangeRateQuery, GetExchangeRateQueryResponse> query)
     {
-        var getExchangeRateQuery = query.Data ?? throw new ArgumentException("Invalid query type");
+        var getExchangeRateQuery = query?.Data ?? throw new ArgumentException("Invalid query type");
         return await _cache.GetOrCreateAsync($"pricelist-{getExchangeRateQuery.Date:yyyy-MM-dd}", async () =>
         {
             var response = await _client.GetStringAsync(
-                $"{Constants.CnbUrl}?date={getExchangeRateQuery.Date.ToString("dd.MM.yyyy")}");
+                $"{Constants.CnbUrl}?date={getExchangeRateQuery.Date:dd.MM.yyyy}");
             var euroLine = response.Split('\n').FirstOrDefault(line => line.StartsWith("EMU"));
             var euroRate = euroLine?.Split('|')[4];
             var success = decimal.TryParse(euroRate?.Replace(',', '.'), out var rateValue);

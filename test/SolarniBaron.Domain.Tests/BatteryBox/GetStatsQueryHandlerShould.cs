@@ -1,17 +1,13 @@
 ﻿using System.Text.Json;
-
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging.Abstractions;
-
 using Moq;
-
 using SolarniBaron.Domain.BatteryBox;
 using SolarniBaron.Domain.BatteryBox.Queries.GetStats;
-
 using TestHelpers;
 using TestHelpers.TestData;
 
-namespace SolarniBaron.Domain.Tests;
+namespace SolarniBaron.Domain.Tests.BatteryBox;
 
 public class GetStatsQueryHandlerShould
 {
@@ -47,7 +43,7 @@ public class GetStatsQueryHandlerShould
             () => Assert.Equal(0, status.ConsumptionL1),
             () => Assert.Equal(66, status.ConsumptionL2),
             () => Assert.Equal(19, status.ConsumptionL3),
-            () => Assert.Equal(BatteryBox.Models.BatteryBox.OperationMode.Home1, status.OperationMode)
+            () => Assert.Equal(Domain.BatteryBox.Models.BatteryBox.OperationMode.Home1, status.OperationMode)
             );
 
     }

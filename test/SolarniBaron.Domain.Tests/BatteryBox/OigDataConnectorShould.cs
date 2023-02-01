@@ -2,7 +2,7 @@
 using Moq;
 using SolarniBaron.Domain.BatteryBox;
 
-namespace SolarniBaron.Domain.Tests;
+namespace SolarniBaron.Domain.Tests.BatteryBox;
 
 public class OigDataConnectorShould
 {

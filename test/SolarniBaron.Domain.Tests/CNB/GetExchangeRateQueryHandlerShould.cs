@@ -1,15 +1,12 @@
 ﻿using System.Text;
 using System.Text.Json;
-
 using Microsoft.Extensions.Caching.Distributed;
-
 using Moq;
-
 using SolarniBaron.Domain.CNB.Queries.GetExchangeRate;
-
+using SolarniBaron.Domain.Contracts;
 using TestHelpers.TestData;
 
-namespace SolarniBaron.Domain.Tests;
+namespace SolarniBaron.Domain.Tests.CNB;
 
 public class GetExchangeRateQueryHandlerShould
 {

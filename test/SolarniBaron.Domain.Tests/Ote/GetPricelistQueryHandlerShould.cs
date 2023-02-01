@@ -1,18 +1,15 @@
 ﻿using System.Text;
 using System.Text.Json;
-
 using Microsoft.Extensions.Caching.Distributed;
-
 using Moq;
-
 using SolarniBaron.Domain.CNB.Queries.GetExchangeRate;
+using SolarniBaron.Domain.Contracts;
 using SolarniBaron.Domain.Contracts.Queries;
 using SolarniBaron.Domain.Ote.Queries.GetPricelist;
-
 using TestHelpers;
 using TestHelpers.TestData;
 
-namespace SolarniBaron.Domain.Tests;
+namespace SolarniBaron.Domain.Tests.Ote;
 
 public class GetPricelistQueryHandlerShould
 {

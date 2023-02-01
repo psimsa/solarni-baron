@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using SolarniBaron.Domain;
 using SolarniBaron.Domain.BatteryBox;
 using SolarniBaron.Domain.BatteryBox.Models;
+using SolarniBaron.Domain.Contracts;
 
 namespace SolarniBaron.Persistence.BatteryBox;
 
