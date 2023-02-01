@@ -40,7 +40,7 @@ public class GetExchangeRateQueryHandlerShould
     public async Task GetExchangeRateFromCache()
     {
         var cachedValue = new GetExchangeRateQueryResponse(24.520m);
-        _cacheMock.Setup(x => x.GetAsync("pricelist-2022-10-11", It.IsAny<CancellationToken>())).ReturnsAsync(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(cachedValue))).Verifiable();
+        _cacheMock.Setup(x => x.GetAsync("exchangerate-2022-10-11", It.IsAny<CancellationToken>())).ReturnsAsync(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(cachedValue))).Verifiable();
         _httpClientMock.Setup(x => x.GetStringAsync(It.IsAny<string>())).ThrowsAsync(new NotImplementedException()).Verifiable();
         var handler = new GetExchangeRateQueryHandler(_httpClientMock.Object, _cacheMock.Object);
         var response = await handler.Get(new GetExchangeRateQuery(new DateOnly(2022, 10, 11)));

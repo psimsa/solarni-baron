@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
 using Moq;
 using SolarniBaron.Domain.CNB.Queries.GetExchangeRate;
 using SolarniBaron.Domain.Contracts;
@@ -35,17 +36,18 @@ public class GetPricelistQueryHandlerShould
         _getExchangeRateQueryHandlerMock.Setup(x => x.Get(It.IsAny<IQuery<GetExchangeRateQuery, GetExchangeRateQueryResponse>>()))
             .ReturnsAsync(new GetExchangeRateQueryResponse(24.520m)).Verifiable();
 
-        var handler = new GetPricelistQueryHandler(_getExchangeRateQueryHandlerMock.Object, _httpClientMock.Object, _cacheMock.Object);
+        var handler = new GetPricelistQueryHandler(_getExchangeRateQueryHandlerMock.Object, _httpClientMock.Object, _cacheMock.Object,
+            Mock.Of<ILogger<GetPricelistQueryHandler>>());
         var response = await handler.Get(new GetPricelistQuery(new DateOnly(2022, 10, 11)));
 
         Assert.NotNull(response);
         _httpClientMock.VerifyAll();
         _cacheMock.VerifyAll();
         _getExchangeRateQueryHandlerMock.VerifyAll();
-        Assert.Equal(24.520m, response.ExchangeRate);
-        Assert.Equal(24, response.Items.Length);
+        Assert.Equal(24.520m, response.Data.ExchangeRate);
+        Assert.Equal(24, response.Data.Items.Length);
 
-        var responseItems = response.Items;
+        var responseItems = response.Data.Items;
 
         AssertWrapper.AssertAll(
             () => Assert.Equal(1, responseItems[0].Hour),
@@ -60,21 +62,22 @@ public class GetPricelistQueryHandlerShould
     [Fact]
     public async Task GetPricelistFromCache()
     {
-        var cachedValue = new GetPricelistQueryResponse(Contracts.ResponseStatus.Ok, new[] { new GetPricelistQueryResponseItem(1, 2, 3, 4, 5, 6) }, 10.001m);
+        var cachedValue = new GetPricelistQueryResponse(new GetPricelistQueryResponseData(new[] { new GetPricelistQueryResponseItem(1, 2, 3, 4, 5, 6) }, 10.001m), ResponseStatus.Ok);
         _cacheMock.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(cachedValue))).Verifiable();
         _httpClientMock.Setup(x => x.GetStringAsync(It.IsAny<string>())).ThrowsAsync(new NotImplementedException()).Verifiable();
 
-        var handler = new GetPricelistQueryHandler(_getExchangeRateQueryHandlerMock.Object, _httpClientMock.Object, _cacheMock.Object);
+        var handler = new GetPricelistQueryHandler(_getExchangeRateQueryHandlerMock.Object, _httpClientMock.Object, _cacheMock.Object,
+            Mock.Of<ILogger<GetPricelistQueryHandler>>());
         var response = await handler.Get(new GetPricelistQuery(new DateOnly(2022, 10, 10)));
 
         Assert.NotNull(response);
         _httpClientMock.VerifyNoOtherCalls();
         _cacheMock.VerifyAll();
         _getExchangeRateQueryHandlerMock.VerifyAll();
-        Assert.Equal(10.001m, response.ExchangeRate);
-        Assert.Single(response.Items);
+        Assert.Equal(10.001m, response.Data.ExchangeRate);
+        Assert.Single(response.Data.Items);
 
-        var responseItems = response.Items;
+        var responseItems = response.Data.Items;
 
         AssertWrapper.AssertAll(
             () => Assert.Equal(1, responseItems[0].Hour),
