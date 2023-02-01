@@ -30,16 +30,15 @@ public partial class Ote
         var canParse = DateOnly.TryParse(date, out var parsedDate);
         if (!canParse)
         {
-            var errorResponse = req.CreateResponse(HttpStatusCode.BadRequest);
-            return errorResponse;
+            return req.CreateResponse(HttpStatusCode.BadRequest);
         }
+
         var result = await _queryHandler.Get(new GetPricelistQuery(parsedDate));
 
         if (result.ResponseStatus == ResponseStatus.Error)
         {
             LogErrorGettingOteData(result.Error);
-            var errorResponse = req.CreateResponse(HttpStatusCode.NotFound);
-            return errorResponse;
+            return req.CreateResponse(HttpStatusCode.NotFound);
         }
         var response = req.CreateResponse(HttpStatusCode.OK);
         response.Headers.Add("Content-Type", "application/json; charset=utf-8");
