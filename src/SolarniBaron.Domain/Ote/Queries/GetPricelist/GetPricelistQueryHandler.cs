@@ -2,7 +2,7 @@
 using AngleSharp.Html.Dom;
 
 using Microsoft.Extensions.Caching.Distributed;
-
+using Microsoft.Extensions.Logging;
 using SolarniBaron.Domain.CNB.Queries.GetExchangeRate;
 using SolarniBaron.Domain.Contracts;
 using SolarniBaron.Domain.Contracts.Queries;
@@ -10,19 +10,23 @@ using SolarniBaron.Domain.Extensions;
 
 namespace SolarniBaron.Domain.Ote.Queries.GetPricelist;
 
-public class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery, GetPricelistQueryResponse>
+public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery, GetPricelistQueryResponse>
 {
     private readonly IQueryHandler<GetExchangeRateQuery, GetExchangeRateQueryResponse> _getExchangeRateQueryHandler;
     private readonly IApiHttpClient _client;
     private readonly IDistributedCache _cache;
+    private readonly ILogger<GetPricelistQueryHandler> _logger;
+
+    [LoggerMessage(EventId = 0, Level = LogLevel.Error, Message = "Error getting OTE data: {Error}")] private partial void LogErrorGettingOteData(string error);
 
     public GetPricelistQueryHandler(
         IQueryHandler<GetExchangeRateQuery, GetExchangeRateQueryResponse> getExchangeRateQueryHandler,
-        IApiHttpClient client, IDistributedCache cache)
+        IApiHttpClient client, IDistributedCache cache, ILogger<GetPricelistQueryHandler> logger)
     {
         _getExchangeRateQueryHandler = getExchangeRateQueryHandler;
         _client = client;
         _cache = cache;
+        _logger = logger;
     }
 
     public async Task<GetPricelistQueryResponse> Get(IQuery<GetPricelistQuery, GetPricelistQueryResponse> query)
@@ -42,40 +46,47 @@ public class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery, GetPric
                 var config = Configuration.Default.WithDefaultLoader();
                 var context = BrowsingContext.New(config);
                 var document = await context.OpenAsync(req => req.Content(content));
-
-                var table = document.QuerySelectorAll("div.bigtable table.report_table")[1];
-
-                var rows = table.QuerySelectorAll("tr");
-
-                var dataRows = rows.Skip(1).OfType<IHtmlTableRowElement>().ToList();
-                var hour = 1;
-
-                var vatPct = 21;
-                var surcharge = 300;
-
-                var data = dataRows.Take(dataRows.Count() - 1).Select(row =>
+                try
                 {
-                    GetPricelistQueryResponseItem toReturn = GetPricelistQueryResponseItem.Empty;
-                    var data = row.Cells[1].TextContent;
-                    var isValid = decimal.TryParse(data.Replace(',', '.'), out var decimalData);
-                    if (isValid)
+                    var table = document.QuerySelectorAll("div.bigtable table.report_table")[1];
+
+                    var rows = table.QuerySelectorAll("tr");
+
+                    var dataRows = rows.Skip(1).OfType<IHtmlTableRowElement>().ToList();
+                    var hour = 1;
+
+                    var vatPct = 21;
+                    var surcharge = 300;
+
+                    var data = dataRows.Take(dataRows.Count() - 1).Select(row =>
                     {
-                        var price = decimalData * exchangeRate;
-                        var withSurcharge = price + surcharge;
-                        var vat = withSurcharge * vatPct / 100;
-                        var total = withSurcharge + vat;
+                        GetPricelistQueryResponseItem toReturn = GetPricelistQueryResponseItem.Empty;
+                        var data = row.Cells[1].TextContent;
+                        var isValid = decimal.TryParse(data.Replace(',', '.'), out var decimalData);
+                        if (isValid)
+                        {
+                            var price = decimalData * exchangeRate;
+                            var withSurcharge = price + surcharge;
+                            var vat = withSurcharge * vatPct / 100;
+                            var total = withSurcharge + vat;
 
-                        toReturn = new GetPricelistQueryResponseItem(hour, decimalData, price, withSurcharge,
-                            vat, total);
-                    }
+                            toReturn = new GetPricelistQueryResponseItem(hour, decimalData, price, withSurcharge,
+                                vat, total);
+                        }
 
-                    hour++;
-                    return toReturn;
-                });
+                        hour++;
+                        return toReturn;
+                    });
 
-                var getPricelistQueryResponse =
-                    new GetPricelistQueryResponse(new GetPricelistQueryResponseData(data.ToArray(), exchangeRate), ResponseStatus.Ok);
-                return getPricelistQueryResponse;
+                    var getPricelistQueryResponse =
+                        new GetPricelistQueryResponse(new GetPricelistQueryResponseData(data.ToArray(), exchangeRate), ResponseStatus.Ok);
+                    return getPricelistQueryResponse;
+                }
+                catch (Exception e)
+                {
+                    LogErrorGettingOteData(e.Message);
+                    return null;
+                }
             });
         return queryResponse ?? new GetPricelistQueryResponse(null, ResponseStatus.Error, "Error getting pricelist");
     }
