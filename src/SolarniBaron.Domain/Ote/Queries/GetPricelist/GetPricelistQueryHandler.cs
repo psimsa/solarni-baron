@@ -1,4 +1,6 @@
-﻿using AngleSharp;
+﻿using System.Security.Cryptography;
+using System.Text;
+using AngleSharp;
 using AngleSharp.Html.Dom;
 
 using Microsoft.Extensions.Caching.Distributed;
@@ -32,7 +34,11 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
     public async Task<GetPricelistQueryResponse> Get(IQuery<GetPricelistQuery, GetPricelistQueryResponse> query)
     {
         var getPricelistQuery = query.Data ?? throw new ArgumentException("Invalid query type");
-        var queryResponse = await _cache.GetOrCreateAsync($"pricelist-{getPricelistQuery.Date:yyyy-MM-dd}",
+
+        var cacheKeyBytes = SHA1.HashData(Encoding.UTF8.GetBytes($"pricelist-{getPricelistQuery.Date:yyyy-MM-dd}"));
+        var cacheKey = Convert.ToBase64String(cacheKeyBytes);
+
+        var queryResponse = await _cache.GetOrCreateAsync(cacheKey,
             async () =>
             {
                 var exchangeRateQuery = new GetExchangeRateQuery(getPricelistQuery.Date);
@@ -102,7 +108,7 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
                     LogErrorGettingOteData(e.Message);
                     return null;
                 }
-            });
+            }, new DistributedCacheEntryOptions() { AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(14) });
         return queryResponse ?? new GetPricelistQueryResponse(null, ResponseStatus.Error, "Error getting pricelist");
     }
 }
