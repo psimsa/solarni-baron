@@ -37,12 +37,12 @@ public class OteEndpointShould
         _apiClientMock.Setup(x => x.GetStringAsync("https://www.cnb.cz/cs/financni-trhy/devizovy-trh/kurzy-devizoveho-trhu/kurzy-devizoveho-trhu/denni_kurz.txt?date=10.10.2022")).ReturnsAsync(CnbResponses.ValidExchangeRateResponse).Verifiable();
         _apiClientMock.Setup(x => x.GetStringAsync("https://www.ote-cr.cz/cs/kratkodobe-trhy/elektrina/denni-trh/?date=2022-10-10")).ReturnsAsync(OteResponses.ValidPricelistResponse).Verifiable();
 
-        var expectedObject = JsonSerializer.Deserialize(GetPricelistResponses.GetPricelistResponse, CommonSerializationContext.Default.ApiResponseGetPricelistQueryResponse);
+        var expectedObject = JsonSerializer.Deserialize(GetPricelistResponses.GetPricelistResponse, CommonSerializationContext.Default.GetPricelistQueryResponse);
 
         var response = await _client.GetAsync("api/ote/2022-10-10");
         response.EnsureSuccessStatusCode();
         var responseString = await response.Content.ReadAsStringAsync();
-        var responseObject = JsonSerializer.Deserialize(responseString, CommonSerializationContext.Default.ApiResponseGetPricelistQueryResponse);
+        var responseObject = JsonSerializer.Deserialize(responseString, CommonSerializationContext.Default.GetPricelistQueryResponse);
 
         Assert.Equal(expectedObject, responseObject);
     }
