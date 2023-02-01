@@ -1,21 +1,28 @@
-﻿using System.Security.Cryptography;
+﻿using System.Reflection.Emit;
+using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
 using SolarniBaron.Domain.Contracts;
 using SolarniBaron.Domain.Contracts.Queries;
 using SolarniBaron.Domain.Extensions;
 
 namespace SolarniBaron.Domain.CNB.Queries.GetExchangeRate;
 
-public class GetExchangeRateQueryHandler : IQueryHandler<GetExchangeRateQuery, GetExchangeRateQueryResponse>
+public partial class GetExchangeRateQueryHandler : IQueryHandler<GetExchangeRateQuery, GetExchangeRateQueryResponse>
 {
     private readonly IApiHttpClient _client;
     private readonly IDistributedCache _cache;
+    private readonly ILogger<GetExchangeRateQueryHandler> _logger;
 
-    public GetExchangeRateQueryHandler(IApiHttpClient client, IDistributedCache cache)
+    [LoggerMessage(EventId = 1, Level = LogLevel.Information, Message = "Cache not hit when getting exchange rate data for {date} with key {key}")] private partial void LogCacheNotHit(string date, string key);
+
+
+    public GetExchangeRateQueryHandler(IApiHttpClient client, IDistributedCache cache, ILogger<GetExchangeRateQueryHandler> logger)
     {
         _client = client;
         _cache = cache;
+        _logger = logger;
     }
 
     public async Task<GetExchangeRateQueryResponse> Get(
@@ -28,12 +35,13 @@ public class GetExchangeRateQueryHandler : IQueryHandler<GetExchangeRateQuery, G
         
         return await _cache.GetOrCreateAsync(cacheKey, async () =>
         {
+            LogCacheNotHit(getExchangeRateQuery.Date.ToString("yyyy-MM-dd"), cacheKey);
             var response = await _client.GetStringAsync(
                 $"{Constants.CnbUrl}?date={getExchangeRateQuery.Date:dd.MM.yyyy}");
             var euroLine = response.Split('\n').FirstOrDefault(line => line.StartsWith("EMU"));
             var euroRate = euroLine?.Split('|')[4];
             var success = decimal.TryParse(euroRate?.Replace(',', '.'), out var rateValue);
             return new GetExchangeRateQueryResponse(success ? rateValue : 0);
-        }, new DistributedCacheEntryOptions(){AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(14)}) ?? GetExchangeRateQueryResponse.Empty();
+        }, new DistributedCacheEntryOptions(){ AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(2) }) ?? GetExchangeRateQueryResponse.Empty();
     }
 }

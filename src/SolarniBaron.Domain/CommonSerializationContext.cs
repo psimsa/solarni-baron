@@ -1,5 +1,5 @@
 ﻿using System.Text.Json.Serialization;
-
+using SolarniBaron.Domain.BatteryBox.Commands.SetMode;
 using SolarniBaron.Domain.BatteryBox.Models;
 using SolarniBaron.Domain.BatteryBox.Models.BatteryBox;
 using SolarniBaron.Domain.Contracts;
@@ -11,7 +11,8 @@ namespace SolarniBaron.Domain;
 [JsonSerializable(typeof(BatteryBoxUnits))]
 [JsonSerializable(typeof(LoginResponse))]
 [JsonSerializable(typeof(BatteryBoxStatus))]
-[JsonSerializable(typeof(ApiResponse<GetPricelistQueryResponse>))]
+[JsonSerializable(typeof(GetPricelistQueryResponse))]
+[JsonSerializable(typeof(SetModeCommandResponse))]
 public partial class CommonSerializationContext : JsonSerializerContext
 {
 }

@@ -2,7 +2,6 @@
 using System.Text;
 using AngleSharp;
 using AngleSharp.Html.Dom;
-
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using SolarniBaron.Domain.CNB.Queries.GetExchangeRate;
@@ -19,7 +18,11 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
     private readonly IDistributedCache _cache;
     private readonly ILogger<GetPricelistQueryHandler> _logger;
 
-    [LoggerMessage(EventId = 0, Level = LogLevel.Error, Message = "Error getting OTE data: {Error}")] private partial void LogErrorGettingOteData(string error);
+    [LoggerMessage(EventId = 0, Level = LogLevel.Error, Message = "Error getting OTE data: {Error}")]
+    private partial void LogErrorGettingOteData(string error);
+
+    [LoggerMessage(EventId = 1, Level = LogLevel.Information, Message = "Cache not hit when getting OTE data for {date} with key {key}")]
+    private partial void LogCacheNotHit(string date, string key);
 
     public GetPricelistQueryHandler(
         IQueryHandler<GetExchangeRateQuery, GetExchangeRateQueryResponse> getExchangeRateQueryHandler,
@@ -41,6 +44,7 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
         var queryResponse = await _cache.GetOrCreateAsync(cacheKey,
             async () =>
             {
+                LogCacheNotHit(getPricelistQuery.Date.ToString("yyyy-MM-dd"), cacheKey);
                 var exchangeRateQuery = new GetExchangeRateQuery(getPricelistQuery.Date);
                 var exchangeRateQueryResponse = await _getExchangeRateQueryHandler.Get(exchangeRateQuery);
 
@@ -108,7 +112,7 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
                     LogErrorGettingOteData(e.Message);
                     return null;
                 }
-            }, new DistributedCacheEntryOptions() { AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(14) });
+            }, new DistributedCacheEntryOptions() { AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(2) });
         return queryResponse ?? new GetPricelistQueryResponse(null, ResponseStatus.Error, "Error getting pricelist");
     }
 }
