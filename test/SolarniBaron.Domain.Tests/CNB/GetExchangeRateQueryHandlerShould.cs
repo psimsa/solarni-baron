@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
 using Moq;
 using SolarniBaron.Domain.CNB.Queries.GetExchangeRate;
 using SolarniBaron.Domain.Contracts;
@@ -27,7 +28,7 @@ public class GetExchangeRateQueryHandlerShould
 
         _cacheMock.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(null as byte[]).Verifiable();
 
-        var handler = new GetExchangeRateQueryHandler(_httpClientMock.Object, _cacheMock.Object);
+        var handler = new GetExchangeRateQueryHandler(_httpClientMock.Object, _cacheMock.Object, Mock.Of<ILogger<GetExchangeRateQueryHandler>>());
         var response = await handler.Get(new GetExchangeRateQuery(new DateOnly(2022, 10, 10)));
 
         Assert.NotNull(response);
@@ -40,10 +41,10 @@ public class GetExchangeRateQueryHandlerShould
     public async Task GetExchangeRateFromCache()
     {
         var cachedValue = new GetExchangeRateQueryResponse(24.520m);
-        
+
         _cacheMock.Setup(x => x.GetAsync("YCk7uzh3crKVAlzKoXkQPP/qRtI=", It.IsAny<CancellationToken>())).ReturnsAsync(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(cachedValue))).Verifiable();
         _httpClientMock.Setup(x => x.GetStringAsync(It.IsAny<string>())).ThrowsAsync(new NotImplementedException()).Verifiable();
-        var handler = new GetExchangeRateQueryHandler(_httpClientMock.Object, _cacheMock.Object);
+        var handler = new GetExchangeRateQueryHandler(_httpClientMock.Object, _cacheMock.Object, Mock.Of<ILogger<GetExchangeRateQueryHandler>>());
         var response = await handler.Get(new GetExchangeRateQuery(new DateOnly(2022, 10, 11)));
 
         Assert.NotNull(response);
