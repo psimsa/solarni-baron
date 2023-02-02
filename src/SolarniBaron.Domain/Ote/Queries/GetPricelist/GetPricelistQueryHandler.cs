@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System.Globalization;
+using System.Security.Cryptography;
 using System.Text;
 using AngleSharp;
 using AngleSharp.Html.Dom;
@@ -38,17 +39,21 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
     {
         var getPricelistQuery = query.Data ?? throw new ArgumentException("Invalid query type");
 
-        var cacheKeyBytes = SHA1.HashData(Encoding.UTF8.GetBytes($"pricelist-{getPricelistQuery.Date:yyyy-MM-dd}"));
+        var cacheKeyBytes = SHA1.HashData(Encoding.UTF8.GetBytes($"prices-{getPricelistQuery.Date:yyyy-MM-dd}"));
         var cacheKey = Convert.ToBase64String(cacheKeyBytes);
 
-        var queryResponse = await _cache.GetOrCreateAsync(cacheKey,
+        var exchangeRateQuery = new GetExchangeRateQuery(getPricelistQuery.Date);
+        var exchangeRateQueryResponse = await _getExchangeRateQueryHandler.Get(exchangeRateQuery);
+
+        var exchangeRate = exchangeRateQueryResponse.Rate;
+
+        var vatPct = 21;
+        var surcharge = 300;
+
+        var priceString = await _cache.GetOrCreateAsync(cacheKey,
             async () =>
             {
                 LogCacheNotHit(getPricelistQuery.Date.ToString("yyyy-MM-dd"), cacheKey);
-                var exchangeRateQuery = new GetExchangeRateQuery(getPricelistQuery.Date);
-                var exchangeRateQueryResponse = await _getExchangeRateQueryHandler.Get(exchangeRateQuery);
-
-                var exchangeRate = exchangeRateQueryResponse.Rate;
 
                 var date = getPricelistQuery.Date.ToString("yyyy-MM-dd");
                 var url = $"{Constants.OteUrl}/?date={date}";
@@ -70,24 +75,38 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
                     var rows = table.QuerySelectorAll("tr");
 
                     var dataRows = rows.Skip(1).OfType<IHtmlTableRowElement>().ToList();
-                    var hour = 1;
 
-                    var vatPct = 21;
-                    var surcharge = 300;
-
-                    /*var basicPrices = dataRows.Take(dataRows.Count() - 1).Select(row =>
-                    {
-                        var content = row.Cells[1].TextContent;
-                        var isValid = decimal.TryParse(content.Replace(',', '.'), out var basePriceEur);
-                        return isValid ? basePriceEur : 0;
-                    }).Join(Enumerable.Range(1, 24), x => x, x => x, (x, y) => new KeyValuePair<int,decimal>(y, x)).ToList();*/
 
                     var data = dataRows.Take(dataRows.Count() - 1).Select(row =>
                     {
                         var toReturn = GetPricelistQueryResponseItem.Empty;
                         var data = row.Cells[1].TextContent;
                         var isValid = decimal.TryParse(data.Replace(',', '.'), out var basePriceEur);
-                        if (isValid)
+                        return basePriceEur.ToString(CultureInfo.InvariantCulture);
+                    });
+                    return string.Join('|', data);
+
+                    /*var getPricelistQueryResponse =
+                        new GetPricelistQueryResponse(new GetPricelistQueryResponseData(data.ToArray(), exchangeRate), ResponseStatus.Ok);
+                    return getPricelistQueryResponse;*/
+                }
+                catch (Exception e)
+                {
+                    LogErrorGettingOteData(e.Message);
+                    return null;
+                }
+            }, new DistributedCacheEntryOptions() { AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(2) });
+        if (priceString == null)
+            return new GetPricelistQueryResponse(null, ResponseStatus.Error, "Error getting pricelist");
+
+        // get prices with an index as tuple
+        var basicPrices = priceString.Split('|').Select(item =>
+        {
+            var isValid = decimal.TryParse(item, out var basePriceEur);
+            return isValid ? basePriceEur : 0;
+        }).Select((item, index) => new KeyValuePair<int, decimal>(index, item)).OrderBy(_=>_.Value).ToList();
+
+        /*if (isValid)
                         {
                             decimal basePriceCzk = basePriceEur * exchangeRate;
                             decimal basePriceCzkVat = basePriceCzk * vatPct / 100;
@@ -96,7 +115,7 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
                             decimal withSurchargeCzkVat = withSurchargeCzk * vatPct / 100;
                             decimal withSurchargeCzkTotal = withSurchargeCzk + withSurchargeCzkVat;
 
-                            toReturn = new GetPricelistQueryResponseItem(hour,
+                            toReturnItem = new GetPricelistQueryResponseItem(hour,
                                 basePriceEur,
                                 basePriceCzk,
                                 basePriceCzkVat,
@@ -108,19 +127,30 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
                         }
 
                         hour++;
-                        return toReturn;
-                    });
+                        return toReturn;*/
+        var toReturn = new GetPricelistQueryResponseItem[24];
+        for (int i = 0; i < 24; i++)
+        {
+            var item = basicPrices[i];
+            decimal basePriceCzk = item.Value * exchangeRate;
+            decimal basePriceCzkVat = basePriceCzk * vatPct / 100;
+            decimal basePriceCzkTotal = basePriceCzk + basePriceCzkVat;
+            decimal withSurchargeCzk = basePriceCzk + surcharge;
+            decimal withSurchargeCzkVat = withSurchargeCzk * vatPct / 100;
+            decimal withSurchargeCzkTotal = withSurchargeCzk + withSurchargeCzkVat;
 
-                    var getPricelistQueryResponse =
-                        new GetPricelistQueryResponse(new GetPricelistQueryResponseData(data.ToArray(), exchangeRate), ResponseStatus.Ok);
-                    return getPricelistQueryResponse;
-                }
-                catch (Exception e)
-                {
-                    LogErrorGettingOteData(e.Message);
-                    return null;
-                }
-            }, new DistributedCacheEntryOptions() { AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(2) });
-        return queryResponse ?? new GetPricelistQueryResponse(null, ResponseStatus.Error, "Error getting pricelist");
+            var toReturnItem = new GetPricelistQueryResponseItem(item.Key+1,
+                item.Value,
+                basePriceCzk,
+                basePriceCzkVat,
+                basePriceCzkTotal,
+                withSurchargeCzk,
+                withSurchargeCzkVat,
+                withSurchargeCzkTotal,
+                i);
+            toReturn[item.Key] = toReturnItem;
+        }
+
+        return new GetPricelistQueryResponse(new GetPricelistQueryResponseData(toReturn, exchangeRate));
     }
 }

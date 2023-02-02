@@ -1,4 +1,5 @@
-﻿using System.Reflection.Emit;
+﻿using System.Globalization;
+using System.Reflection.Emit;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.Caching.Distributed;
@@ -29,11 +30,11 @@ public partial class GetExchangeRateQueryHandler : IQueryHandler<GetExchangeRate
         IQuery<GetExchangeRateQuery, GetExchangeRateQueryResponse> query)
     {
         var getExchangeRateQuery = query?.Data ?? throw new ArgumentException("Invalid query type");
-        
-        var cacheKeyBytes = SHA1.HashData(Encoding.UTF8.GetBytes($"exchangerate-{getExchangeRateQuery.Date:yyyy-MM-dd}"));
+
+        var cacheKeyBytes = SHA1.HashData(Encoding.UTF8.GetBytes($"eurczkrate-{getExchangeRateQuery.Date:yyyy-MM-dd}"));
         var cacheKey = Convert.ToBase64String(cacheKeyBytes);
-        
-        return await _cache.GetOrCreateAsync(cacheKey, async () =>
+
+        var rateText = await _cache.GetOrCreateAsync(cacheKey, async () =>
         {
             LogCacheNotHit(getExchangeRateQuery.Date.ToString("yyyy-MM-dd"), cacheKey);
             var response = await _client.GetStringAsync(
@@ -41,7 +42,10 @@ public partial class GetExchangeRateQueryHandler : IQueryHandler<GetExchangeRate
             var euroLine = response.Split('\n').FirstOrDefault(line => line.StartsWith("EMU"));
             var euroRate = euroLine?.Split('|')[4];
             var success = decimal.TryParse(euroRate?.Replace(',', '.'), out var rateValue);
-            return new GetExchangeRateQueryResponse(success ? rateValue : 0);
-        }, new DistributedCacheEntryOptions(){ AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(2) }) ?? GetExchangeRateQueryResponse.Empty();
+            return rateValue.ToString(CultureInfo.InvariantCulture);
+        }, new DistributedCacheEntryOptions(){ AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(2) });
+
+        var rate = decimal.Parse(rateText, CultureInfo.InvariantCulture);
+        return new GetExchangeRateQueryResponse(rate);
     }
 }
