@@ -1,12 +1,10 @@
 ﻿using System.Globalization;
-using System.Reflection.Emit;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using SolarniBaron.Domain.Contracts;
 using SolarniBaron.Domain.Contracts.Queries;
-using SolarniBaron.Domain.Extensions;
 
 namespace SolarniBaron.Domain.CNB.Queries.GetExchangeRate;
 

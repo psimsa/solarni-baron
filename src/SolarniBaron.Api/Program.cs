@@ -16,8 +16,6 @@ IdentityModelEventSource.ShowPII = true;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -30,10 +28,7 @@ builder.Services.AddPersistence();
 
 builder.Services.AddHttpClient();
 
-var configuration = builder.Configuration;
-var services = builder.Services;
-
-services.RegisterCache(configuration);
+builder.Services.RegisterCache(builder.Configuration);
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
 
@@ -73,12 +68,7 @@ app.MapGet("api/ote/{date?}",
         async (DateOnly? date, IQueryHandler<GetPricelistQuery, GetPricelistQueryResponse> queryHandler) =>
         {
             var result = await queryHandler.Get(new GetPricelistQuery(date ?? DateOnly.FromDateTime(DateTime.Now)));
-            if (result.ResponseStatus == ResponseStatus.Error)
-            {
-                return Results.NotFound();
-            }
-
-            return Results.Ok(result);
+            return result.ResponseStatus == ResponseStatus.Error ? Results.NotFound() : Results.Ok(result);
         })
     .WithName("GetPricelist")
     .Produces<ApiResponse<GetPricelistQueryResponse>>()
@@ -90,7 +80,7 @@ app.MapPost("api/batterybox/getstats",
             var data = await queryHandler.Get(new GetStatsQuery(loginInfo.Email, loginInfo.Password, loginInfo.UnitId));
             if (data.ResponseStatus == ResponseStatus.Error)
             {
-                logger.LogError(data.Error);
+                logger.LogError("Error fetching data: {error}", data.Error);
                 return Results.BadRequest(data.Error);
             }
 
@@ -108,7 +98,7 @@ app.MapPost("api/batterybox/setmode",
                 setModeInfo.Mode));
             if (data.ResponseStatus == ResponseStatus.Error)
             {
-                logger.LogError(data.Error);
+                logger.LogError("Error setting mode to {mode}: {error}", setModeInfo.Mode, data.Error);
                 return Results.BadRequest(data.Error);
             }
 
@@ -119,7 +109,6 @@ app.MapPost("api/batterybox/setmode",
     .WithOpenApi();
 
 app.Run();
-
 
 namespace SolarniBaron.Api
 {

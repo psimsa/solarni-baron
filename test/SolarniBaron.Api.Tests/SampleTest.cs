@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SolarniBaron.Domain.Ote.Queries.GetPricelist;
-
-namespace SolarniBaron.Api.Tests;
+﻿namespace SolarniBaron.Api.Tests;
 
 public class SampleTestShould
 {

@@ -7,10 +7,6 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["src/SolarniBaron.Api/SolarniBaron.Api.csproj", "src/SolarniBaron.Api/"]
-COPY ["src/SolarniBaron.Domain/SolarniBaron.Domain.csproj", "src/SolarniBaron.Domain/"]
-COPY ["src/SolarniBaron.Persistence/SolarniBaron.Persistence.csproj", "src/SolarniBaron.Persistence/"]
-RUN dotnet restore "src/SolarniBaron.Api/SolarniBaron.Api.csproj"
 COPY . .
 WORKDIR "/src/src/SolarniBaron.Api"
 RUN dotnet build "SolarniBaron.Api.csproj" -c Release -o /app/build

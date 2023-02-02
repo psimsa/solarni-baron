@@ -8,7 +8,6 @@ using Microsoft.Extensions.Logging;
 using SolarniBaron.Domain.CNB.Queries.GetExchangeRate;
 using SolarniBaron.Domain.Contracts;
 using SolarniBaron.Domain.Contracts.Queries;
-using SolarniBaron.Domain.Extensions;
 
 namespace SolarniBaron.Domain.Ote.Queries.GetPricelist;
 
@@ -101,6 +100,9 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
             return isValid ? basePriceEur : 0;
         }).Select((item, index) => new KeyValuePair<int, decimal>(index, item)).OrderBy(_ => _.Value).ToList();
 
+        var km = new PriceClusteringWorker();
+        var clusters = km.GetClusters(basicPrices.Select(_ => _.Value).ToArray(), 4);
+
         var toReturn = new GetPricelistQueryResponseItem[24];
         for (int i = 0; i < 24; i++)
         {
@@ -112,7 +114,7 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
             decimal withSurchargeCzkVat = withSurchargeCzk * vatPct / 100;
             decimal withSurchargeCzkTotal = withSurchargeCzk + withSurchargeCzkVat;
 
-            var toReturnItem = new GetPricelistQueryResponseItem(item.Key + 1,
+            var toReturnItem = new GetPricelistQueryResponseItem(item.Key,
                 item.Value,
                 basePriceCzk,
                 basePriceCzkVat,
@@ -120,7 +122,8 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
                 withSurchargeCzk,
                 withSurchargeCzkVat,
                 withSurchargeCzkTotal,
-                i);
+                i,
+                clusters[i]);
             toReturn[item.Key] = toReturnItem;
         }
 
