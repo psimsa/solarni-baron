@@ -26,6 +26,7 @@ public static class AssertWrapper
         {
             return Task.FromException(ex);
         }
+
         return Task.CompletedTask;
     }
 }

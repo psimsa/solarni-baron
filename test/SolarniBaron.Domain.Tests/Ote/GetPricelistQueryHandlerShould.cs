@@ -38,7 +38,8 @@ public class GetPricelistQueryHandlerShould
         _getExchangeRateQueryHandlerMock.Setup(x => x.Get(It.IsAny<IQuery<GetExchangeRateQuery, GetExchangeRateQueryResponse>>()))
             .ReturnsAsync(new GetExchangeRateQueryResponse(24.520m)).Verifiable();
 
-        var handler = new GetPricelistQueryHandler(_getExchangeRateQueryHandlerMock.Object, _httpClientMock.Object, new Cache(_cacheMock.Object),
+        var handler = new GetPricelistQueryHandler(_getExchangeRateQueryHandlerMock.Object, _httpClientMock.Object,
+            new Cache(_cacheMock.Object),
             Mock.Of<ILogger<GetPricelistQueryHandler>>());
         var response = await handler.Get(new GetPricelistQuery(new DateOnly(2022, 10, 11)));
 
@@ -58,7 +59,7 @@ public class GetPricelistQueryHandlerShould
             () => Assert.Equal(2226.53640m, responseItems[0].WithSurchargeCzk),
             () => Assert.Equal(467.572644m, responseItems[0].WithSurchargeCzkVat),
             () => Assert.Equal(2694.109044m, responseItems[0].WithSurchargeCzkTotal)
-            );
+        );
     }
 
     [Fact]
@@ -66,12 +67,14 @@ public class GetPricelistQueryHandlerShould
     {
         var cachedValue =
             "78.57|77.21|83.23|77.21|78.86|141.40|230.96|227.26|269.64|185.21|159.46|152.80|145.25|172.46|195.14|205.03|213.93|248.12|268.72|308.72|230.00|194.36|173.54|159.34";
-        _cacheMock.Setup(x => x.GetAsync("Cq1wD0oQ+s2Eeu7cbLDGahJst6o=", It.IsAny<CancellationToken>())).ReturnsAsync(Encoding.UTF8.GetBytes(cachedValue)).Verifiable();
+        _cacheMock.Setup(x => x.GetAsync("Cq1wD0oQ+s2Eeu7cbLDGahJst6o=", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Encoding.UTF8.GetBytes(cachedValue)).Verifiable();
         _httpClientMock.Setup(x => x.GetStringAsync(It.IsAny<string>())).ThrowsAsync(new NotImplementedException()).Verifiable();
         _getExchangeRateQueryHandlerMock.Setup(x => x.Get(It.IsAny<IQuery<GetExchangeRateQuery, GetExchangeRateQueryResponse>>()))
             .ReturnsAsync(new GetExchangeRateQueryResponse(24.520m)).Verifiable();
 
-        var handler = new GetPricelistQueryHandler(_getExchangeRateQueryHandlerMock.Object, _httpClientMock.Object, new Cache(_cacheMock.Object),
+        var handler = new GetPricelistQueryHandler(_getExchangeRateQueryHandlerMock.Object, _httpClientMock.Object,
+            new Cache(_cacheMock.Object),
             Mock.Of<ILogger<GetPricelistQueryHandler>>());
         var response = await handler.Get(new GetPricelistQuery(new DateOnly(2022, 10, 10)));
 
@@ -91,6 +94,6 @@ public class GetPricelistQueryHandlerShould
             () => Assert.Equal(2226.53640m, responseItems[0].WithSurchargeCzk),
             () => Assert.Equal(467.572644m, responseItems[0].WithSurchargeCzkVat),
             () => Assert.Equal(2694.109044m, responseItems[0].WithSurchargeCzkTotal)
-            );
+        );
     }
 }

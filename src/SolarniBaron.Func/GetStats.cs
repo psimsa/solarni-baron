@@ -16,7 +16,8 @@ public partial class GetStats
     private readonly IQueryHandler<GetStatsQuery, GetStatsQueryResponse> _queryHandler;
     private readonly ILogger _logger;
 
-    [LoggerMessage(EventId = 0, Level = LogLevel.Error, Message = "Error getting stats: {Error}")] private partial void LogErrorGettingStats(string error);
+    [LoggerMessage(EventId = 0, Level = LogLevel.Error, Message = "Error getting stats: {Error}")]
+    private partial void LogErrorGettingStats(string error);
 
     public GetStats(IQueryHandler<GetStatsQuery, GetStatsQueryResponse> queryHandler, ILoggerFactory loggerFactory)
     {
@@ -37,6 +38,7 @@ public partial class GetStats
             errorResponse.WriteString(data.Error);
             return errorResponse;
         }
+
         var response = req.CreateResponse(HttpStatusCode.OK);
         response.Headers.Add("Content-Type", "application/json; charset=utf-8");
         response.WriteString(JsonSerializer.Serialize(data.BatteryBoxStatus, CommonSerializationContext.Default.BatteryBoxStatus));

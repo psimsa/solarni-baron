@@ -11,7 +11,6 @@ public class OigDataConnectorShould
 
     public OigDataConnectorShould()
     {
-
         _client = new Mock<IBatteryBoxClient>();
         _logger = new Mock<ILogger<OigDataConnector>>();
     }

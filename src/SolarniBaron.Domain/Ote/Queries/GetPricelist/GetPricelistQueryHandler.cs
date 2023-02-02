@@ -99,7 +99,7 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
         {
             var isValid = decimal.TryParse(item, out var basePriceEur);
             return isValid ? basePriceEur : 0;
-        }).Select((item, index) => new KeyValuePair<int, decimal>(index, item)).OrderBy(_=>_.Value).ToList();
+        }).Select((item, index) => new KeyValuePair<int, decimal>(index, item)).OrderBy(_ => _.Value).ToList();
 
         var toReturn = new GetPricelistQueryResponseItem[24];
         for (int i = 0; i < 24; i++)
@@ -112,7 +112,7 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
             decimal withSurchargeCzkVat = withSurchargeCzk * vatPct / 100;
             decimal withSurchargeCzkTotal = withSurchargeCzk + withSurchargeCzkVat;
 
-            var toReturnItem = new GetPricelistQueryResponseItem(item.Key+1,
+            var toReturnItem = new GetPricelistQueryResponseItem(item.Key + 1,
                 item.Value,
                 basePriceCzk,
                 basePriceCzkVat,

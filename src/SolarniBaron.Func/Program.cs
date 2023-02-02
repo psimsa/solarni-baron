@@ -5,7 +5,7 @@ using SolarniBaron.Domain.Extensions;
 using SolarniBaron.Persistence;
 
 HostBuilder builder = new HostBuilder();
-builder.ConfigureServices((context, services)=>
+builder.ConfigureServices((context, services) =>
 {
     services.AddDomain();
     services.AddPersistence();

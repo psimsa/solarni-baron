@@ -27,12 +27,14 @@ public class GetStatsQueryHandlerShould
         _cacheMock.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(null as byte[]).Verifiable();
 
 
-        var returnedObject = JsonSerializer.Deserialize(OigResponses.GetRawStatsResponse, CommonSerializationContext.Default.DictionaryStringBatteryBoxUnitData);
+        var returnedObject = JsonSerializer.Deserialize(OigResponses.GetRawStatsResponse,
+            CommonSerializationContext.Default.DictionaryStringBatteryBoxUnitData);
         _batteryBoxDataConnectorMock.Setup(_ => _.GetStatsForUnit(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string?>()))
-            .ReturnsAsync(returnedObject!.First().Value with {UnitId = "asdf"}).Verifiable();
+            .ReturnsAsync(returnedObject!.First().Value with { UnitId = "asdf" }).Verifiable();
 
 
-        var handler = new GetStatsQueryHandler(_batteryBoxDataConnectorMock.Object, _cacheMock.Object, NullLogger<GetStatsQueryHandler>.Instance);
+        var handler = new GetStatsQueryHandler(_batteryBoxDataConnectorMock.Object, _cacheMock.Object,
+            NullLogger<GetStatsQueryHandler>.Instance);
 
         var response = await handler.Get(new GetStatsQuery("hello", "world", "asdf"));
 
@@ -45,8 +47,6 @@ public class GetStatsQueryHandlerShould
             () => Assert.Equal(66, status.ConsumptionL2),
             () => Assert.Equal(19, status.ConsumptionL3),
             () => Assert.Equal(Domain.BatteryBox.Models.BatteryBox.OperationMode.Home1, status.OperationMode)
-            );
-
+        );
     }
-
 }

@@ -7,6 +7,7 @@ using SolarniBaron.Domain;
 using SolarniBaron.Domain.Contracts;
 using SolarniBaron.Domain.Contracts.Queries;
 using SolarniBaron.Domain.Ote.Queries.GetPricelist;
+
 #pragma warning disable CA2007
 
 namespace SolarniBaron.Func;
@@ -16,7 +17,8 @@ public partial class Ote
     private readonly IQueryHandler<GetPricelistQuery, GetPricelistQueryResponse> _queryHandler;
     private readonly ILogger _logger;
 
-    [LoggerMessage(EventId = 0, Level = LogLevel.Error, Message = "Error getting OTE data: {Error}")] private partial void LogErrorGettingOteData(string error);
+    [LoggerMessage(EventId = 0, Level = LogLevel.Error, Message = "Error getting OTE data: {Error}")]
+    private partial void LogErrorGettingOteData(string error);
 
 
     public Ote(IQueryHandler<GetPricelistQuery, GetPricelistQueryResponse> queryHandler, ILoggerFactory loggerFactory)
@@ -41,6 +43,7 @@ public partial class Ote
             LogErrorGettingOteData(result.Error);
             return req.CreateResponse(HttpStatusCode.NotFound);
         }
+
         var response = req.CreateResponse(HttpStatusCode.OK);
         response.Headers.Add("Content-Type", "application/json; charset=utf-8");
         await response.WriteStringAsync(JsonSerializer.Serialize(result, CommonSerializationContext.Default.GetPricelistQueryResponse));

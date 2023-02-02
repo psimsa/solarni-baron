@@ -58,7 +58,7 @@ public partial class OigBatteryBoxClient : IBatteryBoxClient
         var responseBody = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode)
         {
-            LogApiCallFailed((int) response.StatusCode, responseBody);
+            LogApiCallFailed((int)response.StatusCode, responseBody);
             return (false, responseBody);
         }
 
@@ -84,10 +84,7 @@ public partial class OigBatteryBoxClient : IBatteryBoxClient
 
         var content = new StringContent(serializedLoginInfo);
         content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-        var message = new HttpRequestMessage(HttpMethod.Post, Constants.LoginUrl)
-        {
-            Content = content,
-        };
+        var message = new HttpRequestMessage(HttpMethod.Post, Constants.LoginUrl) { Content = content, };
 
         var loginInfoResponse = await _client.SendAsync(message);
         if (loginInfoResponse.Content.Headers.ContentLength == 0)

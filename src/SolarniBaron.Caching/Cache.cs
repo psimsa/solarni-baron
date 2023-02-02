@@ -8,19 +8,21 @@ namespace SolarniBaron.Caching;
 public class Cache : ICache
 {
     private readonly IDistributedCache _cache;
-    
+
     public Cache(IDistributedCache cache)
     {
         _cache = cache;
     }
-    
+
     public Task<byte[]?> GetAsync(string key, CancellationToken token = new CancellationToken()) => _cache.GetAsync(key, token);
 
-    public Task SetAsync(string key, byte[] value, DistributedCacheEntryOptions options, CancellationToken token = new CancellationToken()) => _cache.SetAsync(key, value, options, token);
+    public Task SetAsync(string key, byte[] value, DistributedCacheEntryOptions options,
+        CancellationToken token = new CancellationToken()) => _cache.SetAsync(key, value, options, token);
 
     public Task RemoveAsync(string key, CancellationToken token = new CancellationToken()) => _cache.RemoveAsync(key, token);
-    
-    public async Task<T?> GetOrCreateAsync<T>(string key, Func<Task<T?>> createItem, DistributedCacheEntryOptions? options = null) where T : class
+
+    public async Task<T?> GetOrCreateAsync<T>(string key, Func<Task<T?>> createItem, DistributedCacheEntryOptions? options = null)
+        where T : class
     {
         var cachedItem = await _cache.GetAsync(key);
         if (cachedItem is not null)
@@ -28,6 +30,7 @@ public class Cache : ICache
             var toReturn = JsonSerializer.Deserialize<T>(cachedItem);
             return toReturn;
         }
+
         var item = await createItem();
         if (item is not null)
         {
@@ -37,6 +40,7 @@ public class Cache : ICache
 
         return item;
     }
+
     public async Task<string?> GetOrCreateAsync(string key, Func<Task<string?>> createItem, DistributedCacheEntryOptions? options = null)
     {
         var cachedItem = await _cache.GetAsync(key);
@@ -45,6 +49,7 @@ public class Cache : ICache
             string toReturn = Encoding.UTF8.GetString(cachedItem);
             return toReturn;
         }
+
         var item = await createItem();
         if (item is not null)
         {

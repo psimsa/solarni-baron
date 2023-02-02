@@ -2,21 +2,21 @@ name: Build solution
 
 on:
   push:
-    
+
 env:
   IS_MAIN: ${{ github.ref == 'refs/heads/main' }}
   VERSION: 1.0.${{ github.run_number }}
-    
+
 jobs:
   build-and-test-solution:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Setup .Net 7
-      uses: actions/setup-dotnet@v3
-      with:
+      - uses: actions/checkout@v3
+      - name: Setup .Net 7
+        uses: actions/setup-dotnet@v3
+        with:
           dotnet-version: 7.0.x
-    - name: Build solution
-      run: dotnet build --configuration Release
-    - name: Run tests
-      run: dotnet test --configuration Release --no-build --verbosity normal
+      - name: Build solution
+        run: dotnet build --configuration Release
+      - name: Run tests
+        run: dotnet test --configuration Release --no-build --verbosity normal

@@ -121,7 +121,6 @@ app.MapPost("api/batterybox/setmode",
 app.Run();
 
 
-
 namespace SolarniBaron.Api
 {
     public partial class Program

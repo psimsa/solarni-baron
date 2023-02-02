@@ -16,7 +16,9 @@ public partial class GetExchangeRateQueryHandler : IQueryHandler<GetExchangeRate
     private readonly ICache _cache;
     private readonly ILogger<GetExchangeRateQueryHandler> _logger;
 
-    [LoggerMessage(EventId = 1, Level = LogLevel.Information, Message = "Cache not hit when getting exchange rate data for {date} with key {key}")] private partial void LogCacheNotHit(string date, string key);
+    [LoggerMessage(EventId = 1, Level = LogLevel.Information,
+        Message = "Cache not hit when getting exchange rate data for {date} with key {key}")]
+    private partial void LogCacheNotHit(string date, string key);
 
 
     public GetExchangeRateQueryHandler(IApiHttpClient client, ICache cache, ILogger<GetExchangeRateQueryHandler> logger)
@@ -43,7 +45,7 @@ public partial class GetExchangeRateQueryHandler : IQueryHandler<GetExchangeRate
             var euroRate = euroLine?.Split('|')[4];
             var success = decimal.TryParse(euroRate?.Replace(',', '.'), out var rateValue);
             return rateValue.ToString(CultureInfo.InvariantCulture);
-        }, new DistributedCacheEntryOptions(){ AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(2) });
+        }, new DistributedCacheEntryOptions() { AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(2) });
 
         var rate = decimal.Parse(rateText, CultureInfo.InvariantCulture);
         return new GetExchangeRateQueryResponse(rate);

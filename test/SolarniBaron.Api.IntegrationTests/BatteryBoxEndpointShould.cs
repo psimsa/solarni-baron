@@ -26,8 +26,8 @@ public class BatteryBoxEndpointShould
             services.AddSingleton<IApiHttpClient>(_apiClientMock.Object);
             services.AddSingleton(_cacheMock.Object);
         });
-
     }
+
     [Fact]
     public async Task GetStats()
     {
@@ -43,7 +43,8 @@ public class BatteryBoxEndpointShould
         }).Verifiable();
 
         var requestBodyJson = JsonSerializer.Serialize(new LoginInfo("hello", "world"));
-        var response = await _client.PostAsync("api/batterybox/getstats", new StringContent(requestBodyJson, new MediaTypeHeaderValue("application/json")));
+        var response = await _client.PostAsync("api/batterybox/getstats",
+            new StringContent(requestBodyJson, new MediaTypeHeaderValue("application/json")));
 
         _apiClientMock.VerifyAll();
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -60,7 +61,8 @@ public class BatteryBoxEndpointShould
         }).Verifiable();
 
         var requestBodyJson = JsonSerializer.Serialize(new LoginInfo("hello", "world"));
-        var response = await _client.PostAsync("api/batterybox/getstats", new StringContent(requestBodyJson, new MediaTypeHeaderValue("application/json")));
+        var response = await _client.PostAsync("api/batterybox/getstats",
+            new StringContent(requestBodyJson, new MediaTypeHeaderValue("application/json")));
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
 

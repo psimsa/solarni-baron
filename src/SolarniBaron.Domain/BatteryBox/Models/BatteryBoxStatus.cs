@@ -1,5 +1,4 @@
 ﻿using System.Text.Json.Serialization;
-
 using SolarniBaron.Domain.BatteryBox.Models.BatteryBox;
 
 namespace SolarniBaron.Domain.BatteryBox.Models;
