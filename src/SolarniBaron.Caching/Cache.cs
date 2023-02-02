@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.IO.Compression;
+using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Caching.Distributed;
 using SolarniBaron.Domain.Contracts;
@@ -27,18 +28,35 @@ public class Cache : ICache
         var cachedItem = await _cache.GetAsync(key);
         if (cachedItem is not null)
         {
-            var toReturn = JsonSerializer.Deserialize<T>(cachedItem);
+            var toReturn = JsonSerializer.Deserialize<T>(Decompress(cachedItem));
             return toReturn;
         }
 
         var item = await createItem();
         if (item is not null)
         {
-            var serializedItem = JsonSerializer.SerializeToUtf8Bytes(item);
+            var serializedItem = Compress(JsonSerializer.Serialize(item));
             await _cache.SetAsync(key, serializedItem, options ?? new DistributedCacheEntryOptions());
         }
 
         return item;
+    }
+
+    private byte[] Compress(string input)
+    {
+        using var ms = new MemoryStream();
+        using var gs = new GZipStream(ms, CompressionMode.Compress);
+        using var sw = new StreamWriter(gs);
+        sw.Write(input);
+        return ms.ToArray();
+    }
+
+    private string Decompress(byte[] input)
+    {
+        using var ms = new MemoryStream(input);
+        using var gs = new GZipStream(ms, CompressionMode.Decompress);
+        using var sr = new StreamReader(gs);
+        return sr.ReadToEnd();
     }
 
     public async Task<string?> GetOrCreateAsync(string key, Func<Task<string?>> createItem, DistributedCacheEntryOptions? options = null)
