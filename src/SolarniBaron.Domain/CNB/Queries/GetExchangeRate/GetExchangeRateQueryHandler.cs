@@ -13,13 +13,13 @@ namespace SolarniBaron.Domain.CNB.Queries.GetExchangeRate;
 public partial class GetExchangeRateQueryHandler : IQueryHandler<GetExchangeRateQuery, GetExchangeRateQueryResponse>
 {
     private readonly IApiHttpClient _client;
-    private readonly IDistributedCache _cache;
+    private readonly ICache _cache;
     private readonly ILogger<GetExchangeRateQueryHandler> _logger;
 
     [LoggerMessage(EventId = 1, Level = LogLevel.Information, Message = "Cache not hit when getting exchange rate data for {date} with key {key}")] private partial void LogCacheNotHit(string date, string key);
 
 
-    public GetExchangeRateQueryHandler(IApiHttpClient client, IDistributedCache cache, ILogger<GetExchangeRateQueryHandler> logger)
+    public GetExchangeRateQueryHandler(IApiHttpClient client, ICache cache, ILogger<GetExchangeRateQueryHandler> logger)
     {
         _client = client;
         _cache = cache;

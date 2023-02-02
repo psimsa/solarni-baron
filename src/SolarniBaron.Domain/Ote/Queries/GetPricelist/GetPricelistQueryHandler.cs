@@ -16,7 +16,7 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
 {
     private readonly IQueryHandler<GetExchangeRateQuery, GetExchangeRateQueryResponse> _getExchangeRateQueryHandler;
     private readonly IApiHttpClient _client;
-    private readonly IDistributedCache _cache;
+    private readonly ICache _cache;
     private readonly ILogger<GetPricelistQueryHandler> _logger;
 
     [LoggerMessage(EventId = 0, Level = LogLevel.Error, Message = "Error getting OTE data: {Error}")]
@@ -27,7 +27,7 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
 
     public GetPricelistQueryHandler(
         IQueryHandler<GetExchangeRateQuery, GetExchangeRateQueryResponse> getExchangeRateQueryHandler,
-        IApiHttpClient client, IDistributedCache cache, ILogger<GetPricelistQueryHandler> logger)
+        IApiHttpClient client, ICache cache, ILogger<GetPricelistQueryHandler> logger)
     {
         _getExchangeRateQueryHandler = getExchangeRateQueryHandler;
         _client = client;
@@ -85,10 +85,6 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
                         return basePriceEur.ToString(CultureInfo.InvariantCulture);
                     });
                     return string.Join('|', data);
-
-                    /*var getPricelistQueryResponse =
-                        new GetPricelistQueryResponse(new GetPricelistQueryResponseData(data.ToArray(), exchangeRate), ResponseStatus.Ok);
-                    return getPricelistQueryResponse;*/
                 }
                 catch (Exception e)
                 {
@@ -99,35 +95,12 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
         if (priceString == null)
             return new GetPricelistQueryResponse(null, ResponseStatus.Error, "Error getting pricelist");
 
-        // get prices with an index as tuple
         var basicPrices = priceString.Split('|').Select(item =>
         {
             var isValid = decimal.TryParse(item, out var basePriceEur);
             return isValid ? basePriceEur : 0;
         }).Select((item, index) => new KeyValuePair<int, decimal>(index, item)).OrderBy(_=>_.Value).ToList();
 
-        /*if (isValid)
-                        {
-                            decimal basePriceCzk = basePriceEur * exchangeRate;
-                            decimal basePriceCzkVat = basePriceCzk * vatPct / 100;
-                            decimal basePriceCzkTotal = basePriceCzk + basePriceCzkVat;
-                            decimal withSurchargeCzk = basePriceCzk + surcharge;
-                            decimal withSurchargeCzkVat = withSurchargeCzk * vatPct / 100;
-                            decimal withSurchargeCzkTotal = withSurchargeCzk + withSurchargeCzkVat;
-
-                            toReturnItem = new GetPricelistQueryResponseItem(hour,
-                                basePriceEur,
-                                basePriceCzk,
-                                basePriceCzkVat,
-                                basePriceCzkTotal,
-                                withSurchargeCzk,
-                                withSurchargeCzkVat,
-                                withSurchargeCzkTotal,
-                                0);
-                        }
-
-                        hour++;
-                        return toReturn;*/
         var toReturn = new GetPricelistQueryResponseItem[24];
         for (int i = 0; i < 24; i++)
         {

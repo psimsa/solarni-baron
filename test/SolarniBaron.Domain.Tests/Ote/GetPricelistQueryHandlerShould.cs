@@ -4,6 +4,7 @@ using System.Text.Json;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Moq;
+using SolarniBaron.Caching;
 using SolarniBaron.Domain.CNB.Queries.GetExchangeRate;
 using SolarniBaron.Domain.Contracts;
 using SolarniBaron.Domain.Contracts.Queries;
@@ -37,7 +38,7 @@ public class GetPricelistQueryHandlerShould
         _getExchangeRateQueryHandlerMock.Setup(x => x.Get(It.IsAny<IQuery<GetExchangeRateQuery, GetExchangeRateQueryResponse>>()))
             .ReturnsAsync(new GetExchangeRateQueryResponse(24.520m)).Verifiable();
 
-        var handler = new GetPricelistQueryHandler(_getExchangeRateQueryHandlerMock.Object, _httpClientMock.Object, _cacheMock.Object,
+        var handler = new GetPricelistQueryHandler(_getExchangeRateQueryHandlerMock.Object, _httpClientMock.Object, new Cache(_cacheMock.Object),
             Mock.Of<ILogger<GetPricelistQueryHandler>>());
         var response = await handler.Get(new GetPricelistQuery(new DateOnly(2022, 10, 11)));
 
@@ -70,7 +71,7 @@ public class GetPricelistQueryHandlerShould
         _getExchangeRateQueryHandlerMock.Setup(x => x.Get(It.IsAny<IQuery<GetExchangeRateQuery, GetExchangeRateQueryResponse>>()))
             .ReturnsAsync(new GetExchangeRateQueryResponse(24.520m)).Verifiable();
 
-        var handler = new GetPricelistQueryHandler(_getExchangeRateQueryHandlerMock.Object, _httpClientMock.Object, _cacheMock.Object,
+        var handler = new GetPricelistQueryHandler(_getExchangeRateQueryHandlerMock.Object, _httpClientMock.Object, new Cache(_cacheMock.Object),
             Mock.Of<ILogger<GetPricelistQueryHandler>>());
         var response = await handler.Get(new GetPricelistQuery(new DateOnly(2022, 10, 10)));
 

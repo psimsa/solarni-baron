@@ -15,4 +15,8 @@
     <PackageReference Include="Tingle.Extensions.Caching.MongoDB" Version="3.8.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SolarniBaron.Domain\SolarniBaron.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

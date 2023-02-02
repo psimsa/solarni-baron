@@ -2,13 +2,17 @@
 using Microsoft.Extensions.Caching.Cosmos;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SolarniBaron.Domain.Contracts;
 using Tingle.Extensions.Caching.MongoDB;
 
 namespace SolarniBaron.Caching;
+
 public static class ServiceCollectionExtensions
 {
     public static void RegisterCache(this IServiceCollection serviceCollection, IConfiguration configurationManager)
     {
+        serviceCollection.AddSingleton<ICache, Cache>();
+
         var cacheConfiguration = configurationManager.GetSection("CacheConfiguration");
         var cacheProvider = cacheConfiguration["Provider"] ?? "Memory";
 

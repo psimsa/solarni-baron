@@ -13,10 +13,10 @@ namespace SolarniBaron.Domain.BatteryBox.Queries.GetStats;
 public class GetStatsQueryHandler : IQueryHandler<GetStatsQuery, GetStatsQueryResponse>
 {
     private readonly IBatteryBoxDataConnector _dataConnector;
-    private readonly IDistributedCache _cache;
+    private readonly ICache _cache;
     private readonly ILogger<GetStatsQueryHandler> _logger;
 
-    public GetStatsQueryHandler(IBatteryBoxDataConnector dataConnector, IDistributedCache cache,
+    public GetStatsQueryHandler(IBatteryBoxDataConnector dataConnector, ICache cache,
         ILogger<GetStatsQueryHandler> logger)
     {
         _dataConnector = dataConnector;

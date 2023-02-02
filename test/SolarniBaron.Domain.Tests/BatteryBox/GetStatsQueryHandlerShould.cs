@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using SolarniBaron.Domain.BatteryBox;
 using SolarniBaron.Domain.BatteryBox.Queries.GetStats;
+using SolarniBaron.Domain.Contracts;
 using TestHelpers;
 using TestHelpers.TestData;
 
@@ -12,12 +13,12 @@ namespace SolarniBaron.Domain.Tests.BatteryBox;
 public class GetStatsQueryHandlerShould
 {
     private readonly Mock<IBatteryBoxDataConnector> _batteryBoxDataConnectorMock;
-    private readonly Mock<IDistributedCache> _cacheMock;
+    private readonly Mock<ICache> _cacheMock;
 
     public GetStatsQueryHandlerShould()
     {
         _batteryBoxDataConnectorMock = new Mock<IBatteryBoxDataConnector>();
-        _cacheMock = new Mock<IDistributedCache>();
+        _cacheMock = new Mock<ICache>();
     }
 
     [Fact]
