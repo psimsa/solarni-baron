@@ -478,3 +478,4 @@ $RECYCLE.BIN/
 
 .idea/
 /http-requests/http-client.private.env.json
+/src/SolarniBaron.Api/appsettings.Development.json

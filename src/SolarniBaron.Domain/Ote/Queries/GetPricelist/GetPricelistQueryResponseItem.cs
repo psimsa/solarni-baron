@@ -6,7 +6,8 @@ public record GetPricelistQueryResponseItem(int Hour, decimal BasePriceEur, deci
     decimal WithSurchargeCzk,
     decimal WithSurchargeCzkVat,
     decimal WithSurchargeCzkTotal,
-    int PriceScore)
+    int PriceScore,
+    int PriceCluster)
 {
-    public static GetPricelistQueryResponseItem Empty = new(0, 0, 0, 0, 0, 0, 0, 0, 0);
+    public static GetPricelistQueryResponseItem Empty = new(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 }

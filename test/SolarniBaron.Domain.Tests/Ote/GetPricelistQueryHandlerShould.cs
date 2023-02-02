@@ -53,7 +53,7 @@ public class GetPricelistQueryHandlerShould
         var responseItems = response.Data.HourlyRateBreakdown;
 
         AssertWrapper.AssertAll(
-            () => Assert.Equal(1, responseItems[0].Hour),
+            () => Assert.Equal(0, responseItems[0].Hour),
             () => Assert.Equal(78.57m, responseItems[0].BasePriceEur),
             () => Assert.Equal(1926.53640m, responseItems[0].BasePriceCzk),
             () => Assert.Equal(2226.53640m, responseItems[0].WithSurchargeCzk),
@@ -88,7 +88,7 @@ public class GetPricelistQueryHandlerShould
         var responseItems = response.Data.HourlyRateBreakdown;
 
         AssertWrapper.AssertAll(
-            () => Assert.Equal(1, responseItems[0].Hour),
+            () => Assert.Equal(0, responseItems[0].Hour),
             () => Assert.Equal(78.57m, responseItems[0].BasePriceEur),
             () => Assert.Equal(1926.53640m, responseItems[0].BasePriceCzk),
             () => Assert.Equal(2226.53640m, responseItems[0].WithSurchargeCzk),
