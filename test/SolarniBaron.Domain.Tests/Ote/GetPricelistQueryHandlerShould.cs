@@ -62,7 +62,7 @@ public class GetPricelistQueryHandlerShould
     [Fact]
     public async Task GetPricelistFromCache()
     {
-        var cachedValue = new GetPricelistQueryResponse(new GetPricelistQueryResponseData(new[] { new GetPricelistQueryResponseItem(1, 2, 3, 4, 5, 6, 7, 8) }, 10.001m), ResponseStatus.Ok);
+        var cachedValue = new GetPricelistQueryResponse(new GetPricelistQueryResponseData(new[] { new GetPricelistQueryResponseItem(1, 2, 3, 4, 5, 6, 7, 8, 0) }, 10.001m), ResponseStatus.Ok);
         _cacheMock.Setup(x => x.GetAsync("Zxxz1VZY6g9HW3QPXnS3JxbJfJc=", It.IsAny<CancellationToken>())).ReturnsAsync(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(cachedValue))).Verifiable();
         _httpClientMock.Setup(x => x.GetStringAsync(It.IsAny<string>())).ThrowsAsync(new NotImplementedException()).Verifiable();
 

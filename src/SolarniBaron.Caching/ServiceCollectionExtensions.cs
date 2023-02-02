@@ -37,6 +37,12 @@ public static class ServiceCollectionExtensions
                     cacheOptions.CreateIfNotExists = true;
                 });
                 break;
+            case "Redis":
+                serviceCollection.AddStackExchangeRedisCache(options =>
+                {
+                    options.Configuration = cacheConfiguration.GetSection("ProviderConfiguration")["ConnectionString"];
+                });
+                break;
             default:
                 throw new ArgumentException($"Unknown cache provider: {cacheProvider}");
         }

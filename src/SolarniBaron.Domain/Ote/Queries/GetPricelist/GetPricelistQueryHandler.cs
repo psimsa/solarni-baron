@@ -75,6 +75,13 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
                     var vatPct = 21;
                     var surcharge = 300;
 
+                    /*var basicPrices = dataRows.Take(dataRows.Count() - 1).Select(row =>
+                    {
+                        var content = row.Cells[1].TextContent;
+                        var isValid = decimal.TryParse(content.Replace(',', '.'), out var basePriceEur);
+                        return isValid ? basePriceEur : 0;
+                    }).Join(Enumerable.Range(1, 24), x => x, x => x, (x, y) => new KeyValuePair<int,decimal>(y, x)).ToList();*/
+
                     var data = dataRows.Take(dataRows.Count() - 1).Select(row =>
                     {
                         var toReturn = GetPricelistQueryResponseItem.Empty;
@@ -96,7 +103,8 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
                                 basePriceCzkTotal,
                                 withSurchargeCzk,
                                 withSurchargeCzkVat,
-                                withSurchargeCzkTotal);
+                                withSurchargeCzkTotal,
+                                0);
                         }
 
                         hour++;

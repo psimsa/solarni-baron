@@ -5,7 +5,8 @@ decimal BasePriceCzkVat,
 decimal BasePriceCzkTotal,
 decimal WithSurchargeCzk,
 decimal WithSurchargeCzkVat,
-decimal WithSurchargeCzkTotal)
+decimal WithSurchargeCzkTotal,
+int PriceScore)
 {
-    public static GetPricelistQueryResponseItem Empty = new(0, 0, 0, 0, 0, 0, 0, 0);
+    public static GetPricelistQueryResponseItem Empty = new(0, 0, 0, 0, 0, 0, 0, 0, 0);
 }
