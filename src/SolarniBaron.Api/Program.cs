@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Logging;
 using SolarniBaron.Caching;
+using SolarniBaron.Domain;
 using SolarniBaron.Domain.BatteryBox.Commands.SetMode;
 using SolarniBaron.Domain.BatteryBox.Models;
 using SolarniBaron.Domain.BatteryBox.Queries.GetStats;
@@ -64,14 +65,32 @@ app.UseAuthorization();
 
 app.MapGet("/healthz", () => Results.Text("OK"));
 
-app.MapGet("api/ote/{date?}",
+app.MapGet("api/ote/day/{date?}",
         async (DateOnly? date, IQueryHandler<GetPricelistQuery, GetPricelistQueryResponse> queryHandler) =>
         {
-            var result = await queryHandler.Get(new GetPricelistQuery(date ?? DateOnly.FromDateTime(DateTime.Now)));
+            var result = await queryHandler.Get(
+                new GetPricelistQuery(date ?? DateOnly.FromDateTime(DateTimeHelpers.GetPragueDateTimeNow())));
             return result.ResponseStatus == ResponseStatus.Error ? Results.NotFound() : Results.Ok(result);
         })
     .WithName("GetPricelist")
-    .Produces<ApiResponse<GetPricelistQueryResponse>>()
+    .Produces<GetPricelistQueryResponse>()
+    .WithOpenApi();
+
+app.MapGet("api/ote/now",
+        async (IQueryHandler<GetPricelistQuery, GetPricelistQueryResponse> queryHandler) =>
+        {
+            var pragueDateTimeNow = DateTimeHelpers.GetPragueDateTimeNow();
+            var result = await queryHandler.Get(new GetPricelistQuery(DateOnly.FromDateTime(pragueDateTimeNow)));
+            if(result.ResponseStatus == ResponseStatus.Error)
+            {
+                return Results.BadRequest(result);
+            }
+
+            var toReturn = result.Data?.HourlyRateBreakdown.FirstOrDefault(x => x.HourIndex + 1 == pragueDateTimeNow.Hour);
+            return toReturn == null ? Results.NotFound() : Results.Ok(toReturn);
+        })
+    .WithName("GetCurrentPrice")
+    .Produces<ApiResponse<GetPricelistQueryResponseItem>>()
     .WithOpenApi();
 
 app.MapPost("api/batterybox/getstats",
