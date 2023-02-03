@@ -2,7 +2,7 @@
 GET https://{{baseUrl}}/healthz
 
 ### OTE Data
-GET https://{{baseUrl}}/api/ote
+GET https://{{baseUrl}}/api/ote/2023-02-02
 
 ### Get stats for box
 POST https://{{baseUrl}}/api/batterybox/getstats
