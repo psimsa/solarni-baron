@@ -86,7 +86,7 @@ app.MapGet("api/ote/now",
                 return Results.BadRequest(result);
             }
 
-            var toReturn = result.Data?.HourlyRateBreakdown.FirstOrDefault(x => x.HourIndex + 1 == pragueDateTimeNow.Hour);
+            var toReturn = result.Data?.HourlyRateBreakdown.FirstOrDefault(x => x.HourIndex == pragueDateTimeNow.Hour);
             return toReturn == null ? Results.NotFound() : Results.Ok(new ApiResponse<GetPricelistQueryResponseItem>(toReturn, ResponseStatus.Ok));
         })
     .WithName("GetCurrentPrice")
