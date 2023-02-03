@@ -11,11 +11,7 @@ public class DateTimeJsonConverter : JsonConverter<DateTime>
         Type typeToConvert,
         JsonSerializerOptions options)
     {
-        var pragueTimeZoneInfo = Environment.OSVersion.Platform switch
-        {
-            PlatformID.Win32NT => TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time"),
-            _ => TimeZoneInfo.FindSystemTimeZoneById("Europe/Prague")
-        };
+        var pragueTimeZoneInfo = DateTimeHelpers.GetPragueTimeZoneInfo();
         var currentTimeZoneInfo = TimeZoneInfo.Local;
         var parsedDate = DateTime.ParseExact(reader.GetString()!,
             "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);

@@ -12,7 +12,7 @@ using SolarniBaron.Domain.Ote.Queries.GetPricelist;
 
 namespace SolarniBaron.Func;
 
-public partial class Ote
+public partial class OteDay
 {
     private readonly IQueryHandler<GetPricelistQuery, GetPricelistQueryResponse> _queryHandler;
     private readonly ILogger _logger;
@@ -21,14 +21,14 @@ public partial class Ote
     private partial void LogErrorGettingOteData(string error);
 
 
-    public Ote(IQueryHandler<GetPricelistQuery, GetPricelistQueryResponse> queryHandler, ILoggerFactory loggerFactory)
+    public OteDay(IQueryHandler<GetPricelistQuery, GetPricelistQueryResponse> queryHandler, ILoggerFactory loggerFactory)
     {
         _queryHandler = queryHandler;
-        _logger = loggerFactory.CreateLogger<Ote>();
+        _logger = loggerFactory.CreateLogger<OteDay>();
     }
 
-    [Function("ote/{date}")]
-    public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequestData req, string date)
+    [Function("ote/day/{date}")]
+    public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, string date)
     {
         var canParse = DateOnly.TryParse(date, out var parsedDate);
         if (!canParse)

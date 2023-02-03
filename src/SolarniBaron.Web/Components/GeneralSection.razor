@@ -65,10 +65,10 @@
         <td>
             @(CurrentStatus.OperationMode switch
             {
-                OperationMode.Home1 => "Home 1",
-                OperationMode.Home2 => "Domácí 2",
-                OperationMode.Home3 => "Domácí 3",
-                OperationMode.HomeIVUPS => "UPS",
+                OperationMode.Home1 => "Domácí 1 (baterie)",
+                OperationMode.Home2 => "Domácí 2 (baterie když se nevyrábí)",
+                OperationMode.Home3 => "Domácí 3 (baterie když se nevyrábí, dobít ze sítě)",
+                OperationMode.HomeIVUPS => "UPS (baterie při výpadku, dobít ze sítě)",
                 _ => "Neznámý"
                 })
         </td>

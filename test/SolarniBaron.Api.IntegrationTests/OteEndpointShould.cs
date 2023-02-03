@@ -41,7 +41,7 @@ public class OteEndpointShould
         var expectedObject = JsonSerializer.Deserialize(GetPricelistResponses.GetPricelistResponse,
             CommonSerializationContext.Default.GetPricelistQueryResponse);
 
-        var response = await _client.GetAsync("api/ote/2022-10-10");
+        var response = await _client.GetAsync("api/ote/day/2022-10-10");
         response.EnsureSuccessStatusCode();
         var responseString = await response.Content.ReadAsStringAsync();
         var responseObject = JsonSerializer.Deserialize(responseString, CommonSerializationContext.Default.GetPricelistQueryResponse);
