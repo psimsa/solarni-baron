@@ -5,7 +5,6 @@ using Moq;
 using SolarniBaron.Caching;
 using SolarniBaron.Domain.CNB.Queries.GetExchangeRate;
 using SolarniBaron.Domain.Contracts;
-using SolarniBaron.Domain.Contracts.Queries;
 using SolarniBaron.Domain.Ote.Queries.GetPricelist;
 using TestHelpers;
 using TestHelpers.TestData;

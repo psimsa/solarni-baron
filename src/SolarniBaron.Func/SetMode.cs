@@ -7,7 +7,6 @@ using SolarniBaron.Domain;
 using SolarniBaron.Domain.BatteryBox.Commands.SetMode;
 using SolarniBaron.Domain.BatteryBox.Models;
 using SolarniBaron.Domain.Contracts;
-using SolarniBaron.Domain.Contracts.Commands;
 
 namespace SolarniBaron.Func;
 

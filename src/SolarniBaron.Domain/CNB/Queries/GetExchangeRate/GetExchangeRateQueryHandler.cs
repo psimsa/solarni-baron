@@ -1,10 +1,10 @@
 ﻿using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
+using DotnetDispatcher.Core;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using SolarniBaron.Domain.Contracts;
-using SolarniBaron.Domain.Contracts.Queries;
 
 namespace SolarniBaron.Domain.CNB.Queries.GetExchangeRate;
 
@@ -26,11 +26,8 @@ public partial class GetExchangeRateQueryHandler : IQueryHandler<GetExchangeRate
         _logger = logger;
     }
 
-    public async Task<GetExchangeRateQueryResponse> Get(
-        IQuery<GetExchangeRateQuery, GetExchangeRateQueryResponse> query)
+    public async Task<GetExchangeRateQueryResponse> Query(GetExchangeRateQuery getExchangeRateQuery, CancellationToken cancellationToken = default)
     {
-        var getExchangeRateQuery = query?.Data ?? throw new ArgumentException("Invalid query type");
-
         var cacheKeyBytes = SHA1.HashData(Encoding.UTF8.GetBytes($"eurczkrate-{getExchangeRateQuery.Date:yyyy-MM-dd}"));
         var cacheKey = Convert.ToBase64String(cacheKeyBytes);
 

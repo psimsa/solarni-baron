@@ -13,7 +13,7 @@ namespace SolarniBaron.Domain;
 [JsonSerializable(typeof(BatteryBoxStatus))]
 [JsonSerializable(typeof(GetPricelistQueryResponse))]
 [JsonSerializable(typeof(SetModeCommandResponse))]
-[JsonSerializable(typeof(ApiResponse<GetPricelistQueryResponseItem>))]
+[JsonSerializable(typeof(SuccessResponse<GetPricelistQueryResponseItem>))]
 public partial class CommonSerializationContext : JsonSerializerContext
 {
 }

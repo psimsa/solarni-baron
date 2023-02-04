@@ -7,7 +7,6 @@ using SolarniBaron.Domain;
 using SolarniBaron.Domain.BatteryBox.Models;
 using SolarniBaron.Domain.BatteryBox.Queries.GetStats;
 using SolarniBaron.Domain.Contracts;
-using SolarniBaron.Domain.Contracts.Queries;
 
 namespace SolarniBaron.Func;
 

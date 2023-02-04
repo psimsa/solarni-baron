@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using DotnetDispatcher.Core;
+using Microsoft.Extensions.Logging;
 using SolarniBaron.Domain.Contracts;
-using SolarniBaron.Domain.Contracts.Commands;
 
 namespace SolarniBaron.Domain.BatteryBox.Commands.SetMode;
 
@@ -15,13 +15,11 @@ public class SetModeCommandHandler : ICommandHandler<SetModeCommand, SetModeComm
         _logger = logger;
     }
 
-    public async Task<SetModeCommandResponse> Execute(ICommand<SetModeCommand, SetModeCommandResponse> command)
+    public async Task<SetModeCommandResponse> Execute(SetModeCommand command, CancellationToken cancellationToken = default)
     {
-        var setModeCommand = command.Data ?? throw new ArgumentException("Invalid command type");
-        var mode = await _connector.SetMode(setModeCommand.Username, setModeCommand.Password, setModeCommand.UnitId,
-            setModeCommand.Mode);
+        var mode = await _connector.SetMode(command.Username, command.Password, command.UnitId,
+            command.Mode);
 
-        return new SetModeCommandResponse(mode, mode.Success ? ResponseStatus.Ok : ResponseStatus.Error,
-            mode.Error);
+        return new SetModeCommandResponse(mode.Success, mode.Error);
     }
 }
