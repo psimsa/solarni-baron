@@ -1,14 +1,14 @@
 ﻿using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
+using DotnetDispatcher.Core;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using SolarniBaron.Domain.Contracts;
-using SolarniBaron.Domain.Contracts.Queries;
 
 namespace SolarniBaron.Domain.CNB.Queries.GetExchangeRate;
 
-public partial class GetExchangeRateQueryHandler : IQueryHandler<GetExchangeRateQuery, GetExchangeRateQueryResponse>
+public partial class GetExchangeRateQueryHandler : IQueryHandler<GetExchangeRateQuery, Result<GetExchangeRateQueryResponse>>
 {
     private readonly IApiHttpClient _client;
     private readonly ICache _cache;
@@ -26,11 +26,9 @@ public partial class GetExchangeRateQueryHandler : IQueryHandler<GetExchangeRate
         _logger = logger;
     }
 
-    public async Task<GetExchangeRateQueryResponse> Get(
-        IQuery<GetExchangeRateQuery, GetExchangeRateQueryResponse> query)
+    public async Task<Result<GetExchangeRateQueryResponse>> Query(GetExchangeRateQuery getExchangeRateQuery,
+        CancellationToken cancellationToken = default)
     {
-        var getExchangeRateQuery = query?.Data ?? throw new ArgumentException("Invalid query type");
-
         var cacheKeyBytes = SHA1.HashData(Encoding.UTF8.GetBytes($"eurczkrate-{getExchangeRateQuery.Date:yyyy-MM-dd}"));
         var cacheKey = Convert.ToBase64String(cacheKeyBytes);
 
@@ -43,9 +41,9 @@ public partial class GetExchangeRateQueryHandler : IQueryHandler<GetExchangeRate
             var euroRate = euroLine?.Split('|')[4];
             var success = decimal.TryParse(euroRate?.Replace(',', '.'), out var rateValue);
             return rateValue.ToString(CultureInfo.InvariantCulture);
-        }, new DistributedCacheEntryOptions() { AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(2) });
+        }, new DistributedCacheEntryOptions() {AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(2)});
 
         var rate = decimal.Parse(rateText, CultureInfo.InvariantCulture);
-        return new GetExchangeRateQueryResponse(rate);
+        return new Result<GetExchangeRateQueryResponse>(ResponseStatus.Ok, new GetExchangeRateQueryResponse(rate));
     }
 }

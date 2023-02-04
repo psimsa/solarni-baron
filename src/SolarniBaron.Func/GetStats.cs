@@ -6,22 +6,20 @@ using Microsoft.Extensions.Logging;
 using SolarniBaron.Domain;
 using SolarniBaron.Domain.BatteryBox.Models;
 using SolarniBaron.Domain.BatteryBox.Queries.GetStats;
-using SolarniBaron.Domain.Contracts;
-using SolarniBaron.Domain.Contracts.Queries;
 
 namespace SolarniBaron.Func;
 
 public partial class GetStats
 {
-    private readonly IQueryHandler<GetStatsQuery, GetStatsQueryResponse> _queryHandler;
+    private readonly ISolarniBaronDispatcher _dispatcher;
     private readonly ILogger _logger;
 
-    [LoggerMessage(EventId = 0, Level = LogLevel.Error, Message = "Error getting stats: {Error}")]
-    private partial void LogErrorGettingStats(string error);
+    [LoggerMessage(EventId = 0, Level = LogLevel.Error, Message = "Error getting stats")]
+    private partial void LogErrorGettingStats();
 
-    public GetStats(IQueryHandler<GetStatsQuery, GetStatsQueryResponse> queryHandler, ILoggerFactory loggerFactory)
+    public GetStats(ISolarniBaronDispatcher dispatcher, ILoggerFactory loggerFactory)
     {
-        _queryHandler = queryHandler;
+        _dispatcher = dispatcher;
         _logger = loggerFactory.CreateLogger<GetStats>();
     }
 
@@ -29,13 +27,12 @@ public partial class GetStats
     public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData req)
     {
         var loginInfo = JsonSerializer.Deserialize<LoginInfo>(req.Body);
-        var data = await _queryHandler.Get(new GetStatsQuery(loginInfo.Email, loginInfo.Password, loginInfo.UnitId));
-        if (data.ResponseStatus == ResponseStatus.Error)
+        var data = await _dispatcher.Dispatch(new GetStatsQuery(loginInfo.Email, loginInfo.Password, loginInfo.UnitId));
+        if (data is null)
         {
-            LogErrorGettingStats(data.Error);
+            LogErrorGettingStats();
             var errorResponse = req.CreateResponse(HttpStatusCode.BadRequest);
             errorResponse.Headers.Add("Content-Type", "text/plain; charset=utf-8");
-            errorResponse.WriteString(data.Error);
             return errorResponse;
         }
 

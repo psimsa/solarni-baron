@@ -3,17 +3,18 @@ using System.Security.Cryptography;
 using System.Text;
 using AngleSharp;
 using AngleSharp.Html.Dom;
+using DotnetDispatcher.Core;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
+using SolarniBaron.Domain.Clustering;
 using SolarniBaron.Domain.CNB.Queries.GetExchangeRate;
 using SolarniBaron.Domain.Contracts;
-using SolarniBaron.Domain.Contracts.Queries;
 
 namespace SolarniBaron.Domain.Ote.Queries.GetPricelist;
 
 public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery, GetPricelistQueryResponse>
 {
-    private readonly IQueryHandler<GetExchangeRateQuery, GetExchangeRateQueryResponse> _getExchangeRateQueryHandler;
+    private readonly ISolarniBaronDispatcher _dispatcher;
     private readonly IApiHttpClient _client;
     private readonly ICache _cache;
     private readonly ILogger<GetPricelistQueryHandler> _logger;
@@ -25,26 +26,24 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
     private partial void LogCacheNotHit(string date, string key);
 
     public GetPricelistQueryHandler(
-        IQueryHandler<GetExchangeRateQuery, GetExchangeRateQueryResponse> getExchangeRateQueryHandler,
+        ISolarniBaronDispatcher dispatcher,
         IApiHttpClient client, ICache cache, ILogger<GetPricelistQueryHandler> logger)
     {
-        _getExchangeRateQueryHandler = getExchangeRateQueryHandler;
+        _dispatcher = dispatcher;
         _client = client;
         _cache = cache;
         _logger = logger;
     }
 
-    public async Task<GetPricelistQueryResponse> Get(IQuery<GetPricelistQuery, GetPricelistQueryResponse> query)
+    public async Task<GetPricelistQueryResponse> Query(GetPricelistQuery getPricelistQuery, CancellationToken cancellationToken)
     {
-        var getPricelistQuery = query.Data ?? throw new ArgumentException("Invalid query type");
-
         var cacheKeyBytes = SHA1.HashData(Encoding.UTF8.GetBytes($"prices-{getPricelistQuery.Date:yyyy-MM-dd}"));
         var cacheKey = Convert.ToBase64String(cacheKeyBytes);
 
         var exchangeRateQuery = new GetExchangeRateQuery(getPricelistQuery.Date);
-        var exchangeRateQueryResponse = await _getExchangeRateQueryHandler.Get(exchangeRateQuery);
+        var exchangeRateQueryResponse = await _dispatcher.Dispatch(exchangeRateQuery, cancellationToken);
 
-        var exchangeRate = exchangeRateQueryResponse.Rate;
+        var exchangeRate = exchangeRateQueryResponse.Data.Rate;
 
         var vatPct = 21;
         var surcharge = 300;
@@ -56,10 +55,17 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
 
                 var date = getPricelistQuery.Date.ToString("yyyy-MM-dd");
                 var url = $"{Constants.OteUrl}/?date={date}";
-                var content = await _client.GetStringAsync(url);
+                var response = await _client.GetAsync(url);
+                if (response?.IsSuccessStatusCode != true)
+                {
+                    LogErrorGettingOteData($"Status code: {response?.StatusCode}");
+                    return null;
+                }
+
+                var content = await response.Content.ReadAsStringAsync(cancellationToken);
                 var config = Configuration.Default.WithDefaultLoader();
                 var context = BrowsingContext.New(config);
-                var document = await context.OpenAsync(req => req.Content(content));
+                var document = await context.OpenAsync(req => req.Content(content), cancel: cancellationToken);
                 try
                 {
                     var reportTables = document.QuerySelectorAll("div.bigtable table.report_table");
@@ -78,7 +84,7 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
 
                     var data = dataRows.Take(dataRows.Count() - 1).Select(row =>
                     {
-                        var toReturn = GetPricelistQueryResponseItem.Empty;
+                        var toReturn = PriceListItem.Empty;
                         var data = row.Cells[1].TextContent;
                         var isValid = decimal.TryParse(data.Replace(',', '.'), out var basePriceEur);
                         return basePriceEur.ToString(CultureInfo.InvariantCulture);
@@ -90,9 +96,18 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
                     LogErrorGettingOteData(e.Message);
                     return null;
                 }
-            }, new DistributedCacheEntryOptions() { AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(2) });
-        if (priceString == null)
-            return new GetPricelistQueryResponse(null, ResponseStatus.Error, "Error getting pricelist");
+            }, new DistributedCacheEntryOptions() {AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(2)});
+
+        switch (priceString)
+        {
+            case null:
+                // TODO: return error
+                await _cache.SetAsync(cacheKey, Encoding.UTF8.GetBytes("error"),
+                    new DistributedCacheEntryOptions() {AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1)}, cancellationToken);
+                return new GetPricelistQueryResponse(null, 0);
+            case "error":
+                return new GetPricelistQueryResponse(null, 0);
+        }
 
         var basicPrices = priceString.Split('|').Select(item =>
         {
@@ -103,7 +118,7 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
         var km = new PriceClusteringWorker();
         var clusters = km.GetClusters(basicPrices.Select(_ => _.Value).ToArray(), 4);
 
-        var toReturn = new GetPricelistQueryResponseItem[24];
+        var toReturn = new PriceListItem[24];
         for (int i = 0; i < 24; i++)
         {
             var item = basicPrices[i];
@@ -114,7 +129,7 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
             decimal withSurchargeCzkVat = withSurchargeCzk * vatPct / 100;
             decimal withSurchargeCzkTotal = withSurchargeCzk + withSurchargeCzkVat;
 
-            var toReturnItem = new GetPricelistQueryResponseItem(item.Key,
+            var toReturnItem = new PriceListItem(item.Key,
                 item.Value,
                 basePriceCzk,
                 basePriceCzkVat,
@@ -127,6 +142,6 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
             toReturn[item.Key] = toReturnItem;
         }
 
-        return new GetPricelistQueryResponse(new GetPricelistQueryResponseData(toReturn, exchangeRate));
+        return new GetPricelistQueryResponse(toReturn, exchangeRate);
     }
 }

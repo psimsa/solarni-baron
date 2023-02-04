@@ -3,8 +3,6 @@ using System.Text.Json;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
-using SolarniBaron.Domain.Contracts.Queries;
-using SolarniBaron.Domain.Contracts;
 using SolarniBaron.Domain.Ote.Queries.GetPricelist;
 using SolarniBaron.Domain;
 
@@ -12,16 +10,16 @@ namespace SolarniBaron.Func
 {
     public partial class OteNow
     {
-        private readonly IQueryHandler<GetPricelistQuery, GetPricelistQueryResponse> _queryHandler;
+        private readonly ISolarniBaronDispatcher _dispatcher;
         private readonly ILogger _logger;
 
-        [LoggerMessage(EventId = 0, Level = LogLevel.Error, Message = "Error getting OTE data: {Error}")]
-        private partial void LogErrorGettingOteData(string error);
+        [LoggerMessage(EventId = 0, Level = LogLevel.Error, Message = "Error getting OTE data")]
+        private partial void LogErrorGettingOteData();
 
 
-        public OteNow(IQueryHandler<GetPricelistQuery, GetPricelistQueryResponse> queryHandler, ILoggerFactory loggerFactory)
+        public OteNow(ISolarniBaronDispatcher dispatcher, ILoggerFactory loggerFactory)
         {
-            _queryHandler = queryHandler;
+            _dispatcher = dispatcher;
             _logger = loggerFactory.CreateLogger<OteNow>();
         }
 
@@ -29,15 +27,15 @@ namespace SolarniBaron.Func
         public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req)
         {
             var pragueDateTimeNow = DateTimeHelpers.GetPragueDateTimeNow();
-            var result = await _queryHandler.Get(new GetPricelistQuery(DateOnly.FromDateTime(pragueDateTimeNow)));
+            var result = await _dispatcher.Dispatch(new GetPricelistQuery(DateOnly.FromDateTime(pragueDateTimeNow)));
 
-            if (result.ResponseStatus == ResponseStatus.Error)
+            if (result is null)
             {
-                LogErrorGettingOteData(result.Error);
+                LogErrorGettingOteData();
                 return req.CreateResponse(HttpStatusCode.BadRequest);
             }
 
-            var toReturn = result.Data?.HourlyRateBreakdown.FirstOrDefault(x => x.HourIndex + 1 == pragueDateTimeNow.Hour);
+            var toReturn = result.HourlyRateBreakdown?.FirstOrDefault(x => x.HourIndex + 1 == pragueDateTimeNow.Hour);
             if (toReturn == null)
             {
                 return req.CreateResponse(HttpStatusCode.NotFound);
@@ -46,8 +44,8 @@ namespace SolarniBaron.Func
             var response = req.CreateResponse(HttpStatusCode.OK);
             response.Headers.Add("Content-Type", "application/json; charset=utf-8");
             await response.WriteStringAsync(JsonSerializer.Serialize(
-                new ApiResponse<GetPricelistQueryResponseItem>(toReturn, ResponseStatus.Ok),
-                CommonSerializationContext.Default.ApiResponseGetPricelistQueryResponseItem));
+                toReturn,
+                CommonSerializationContext.Default.PriceListItem));
             return response;
         }
     }

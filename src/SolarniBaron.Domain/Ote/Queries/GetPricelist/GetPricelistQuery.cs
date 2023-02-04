@@ -1,5 +1,6 @@
-﻿using SolarniBaron.Domain.Contracts.Queries;
+﻿
+using DotnetDispatcher.Core;
 
 namespace SolarniBaron.Domain.Ote.Queries.GetPricelist;
 
-public record GetPricelistQuery(DateOnly Date) : IQuery<GetPricelistQuery, GetPricelistQueryResponse>;
+public record GetPricelistQuery(DateOnly Date) : IQuery<GetPricelistQueryResponse>;

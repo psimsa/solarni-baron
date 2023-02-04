@@ -1,11 +1,11 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using DotnetDispatcher.Core;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using SolarniBaron.Domain.BatteryBox.Models;
 using SolarniBaron.Domain.Contracts;
-using SolarniBaron.Domain.Contracts.Queries;
 using SolarniBaron.Domain.Extensions;
 
 namespace SolarniBaron.Domain.BatteryBox.Queries.GetStats;
@@ -24,10 +24,8 @@ public class GetStatsQueryHandler : IQueryHandler<GetStatsQuery, GetStatsQueryRe
         _logger = logger;
     }
 
-    public async Task<GetStatsQueryResponse> Get(IQuery<GetStatsQuery, GetStatsQueryResponse> query)
+    public async Task<GetStatsQueryResponse> Query(GetStatsQuery getStatsQuery, CancellationToken cancellationToken = default)
     {
-        var getStatsQuery = query.Data ?? throw new ArgumentException("Invalid query type");
-
         (string username, string password, string? unitId) = getStatsQuery;
 
         var cacheKeyBytes = SHA1.HashData(Encoding.UTF8.GetBytes($"bbstats-{username}-{password}-{unitId ?? string.Empty}"));
@@ -61,7 +59,8 @@ public class GetStatsQueryHandler : IQueryHandler<GetStatsQuery, GetStatsQueryRe
         catch (Exception e)
         {
             _logger.LogError(e, "Error while getting stats");
-            return new GetStatsQueryResponse(BatteryBoxStatus.Empty(), ResponseStatus.Error, e.Message);
+            throw;
         }
     }
+
 }

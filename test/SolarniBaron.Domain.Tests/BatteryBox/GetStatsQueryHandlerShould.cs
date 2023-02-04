@@ -35,9 +35,9 @@ public class GetStatsQueryHandlerShould
         var handler = new GetStatsQueryHandler(_batteryBoxDataConnectorMock.Object, _cacheMock.Object,
             NullLogger<GetStatsQueryHandler>.Instance);
 
-        var response = await handler.Get(new GetStatsQuery("hello", "world", "asdf"));
+        var response = await handler.Query(new GetStatsQuery("hello", "world", "asdf"));
 
-        Assert.Equal(Contracts.ResponseStatus.Ok, response.ResponseStatus);
+        Assert.NotNull(response);
         var status = response.BatteryBoxStatus;
         AssertWrapper.AssertAll(
             () => Assert.Equal("asdf", status.UnitId),
