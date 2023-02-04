@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Logging;
 using SolarniBaron.Caching;
 using SolarniBaron.Domain;
@@ -130,7 +129,7 @@ app.MapGet("api/ote/outlook/now",
                 return Results.BadRequest(result?.ErrorMessage);
             }
 
-            return Results.Ok(result.Data.HourlyRateBreakdown.FirstOrDefault(x => x.HourIndex == pragueDateTimeNow.Hour));
+            return Results.Ok(result.Data?.HourlyRateBreakdown?.FirstOrDefault(x => x.HourIndex == pragueDateTimeNow.Hour));
         })
     .WithName("GetPriceOutlookNow")
     .Produces<PriceListItem>()
