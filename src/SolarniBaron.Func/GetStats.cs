@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using SolarniBaron.Domain;
 using SolarniBaron.Domain.BatteryBox.Models;
 using SolarniBaron.Domain.BatteryBox.Queries.GetStats;
-using SolarniBaron.Domain.Contracts;
 
 namespace SolarniBaron.Func;
 

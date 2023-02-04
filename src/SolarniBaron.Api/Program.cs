@@ -1,18 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Logging;
-using SolarniBaron.Api;
 using SolarniBaron.Caching;
 using SolarniBaron.Domain;
 using SolarniBaron.Domain.BatteryBox.Commands.SetMode;
 using SolarniBaron.Domain.BatteryBox.Models;
 using SolarniBaron.Domain.BatteryBox.Queries.GetStats;
-using SolarniBaron.Domain.Contracts;
 using SolarniBaron.Domain.Extensions;
 using SolarniBaron.Domain.Ote.Queries.GetPricelist;
 using SolarniBaron.Domain.Ote.Queries.GetPriceOutlook;
 using SolarniBaron.Persistence;
-using SolarniBaronDispatcher = SolarniBaron.Domain.SolarniBaronDispatcher;
 
 IdentityModelEventSource.ShowPII = true;
 
@@ -95,10 +92,10 @@ app.MapGet("api/ote/now",
             }
 
             var toReturn = result.HourlyRateBreakdown.FirstOrDefault(x => x.HourIndex == pragueDateTimeNow.Hour);
-            return toReturn == null ? Results.NotFound() : Results.Ok(new SuccessResponse<GetPricelistQueryResponseItem>(toReturn));
+            return toReturn == null ? Results.NotFound() : Results.Ok((toReturn));
         })
     .WithName("GetCurrentPrice")
-    .Produces<SuccessResponse<GetPricelistQueryResponseItem>>()
+    .Produces<GetPricelistQueryResponseItem>()
     .ProducesProblem(400)
     .ProducesProblem(404)
     .WithOpenApi();

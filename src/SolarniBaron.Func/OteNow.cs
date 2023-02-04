@@ -1,10 +1,8 @@
 ﻿using System.Net;
 using System.Text.Json;
-using DotnetDispatcher.Core;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
-using SolarniBaron.Domain.Contracts;
 using SolarniBaron.Domain.Ote.Queries.GetPricelist;
 using SolarniBaron.Domain;
 
@@ -46,8 +44,8 @@ namespace SolarniBaron.Func
             var response = req.CreateResponse(HttpStatusCode.OK);
             response.Headers.Add("Content-Type", "application/json; charset=utf-8");
             await response.WriteStringAsync(JsonSerializer.Serialize(
-                new SuccessResponse<GetPricelistQueryResponseItem>(toReturn),
-                CommonSerializationContext.Default.SuccessResponseGetPricelistQueryResponseItem));
+                toReturn,
+                CommonSerializationContext.Default.GetPricelistQueryResponseItem));
             return response;
         }
     }

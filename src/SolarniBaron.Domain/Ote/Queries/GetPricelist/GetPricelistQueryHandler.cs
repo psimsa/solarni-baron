@@ -43,7 +43,7 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
         var exchangeRateQuery = new GetExchangeRateQuery(getPricelistQuery.Date);
         var exchangeRateQueryResponse = await _dispatcher.Dispatch(exchangeRateQuery, cancellationToken);
 
-        var exchangeRate = exchangeRateQueryResponse.Rate;
+        var exchangeRate = exchangeRateQueryResponse.Data.Rate;
 
         var vatPct = 21;
         var surcharge = 300;

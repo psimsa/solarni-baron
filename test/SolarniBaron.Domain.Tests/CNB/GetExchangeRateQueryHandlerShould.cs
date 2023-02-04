@@ -36,7 +36,7 @@ public class GetExchangeRateQueryHandlerShould
         Assert.NotNull(response);
         _httpClientMock.VerifyAll();
         _cacheMock.VerifyAll();
-        Assert.Equal(24.520m, response.Rate);
+        Assert.Equal(24.520m, response.Data.Rate);
     }
 
     [Fact]
@@ -55,6 +55,6 @@ public class GetExchangeRateQueryHandlerShould
         _httpClientMock.VerifyNoOtherCalls();
 
         _cacheMock.VerifyAll();
-        Assert.Equal(24.520m, response.Rate);
+        Assert.Equal(24.520m, response.Data.Rate);
     }
 }

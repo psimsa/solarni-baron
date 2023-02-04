@@ -7,18 +7,4 @@ public enum ResponseStatus
     Empty = 99
 }
 
-public interface IResponse
-{
-    ResponseStatus Status { get; }
-}
-
-public record SuccessResponse<TResponse>(TResponse Data) : IResponse
-{
-    public ResponseStatus Status => ResponseStatus.Ok;
-}
-
-public record ErrorResponse(string ErrorMessage) : IResponse
-{
-    public ResponseStatus Status => ResponseStatus.Ok;
-
-}
+public record Result<TResponse>(ResponseStatus Status, TResponse? Data = default, string? ErrorMessage = null) ;

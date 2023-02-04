@@ -4,7 +4,6 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using SolarniBaron.Domain;
-using SolarniBaron.Domain.Contracts;
 using SolarniBaron.Domain.Ote.Queries.GetPricelist;
 
 #pragma warning disable CA2007
