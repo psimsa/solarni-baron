@@ -35,7 +35,7 @@ namespace SolarniBaron.Func
                 return req.CreateResponse(HttpStatusCode.BadRequest);
             }
 
-            var toReturn = result.HourlyRateBreakdown?.FirstOrDefault(x => x.HourIndex + 1 == pragueDateTimeNow.Hour);
+            var toReturn = result.HourlyRateBreakdown?.FirstOrDefault(x => x.HourIndex == pragueDateTimeNow.Hour);
             if (toReturn == null)
             {
                 return req.CreateResponse(HttpStatusCode.NotFound);
