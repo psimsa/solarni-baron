@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using DotnetDispatcher.Core;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -15,13 +16,13 @@ public class GetPricelistQueryHandlerShould
 {
     private readonly Mock<IApiHttpClient> _httpClientMock;
     private readonly Mock<IDistributedCache> _cacheMock;
-    private readonly Mock<IQueryHandler<GetExchangeRateQuery, GetExchangeRateQueryResponse>> _getExchangeRateQueryHandlerMock;
+    private readonly Mock<ISolarniBaronDispatcher> _dispatcherMock;
 
     public GetPricelistQueryHandlerShould()
     {
         _httpClientMock = new Mock<IApiHttpClient>();
         _cacheMock = new Mock<IDistributedCache>();
-        _getExchangeRateQueryHandlerMock = new Mock<IQueryHandler<GetExchangeRateQuery, GetExchangeRateQueryResponse>>();
+        _dispatcherMock = new Mock<ISolarniBaronDispatcher>();
     }
 
     [Fact]
@@ -32,22 +33,22 @@ public class GetPricelistQueryHandlerShould
 
         _cacheMock.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(null as byte[]).Verifiable();
 
-        _getExchangeRateQueryHandlerMock.Setup(x => x.Get(It.IsAny<IQuery<GetExchangeRateQuery, GetExchangeRateQueryResponse>>()))
+        _dispatcherMock.Setup(x => x.Dispatch(It.IsAny<GetExchangeRateQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new GetExchangeRateQueryResponse(24.520m)).Verifiable();
 
-        var handler = new GetPricelistQueryHandler(_getExchangeRateQueryHandlerMock.Object, _httpClientMock.Object,
+        var handler = new GetPricelistQueryHandler(_dispatcherMock.Object, _httpClientMock.Object,
             new Cache(_cacheMock.Object),
             Mock.Of<ILogger<GetPricelistQueryHandler>>());
-        var response = await handler.Get(new GetPricelistQuery(new DateOnly(2022, 10, 11)));
+        var response = await handler.Query(new GetPricelistQuery(new DateOnly(2022, 10, 11)), CancellationToken.None);
 
         Assert.NotNull(response);
         _httpClientMock.VerifyAll();
         _cacheMock.VerifyAll();
-        _getExchangeRateQueryHandlerMock.VerifyAll();
-        Assert.Equal(24.520m, response.Data.ExchangeRate);
-        Assert.Equal(24, response.Data.HourlyRateBreakdown.Length);
+        _dispatcherMock.VerifyAll();
+        Assert.Equal(24.520m, response.ExchangeRate);
+        Assert.Equal(24, response.HourlyRateBreakdown.Length);
 
-        var responseItems = response.Data.HourlyRateBreakdown;
+        var responseItems = response.HourlyRateBreakdown;
 
         AssertWrapper.AssertAll(
             () => Assert.Equal(0, responseItems[0].HourIndex),
@@ -67,22 +68,22 @@ public class GetPricelistQueryHandlerShould
         _cacheMock.Setup(x => x.GetAsync("Cq1wD0oQ+s2Eeu7cbLDGahJst6o=", It.IsAny<CancellationToken>()))
             .ReturnsAsync(Encoding.UTF8.GetBytes(cachedValue)).Verifiable();
         _httpClientMock.Setup(x => x.GetStringAsync(It.IsAny<string>())).ThrowsAsync(new NotImplementedException()).Verifiable();
-        _getExchangeRateQueryHandlerMock.Setup(x => x.Get(It.IsAny<IQuery<GetExchangeRateQuery, GetExchangeRateQueryResponse>>()))
+        _dispatcherMock.Setup(x => x.Dispatch(It.IsAny<GetExchangeRateQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new GetExchangeRateQueryResponse(24.520m)).Verifiable();
 
-        var handler = new GetPricelistQueryHandler(_getExchangeRateQueryHandlerMock.Object, _httpClientMock.Object,
+        var handler = new GetPricelistQueryHandler(_dispatcherMock.Object, _httpClientMock.Object,
             new Cache(_cacheMock.Object),
             Mock.Of<ILogger<GetPricelistQueryHandler>>());
-        var response = await handler.Get(new GetPricelistQuery(new DateOnly(2022, 10, 10)));
+        var response = await handler.Query(new GetPricelistQuery(new DateOnly(2022, 10, 10)), CancellationToken.None);
 
         Assert.NotNull(response);
         _httpClientMock.VerifyNoOtherCalls();
         _cacheMock.VerifyAll();
-        _getExchangeRateQueryHandlerMock.VerifyAll();
-        Assert.Equal(24.520m, response.Data.ExchangeRate);
-        Assert.Equal(24, response.Data.HourlyRateBreakdown.Length);
+        _dispatcherMock.VerifyAll();
+        Assert.Equal(24.520m, response.ExchangeRate);
+        Assert.Equal(24, response.HourlyRateBreakdown.Length);
 
-        var responseItems = response.Data.HourlyRateBreakdown;
+        var responseItems = response.HourlyRateBreakdown;
 
         AssertWrapper.AssertAll(
             () => Assert.Equal(0, responseItems[0].HourIndex),

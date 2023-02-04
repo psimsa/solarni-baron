@@ -38,8 +38,6 @@ builder.Services.AddCors();
 
 builder.Services.AddAuthorization();
 
-builder.Services.AddTransient<ISolarniBaronDispatcher, SolarniBaronDispatcher>();
-builder.Services.AddTransient<DotnetDispatcher.Core.IQueryHandler<GetPriceOutlookQuery, GetPriceOutlookQueryResponse>, GetPriceOutlookQueryHandler>();
 
 var app = builder.Build();
 
@@ -108,14 +106,22 @@ app.MapGet("api/ote/now",
 app.MapPost("api/batterybox/getstats",
         async ([FromBody] LoginInfo loginInfo, ISolarniBaronDispatcher dispatcher, ILogger<Program> logger) =>
         {
-            var data = await dispatcher.Dispatch(new GetStatsQuery(loginInfo.Email, loginInfo.Password, loginInfo.UnitId));
-            if (data is null)
+            try
             {
-                logger.LogError("Error fetching data");
-                return Results.BadRequest();
-            }
+                var data = await dispatcher.Dispatch(new GetStatsQuery(loginInfo.Email, loginInfo.Password, loginInfo.UnitId));
+                if (data is null)
+                {
+                    logger.LogError("Error fetching data");
+                    return Results.BadRequest();
+                }
 
-            return Results.Ok(data.BatteryBoxStatus);
+                return Results.Ok(data.BatteryBoxStatus);
+            }
+            catch (Exception e)
+            {
+                logger.LogError("Error fetching data: {error}", e.Message);
+                return Results.BadRequest(e.Message);
+            }
         })
     .WithName("GetStats")
     .Produces<BatteryBoxStatus>()

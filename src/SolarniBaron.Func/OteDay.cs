@@ -13,16 +13,16 @@ namespace SolarniBaron.Func;
 
 public partial class OteDay
 {
-    private readonly IQueryHandler<GetPricelistQuery, GetPricelistQueryResponse> _queryHandler;
+    private readonly ISolarniBaronDispatcher _dispatcher;
     private readonly ILogger _logger;
 
-    [LoggerMessage(EventId = 0, Level = LogLevel.Error, Message = "Error getting OTE data: {Error}")]
-    private partial void LogErrorGettingOteData(string error);
+    [LoggerMessage(EventId = 0, Level = LogLevel.Error, Message = "Error getting OTE data")]
+    private partial void LogErrorGettingOteData();
 
 
-    public OteDay(IQueryHandler<GetPricelistQuery, GetPricelistQueryResponse> queryHandler, ILoggerFactory loggerFactory)
+    public OteDay(ISolarniBaronDispatcher dispatcher, ILoggerFactory loggerFactory)
     {
-        _queryHandler = queryHandler;
+        _dispatcher = dispatcher;
         _logger = loggerFactory.CreateLogger<OteDay>();
     }
 
@@ -35,11 +35,11 @@ public partial class OteDay
             return req.CreateResponse(HttpStatusCode.BadRequest);
         }
 
-        var result = await _queryHandler.Get(new GetPricelistQuery(parsedDate));
+        var result = await _dispatcher.Dispatch(new GetPricelistQuery(parsedDate));
 
-        if (result.ResponseStatus == ResponseStatus.Error)
+        if (result is null)
         {
-            LogErrorGettingOteData(result.Error);
+            LogErrorGettingOteData();
             return req.CreateResponse(HttpStatusCode.NotFound);
         }
 

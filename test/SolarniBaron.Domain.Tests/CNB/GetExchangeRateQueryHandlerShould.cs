@@ -31,7 +31,7 @@ public class GetExchangeRateQueryHandlerShould
 
         var handler = new GetExchangeRateQueryHandler(_httpClientMock.Object, new Cache(_cacheMock.Object),
             Mock.Of<ILogger<GetExchangeRateQueryHandler>>());
-        var response = await handler.Get(new GetExchangeRateQuery(new DateOnly(2022, 10, 10)));
+        var response = await handler.Query(new GetExchangeRateQuery(new DateOnly(2022, 10, 10)));
 
         Assert.NotNull(response);
         _httpClientMock.VerifyAll();
@@ -49,7 +49,7 @@ public class GetExchangeRateQueryHandlerShould
         _httpClientMock.Setup(x => x.GetStringAsync(It.IsAny<string>())).ThrowsAsync(new NotImplementedException()).Verifiable();
         var handler = new GetExchangeRateQueryHandler(_httpClientMock.Object, new Cache(_cacheMock.Object),
             Mock.Of<ILogger<GetExchangeRateQueryHandler>>());
-        var response = await handler.Get(new GetExchangeRateQuery(new DateOnly(2022, 10, 11)));
+        var response = await handler.Query(new GetExchangeRateQuery(new DateOnly(2022, 10, 11)));
 
         Assert.NotNull(response);
         _httpClientMock.VerifyNoOtherCalls();

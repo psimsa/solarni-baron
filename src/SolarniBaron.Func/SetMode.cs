@@ -12,12 +12,12 @@ namespace SolarniBaron.Func;
 
 public class SetMode
 {
-    private readonly ICommandHandler<SetModeCommand, SetModeCommandResponse> _commandHandler;
+    private readonly ISolarniBaronDispatcher _dispatcher;
     private readonly ILogger _logger;
 
-    public SetMode(ICommandHandler<SetModeCommand, SetModeCommandResponse> commandHandler, ILoggerFactory loggerFactory)
+    public SetMode(ISolarniBaronDispatcher dispatcher, ILoggerFactory loggerFactory)
     {
-        _commandHandler = commandHandler;
+        _dispatcher = dispatcher;
         _logger = loggerFactory.CreateLogger<SetMode>();
     }
 
@@ -25,9 +25,9 @@ public class SetMode
     public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData req)
     {
         var setModeInfo = JsonSerializer.Deserialize<SetModeInfo>(req.Body);
-        var data = await _commandHandler.Execute(new SetModeCommand(setModeInfo.Email, setModeInfo.Password, setModeInfo.UnitId,
+        var data = await _dispatcher.Dispatch(new SetModeCommand(setModeInfo.Email, setModeInfo.Password, setModeInfo.UnitId,
             setModeInfo.Mode));
-        if (data.ResponseStatus == ResponseStatus.Error)
+        if (!string.IsNullOrWhiteSpace(data.Error))
         {
             _logger.LogError(data.Error);
             var errorResponse = req.CreateResponse(HttpStatusCode.BadRequest);
