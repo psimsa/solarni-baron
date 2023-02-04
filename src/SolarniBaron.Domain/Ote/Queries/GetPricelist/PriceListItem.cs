@@ -1,6 +1,6 @@
 ﻿namespace SolarniBaron.Domain.Ote.Queries.GetPricelist;
 
-public record GetPricelistQueryResponseItem(
+public record PriceListItem(
     int HourIndex,
     decimal BasePriceEur,
     decimal BasePriceCzk,
@@ -12,6 +12,6 @@ public record GetPricelistQueryResponseItem(
     int PriceScore,
     int PriceCluster)
 {
-    public static GetPricelistQueryResponseItem Empty = new(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-    public int Hour => HourIndex + 1;
+    public static PriceListItem Empty = new(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    // public int Hour => HourIndex + 1;
 }

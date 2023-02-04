@@ -55,10 +55,17 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
 
                 var date = getPricelistQuery.Date.ToString("yyyy-MM-dd");
                 var url = $"{Constants.OteUrl}/?date={date}";
-                var content = await _client.GetStringAsync(url);
+                var response = await _client.GetAsync(url);
+                if (!response.IsSuccessStatusCode)
+                {
+                    LogErrorGettingOteData($"Status code: {response.StatusCode}");
+                    return null;
+                }
+
+                var content = await response.Content.ReadAsStringAsync(cancellationToken);
                 var config = Configuration.Default.WithDefaultLoader();
                 var context = BrowsingContext.New(config);
-                var document = await context.OpenAsync(req => req.Content(content));
+                var document = await context.OpenAsync(req => req.Content(content), cancel: cancellationToken);
                 try
                 {
                     var reportTables = document.QuerySelectorAll("div.bigtable table.report_table");
@@ -77,7 +84,7 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
 
                     var data = dataRows.Take(dataRows.Count() - 1).Select(row =>
                     {
-                        var toReturn = GetPricelistQueryResponseItem.Empty;
+                        var toReturn = PriceListItem.Empty;
                         var data = row.Cells[1].TextContent;
                         var isValid = decimal.TryParse(data.Replace(',', '.'), out var basePriceEur);
                         return basePriceEur.ToString(CultureInfo.InvariantCulture);
@@ -89,10 +96,17 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
                     LogErrorGettingOteData(e.Message);
                     return null;
                 }
-            }, new DistributedCacheEntryOptions() { AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(2) });
-        if (priceString == null)
+            }, new DistributedCacheEntryOptions() {AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(2)});
+
+        switch (priceString)
         {
-            // TODO: return error
+            case null:
+                // TODO: return error
+                await _cache.SetAsync(cacheKey, Encoding.UTF8.GetBytes("error"),
+                    new DistributedCacheEntryOptions() {AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1)}, cancellationToken);
+                return new GetPricelistQueryResponse(null, 0);
+            case "error":
+                return new GetPricelistQueryResponse(null, 0);
         }
 
         var basicPrices = priceString.Split('|').Select(item =>
@@ -104,7 +118,7 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
         var km = new PriceClusteringWorker();
         var clusters = km.GetClusters(basicPrices.Select(_ => _.Value).ToArray(), 4);
 
-        var toReturn = new GetPricelistQueryResponseItem[24];
+        var toReturn = new PriceListItem[24];
         for (int i = 0; i < 24; i++)
         {
             var item = basicPrices[i];
@@ -115,7 +129,7 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
             decimal withSurchargeCzkVat = withSurchargeCzk * vatPct / 100;
             decimal withSurchargeCzkTotal = withSurchargeCzk + withSurchargeCzkVat;
 
-            var toReturnItem = new GetPricelistQueryResponseItem(item.Key,
+            var toReturnItem = new PriceListItem(item.Key,
                 item.Value,
                 basePriceCzk,
                 basePriceCzkVat,
@@ -130,5 +144,4 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
 
         return new GetPricelistQueryResponse(toReturn, exchangeRate);
     }
-
 }

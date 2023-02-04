@@ -20,9 +20,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<IQueryHandler<GetExchangeRateQuery, Result<GetExchangeRateQueryResponse>>, GetExchangeRateQueryHandler>();
         services.AddTransient<IQueryHandler<GetStatsQuery, GetStatsQueryResponse>, GetStatsQueryHandler>();
         services.AddTransient<ICommandHandler<SetModeCommand, SetModeCommandResponse>, SetModeCommandHandler>();
-        services.AddTransient<IQueryHandler<GetPriceOutlookQuery, GetPriceOutlookQueryResponse>,
-                GetPriceOutlookQueryHandler>();
-
+        services.AddTransient<IQueryHandler<GetPriceOutlookQuery, Result<GetPriceOutlookQueryResponse>>, GetPriceOutlookQueryHandler>();
 
         services.AddTransient<IBatteryBoxDataConnector, OigDataConnector>();
 
