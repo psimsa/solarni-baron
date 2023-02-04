@@ -56,9 +56,9 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
                 var date = getPricelistQuery.Date.ToString("yyyy-MM-dd");
                 var url = $"{Constants.OteUrl}/?date={date}";
                 var response = await _client.GetAsync(url);
-                if (!response.IsSuccessStatusCode)
+                if (response?.IsSuccessStatusCode != true)
                 {
-                    LogErrorGettingOteData($"Status code: {response.StatusCode}");
+                    LogErrorGettingOteData($"Status code: {response?.StatusCode}");
                     return null;
                 }
 

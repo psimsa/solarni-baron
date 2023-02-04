@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Net;
+using System.Text;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -27,13 +28,16 @@ public class GetPricelistQueryHandlerShould
     [Fact]
     public async Task GetPricelist()
     {
-        _httpClientMock.Setup(x => x.GetStringAsync(It.IsAny<string>()))
-            .ReturnsAsync(OteResponses.ValidPricelistResponse).Verifiable();
+        _httpClientMock.Setup(x => x.GetAsync(It.IsAny<string>()))
+            .ReturnsAsync(
+                new HttpResponseMessage(HttpStatusCode.Accepted) {Content = new StringContent(OteResponses.ValidPricelistResponse)})
+            .Verifiable();
 
         _cacheMock.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(null as byte[]).Verifiable();
 
         _dispatcherMock.Setup(x => x.Dispatch(It.IsAny<GetExchangeRateQuery>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Result<GetExchangeRateQueryResponse>(ResponseStatus.Ok,new GetExchangeRateQueryResponse(24.520m))).Verifiable();
+            .ReturnsAsync(new Result<GetExchangeRateQueryResponse>(ResponseStatus.Ok, new GetExchangeRateQueryResponse(24.520m)))
+            .Verifiable();
 
         var handler = new GetPricelistQueryHandler(_dispatcherMock.Object, _httpClientMock.Object,
             new Cache(_cacheMock.Object),
@@ -68,7 +72,8 @@ public class GetPricelistQueryHandlerShould
             .ReturnsAsync(Encoding.UTF8.GetBytes(cachedValue)).Verifiable();
         _httpClientMock.Setup(x => x.GetStringAsync(It.IsAny<string>())).ThrowsAsync(new NotImplementedException()).Verifiable();
         _dispatcherMock.Setup(x => x.Dispatch(It.IsAny<GetExchangeRateQuery>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Result<GetExchangeRateQueryResponse>(ResponseStatus.Ok,new GetExchangeRateQueryResponse(24.520m))).Verifiable();
+            .ReturnsAsync(new Result<GetExchangeRateQueryResponse>(ResponseStatus.Ok, new GetExchangeRateQueryResponse(24.520m)))
+            .Verifiable();
 
         var handler = new GetPricelistQueryHandler(_dispatcherMock.Object, _httpClientMock.Object,
             new Cache(_cacheMock.Object),

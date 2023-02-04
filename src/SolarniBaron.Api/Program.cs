@@ -93,7 +93,7 @@ app.MapGet("api/ote/now",
             }
 
             var toReturn = result.HourlyRateBreakdown.FirstOrDefault(x => x.HourIndex == pragueDateTimeNow.Hour);
-            return toReturn == null ? Results.NotFound() : Results.Ok((toReturn));
+            return toReturn == null ? Results.NotFound() : Results.Ok(toReturn);
         })
     .WithName("GetCurrentPrice")
     .Produces<PriceListItem>()
@@ -132,8 +132,8 @@ app.MapGet("api/ote/outlook/now",
 
             return Results.Ok(result.Data.HourlyRateBreakdown.FirstOrDefault(x => x.HourIndex == pragueDateTimeNow.Hour));
         })
-    .WithName("GetPriceOutlook")
-    .Produces<GetPriceOutlookQueryResponse>()
+    .WithName("GetPriceOutlookNow")
+    .Produces<PriceListItem>()
     .ProducesProblem(400)
     .WithOpenApi();
 
