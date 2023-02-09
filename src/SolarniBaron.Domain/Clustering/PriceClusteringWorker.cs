@@ -1,8 +1,13 @@
 ﻿namespace SolarniBaron.Domain.Clustering;
 
-internal class PriceClusteringWorker
+public interface IPriceClusteringWorker
 {
-    internal int[] GetClusters(decimal[] prices, int clusterCount)
+    int[] GetClusters(decimal[] prices, int clusterCount);
+}
+
+internal class PriceClusteringWorker : IPriceClusteringWorker
+{
+    public int[] GetClusters(decimal[] prices, int clusterCount)
     {
         var means = prices.Distinct().Take(clusterCount).ToArray();
 

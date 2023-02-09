@@ -4,6 +4,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Moq;
 using SolarniBaron.Caching;
+using SolarniBaron.Domain.Clustering;
 using SolarniBaron.Domain.CNB.Queries.GetExchangeRate;
 using SolarniBaron.Domain.Contracts;
 using SolarniBaron.Domain.Ote.Queries.GetPricelist;
@@ -37,9 +38,9 @@ public class GetPricelistQueryHandlerShould
 
         _dispatcherMock.Setup(x => x.Dispatch(It.IsAny<GetExchangeRateQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Result<GetExchangeRateQueryResponse>(ResponseStatus.Ok, new GetExchangeRateQueryResponse(24.520m)))
-            .Verifiable();
+        .Verifiable();
 
-        var handler = new GetPricelistQueryHandler(_dispatcherMock.Object, _httpClientMock.Object,
+        var handler = new GetPricelistQueryHandler(_dispatcherMock.Object, new PriceClusteringWorker(), _httpClientMock.Object,
             new Cache(_cacheMock.Object),
             Mock.Of<ILogger<GetPricelistQueryHandler>>());
         var response = await handler.Query(new GetPricelistQuery(new DateOnly(2022, 10, 11)), CancellationToken.None);
@@ -75,7 +76,7 @@ public class GetPricelistQueryHandlerShould
             .ReturnsAsync(new Result<GetExchangeRateQueryResponse>(ResponseStatus.Ok, new GetExchangeRateQueryResponse(24.520m)))
             .Verifiable();
 
-        var handler = new GetPricelistQueryHandler(_dispatcherMock.Object, _httpClientMock.Object,
+        var handler = new GetPricelistQueryHandler(_dispatcherMock.Object, new PriceClusteringWorker(), _httpClientMock.Object,
             new Cache(_cacheMock.Object),
             Mock.Of<ILogger<GetPricelistQueryHandler>>());
         var response = await handler.Query(new GetPricelistQuery(new DateOnly(2022, 10, 10)), CancellationToken.None);
@@ -84,6 +85,8 @@ public class GetPricelistQueryHandlerShould
         _httpClientMock.VerifyNoOtherCalls();
         _cacheMock.VerifyAll();
         _dispatcherMock.VerifyAll();
+
+        Assert.NotNull(response.HourlyRateBreakdown);           
         Assert.Equal(24.520m, response.ExchangeRate);
         Assert.Equal(24, response.HourlyRateBreakdown.Length);
 
