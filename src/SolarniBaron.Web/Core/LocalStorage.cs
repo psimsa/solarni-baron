@@ -3,7 +3,16 @@ using Microsoft.JSInterop;
 
 namespace SolarniBaron.Web.Core;
 
-public class LocalStorage
+public interface IStorage
+{
+    Task<string?> GetItem(string key);
+    Task<T?> GetItem<T>(string key);
+    Task SetItem(string key, string value);
+    Task SetItem<T>(string key, T value);
+    Task RemoveItem(string key);
+}
+
+public class LocalStorage : IStorage
 {
     private readonly IJSRuntime _js;
 
@@ -32,5 +41,10 @@ public class LocalStorage
     {
         var item = JsonSerializer.Serialize(value);
         await SetItem(key, item);
+    }
+
+    public async Task RemoveItem(string key)
+    {
+        await _js.InvokeVoidAsync("localStorage.removeItem", key);
     }
 }

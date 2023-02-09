@@ -1,15 +1,20 @@
 @page "/"
 @using SolarniBaron.Domain.BatteryBox.Models
 @using SolarniBaron.Domain
-@inject HttpClient Http
-@inject NavigationManager Navigation
-@inject LocalStorage Storage
-@inject ClientConfig Config
+@using SolarniBaron.Web.Components.Charts
 
-@if (ShowOfflineLogin)
+@inherits BlazorState.BlazorStateComponent
+
+@if (State.ShouldDisplayLoginBar)
 {
     <NotConnectedComponent GoToLogin="GoToLogin" RefreshPage="RefreshPage"/>
 }
+
+@*<Chart Id="pie1" Type="@Chart.ChartType.Pie"
+       Data="@(new[] { "1", "2" })"
+       BackgroundColor="@(new[] { "blue","green" })"
+       Labels="@(new[] { "Fail","Ok" })">
+</Chart>*@
 
 <div class="accordion" id="fve-data">
     <div class="accordion-item">
@@ -20,7 +25,7 @@
         </h2>
         <div id="collapse-stats" class="accordion-collapse collapse show" aria-labelledby="heading-stats" data-bs-parent="#fve-data">
             <div class="accordion-body">
-                <GeneralSection CurrentStatus="CurrentStatus"/>
+                <GeneralSection/>
             </div>
         </div>
     </div>
@@ -32,7 +37,7 @@
         </h2>
         <div id="collapse-output" class="accordion-collapse collapse" aria-labelledby="heading-output" data-bs-parent="#fve-data">
             <div class="accordion-body">
-                <PvOutputSection CurrentStatus="CurrentStatus"/>
+                <PvOutputSection/>
             </div>
         </div>
     </div>
@@ -44,7 +49,7 @@
         </h2>
         <div id="collapse-consumption" class="accordion-collapse collapse" aria-labelledby="heading-consumption" data-bs-parent="#fve-data">
             <div class="accordion-body">
-                <HouseLoadSection CurrentStatus="CurrentStatus"/>
+                <HouseLoadSection/>
             </div>
         </div>
     </div>
@@ -56,94 +61,51 @@
         </h2>
         <div id="collapse-grid" class="accordion-collapse collapse" aria-labelledby="heading-grid" data-bs-parent="#fve-data">
             <div class="accordion-body">
-                <AcGridSection CurrentStatus="CurrentStatus"/>
+                <AcGridSection/>
+            </div>
+        </div>
+    </div>
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="heading-actions">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-actions" aria-expanded="false" aria-controls="collapse-actions">
+                Akce
+            </button>
+        </h2>
+        <div id="collapse-actions" class="accordion-collapse collapse" aria-labelledby="heading-actions" data-bs-parent="#fve-data">
+            <div class="accordion-body">
+                <button class="btn btn-outline-primary" style="margin-left: fill" @onclick="Logout">Odhlásit</button>
             </div>
         </div>
     </div>
 </div>
 
-<div class="progress" style="@(_progressHidden ? "display: none" : "")">
+<div class="progress" style="@(State.IsBackgroundSyncing ? "" : "display: none")">
     <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
 </div>
 
 
 @code {
-    private BatteryBoxStatus CurrentStatus { get; set; } = DefaultStatus();
-    private LoginInfo LoginInfo { get; set; }
-    private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
-    private bool _progressHidden = false;
 
-    private bool ShowOfflineLogin { get; set; }
+    private AppState State => GetState<AppState>();
 
-    private Task? _refresher;
+    [Inject]
+    IActionDispatcherService ActionDispatcher { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    [Inject]
+    NavigationManager Navigation { get; set; }
+
+    [Inject]
+    IStorage Storage { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        LoginInfo = await Storage.GetItem<LoginInfo>("loginInfo") ?? LoginInfo.Empty;
-
-        _refresher = UpdateTask(_cancellationTokenSource.Token);
-
-        ShowOfflineLogin = false;
-        CurrentStatus = await Storage.GetItem<BatteryBoxStatus>("status") ?? DefaultStatus();
-    }
-
-    private async Task UpdateTask(CancellationToken token)
-    {
-        await Task.Yield();
-        string url = "/api/batterybox/getstats";
-        try
+        if (firstRender)
         {
-            var checkLocalUrl = await Http.PostAsync(Config.LocalGetStatsUrl, JsonContent.Create(LoginInfo), token);
-            if (checkLocalUrl.IsSuccessStatusCode)
+            var cachedStats = await Storage.GetItem<BatteryBoxStatus>("status");
+            if (cachedStats != null)
             {
-                url = Config.LocalGetStatsUrl;
+                await ActionDispatcher.DispatchAction(new AppState.SetBatteryBoxStatusAction(cachedStats));
             }
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-        }
-
-
-        while (!token.IsCancellationRequested)
-        {
-            try
-            {
-    /*if (ShowOfflineLogin)
-                {
-                    await Task.Delay(TimeSpan.FromSeconds(10), token);
-                    continue;
-                }*/
-                _progressHidden = false;
-                StateHasChanged();
-                var response = await Http.PostAsync(url, JsonContent.Create(LoginInfo), token);
-                response.EnsureSuccessStatusCode();
-
-                var messageResponse = await response.Content.ReadFromJsonAsync(CommonSerializationContext.Default.BatteryBoxStatus, _cancellationTokenSource.Token);
-                if (messageResponse != null)
-                {
-                    CurrentStatus = messageResponse;
-                    await Storage.SetItem("status", CurrentStatus);
-
-                    if (string.IsNullOrWhiteSpace(LoginInfo.UnitId))
-                    {
-                        LoginInfo = LoginInfo with {UnitId = messageResponse.UnitId};
-                        await Storage.SetItem("loginInfo", LoginInfo);
-                    }
-                }
-                ShowOfflineLogin = false;
-            }
-            catch (Exception e)
-            {
-                CurrentStatus = DefaultStatus();
-                ShowOfflineLogin = true;
-            }
-            finally
-            {
-                _progressHidden = true;
-                StateHasChanged();
-            }
-            await Task.Delay(10_000, _cancellationTokenSource.Token);
         }
     }
 
@@ -152,18 +114,15 @@
         Navigation.NavigateTo("/login", true);
     }
 
-    private static BatteryBoxStatus DefaultStatus() => BatteryBoxStatus.Empty();
-
-    public void Dispose()
-    {
-        _cancellationTokenSource.Cancel();
-        _refresher?.Wait();
-        _cancellationTokenSource.Dispose();
-    }
-
     private void RefreshPage()
     {
         Navigation.NavigateTo(Navigation.Uri, true);
+    }
+
+    private async Task Logout()
+    {
+        await Storage.RemoveItem("loginInfo");
+        GoToLogin();
     }
 
 }
