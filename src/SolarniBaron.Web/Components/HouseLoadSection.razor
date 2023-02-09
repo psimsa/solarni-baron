@@ -1,4 +1,6 @@
 @using SolarniBaron.Domain.BatteryBox.Models
+@inherits BlazorState.BlazorStateComponent
+
 
 <table class="table">
     <thead>
@@ -10,26 +12,26 @@
     <tbody>
     <tr>
         <td>Zátěž L1:</td>
-        <td style="@Helpers.GetGradient(CurrentStatus.ConsumptionL1, 5000)">@Helpers.FormatMetric(CurrentStatus.ConsumptionL1, "W")</td>
+        <td style="@Helpers.GetGradient(State.BatteryBoxStatus.ConsumptionL1, 5000)">@Helpers.FormatMetric(State.BatteryBoxStatus.ConsumptionL1, "W")</td>
     </tr>
     <tr>
         <td>Zátěž L2:</td>
-        <td style="@Helpers.GetGradient(CurrentStatus.ConsumptionL2, 5000)">@Helpers.FormatMetric(CurrentStatus.ConsumptionL2, "W")</td>
+        <td style="@Helpers.GetGradient(State.BatteryBoxStatus.ConsumptionL2, 5000)">@Helpers.FormatMetric(State.BatteryBoxStatus.ConsumptionL2, "W")</td>
     </tr>
     <tr>
         <td>Zátěž L3:</td>
-        <td style="@Helpers.GetGradient(CurrentStatus.ConsumptionL3, 5000)">@Helpers.FormatMetric(CurrentStatus.ConsumptionL3, "W")</td>
+        <td style="@Helpers.GetGradient(State.BatteryBoxStatus.ConsumptionL3, 5000)">@Helpers.FormatMetric(State.BatteryBoxStatus.ConsumptionL3, "W")</td>
     </tr>
     <tr>
         <td>Zátěž celkem:</td>
-        <td style="@Helpers.GetGradient(CurrentStatus.ConsumptionTotal, 10000)">@Helpers.FormatMetric(CurrentStatus.ConsumptionTotal, "W")</td>
+        <td style="@Helpers.GetGradient(State.BatteryBoxStatus.ConsumptionTotal, 10000)">@Helpers.FormatMetric(State.BatteryBoxStatus.ConsumptionTotal, "W")</td>
     </tr>
     </tbody>
 </table>
 
 @code {
 
-    [Parameter]
-    public BatteryBoxStatus CurrentStatus { get; set; }
+    private AppState State => GetState<AppState>();
+
 
 }

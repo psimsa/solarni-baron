@@ -3,7 +3,15 @@ using Microsoft.JSInterop;
 
 namespace SolarniBaron.Web.Core;
 
-public class LocalStorage
+public interface IStorage
+{
+    Task<string?> GetItem(string key);
+    Task<T?> GetItem<T>(string key);
+    Task SetItem(string key, string value);
+    Task SetItem<T>(string key, T value);
+}
+
+public class LocalStorage : IStorage
 {
     private readonly IJSRuntime _js;
 

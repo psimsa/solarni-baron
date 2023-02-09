@@ -1,5 +1,7 @@
 @using SolarniBaron.Domain.BatteryBox.Models
 @using SolarniBaron.Domain.BatteryBox.Models.BatteryBox
+
+@inherits BlazorState.BlazorStateComponent
 <table class="table">
     <thead>
     <tr>
@@ -10,12 +12,12 @@
     <tbody>
     <tr>
         <td>Výkon celkem:</td>
-        <td style="@Helpers.GetGradient(CurrentStatus.PanelsOutputL2 + CurrentStatus.PanelsOutputL1, 9600)">
-            @Helpers.FormatMetric(CurrentStatus.PanelsOutputL2 + CurrentStatus.PanelsOutputL1, "W")
-            @if (CurrentStatus.PanelsOutputL1 > 0 || CurrentStatus.PanelsOutputL2 > 0)
+        <td style="@Helpers.GetGradient(State.BatteryBoxStatus.PanelsOutputL2 + State.BatteryBoxStatus.PanelsOutputL1, 9600)">
+            @Helpers.FormatMetric(State.BatteryBoxStatus.PanelsOutputL2 + State.BatteryBoxStatus.PanelsOutputL1, "W")
+            @if (State.BatteryBoxStatus.PanelsOutputL1 > 0 || State.BatteryBoxStatus.PanelsOutputL2 > 0)
             {
-                var max = Math.Max(CurrentStatus.PanelsOutputL1, CurrentStatus.PanelsOutputL2);
-                var diff = Math.Abs(CurrentStatus.PanelsOutputL1 - CurrentStatus.PanelsOutputL2);
+                var max = Math.Max(State.BatteryBoxStatus.PanelsOutputL1, State.BatteryBoxStatus.PanelsOutputL2);
+                var diff = Math.Abs(State.BatteryBoxStatus.PanelsOutputL1 - State.BatteryBoxStatus.PanelsOutputL2);
                 var perc = diff / max * 100;
                 if (perc > 10 && max > 120)
                 {
@@ -26,44 +28,44 @@
     </tr>
     <tr>
         <td>Výkon %:</td>
-        <td style="@Helpers.GetGradient(CurrentStatus.PanelsOutputPct, 100)">
-            @CurrentStatus.PanelsOutputPct%
+        <td style="@Helpers.GetGradient(State.BatteryBoxStatus.PanelsOutputPct, 100)">
+            @State.BatteryBoxStatus.PanelsOutputPct%
         </td>
     </tr>
     <tr>
         <td>Zátěž celkem:</td>
-        <td style="@Helpers.GetGradient(CurrentStatus.ConsumptionTotal, 10000)">@Helpers.FormatMetric(CurrentStatus.ConsumptionTotal, "W")</td>
+        <td style="@Helpers.GetGradient(State.BatteryBoxStatus.ConsumptionTotal, 10000)">@Helpers.FormatMetric(State.BatteryBoxStatus.ConsumptionTotal, "W")</td>
     </tr>
     <tr>
         <td>Síť celkem:</td>
-        <td style="@Helpers.GetGradient(CurrentStatus.GridOutputTotal, 10000)">@Helpers.FormatMetric(CurrentStatus.GridOutputTotal, "W")</td>
+        <td style="@Helpers.GetGradient(State.BatteryBoxStatus.GridOutputTotal, 10000)">@Helpers.FormatMetric(State.BatteryBoxStatus.GridOutputTotal, "W")</td>
     </tr>
     <tr>
         <td>Baterie %:</td>
-        <td style="@Helpers.GetGradient(CurrentStatus.BatteryPct, 100)">
-            @CurrentStatus.BatteryPct%
+        <td style="@Helpers.GetGradient(State.BatteryBoxStatus.BatteryPct, 100)">
+            @State.BatteryBoxStatus.BatteryPct%
         </td>
     </tr>
     <tr>
         <td>Dnes vyrobeno:</td>
-        <td>@Helpers.FormatMetric(CurrentStatus.OutputToday, "Wh")</td>
+        <td>@Helpers.FormatMetric(State.BatteryBoxStatus.OutputToday, "Wh")</td>
     </tr>
     <tr>
         <td>Dnes spotřebováno:</td>
-        <td>@Helpers.FormatMetric(CurrentStatus.ConsumptionToday, "Wh")</td>
+        <td>@Helpers.FormatMetric(State.BatteryBoxStatus.ConsumptionToday, "Wh")</td>
     </tr>
     <tr>
         <td>Dnes ze sítě:</td>
-        <td>@Helpers.FormatMetric(CurrentStatus.GridOutput, "Wh")</td>
+        <td>@Helpers.FormatMetric(State.BatteryBoxStatus.GridOutput, "Wh")</td>
     </tr>
     <tr>
         <td>Poslední aktualizace:</td>
-        <td>@(CurrentStatus.LastCall.LocalDateTime.ToString("dd-MM-yyyy HH:mm"))</td>
+        <td>@(State.BatteryBoxStatus.LastCall.LocalDateTime.ToString("dd-MM-yyyy HH:mm"))</td>
     </tr>
     <tr>
         <td>Pracovní režim:</td>
         <td>
-            @(CurrentStatus.OperationMode switch
+            @(State.BatteryBoxStatus.OperationMode switch
             {
                 OperationMode.Home1 => "Domácí 1 (baterie)",
                 OperationMode.Home2 => "Domácí 2 (baterie když se nevyrábí)",
@@ -78,7 +80,7 @@
 
 @code {
 
-    [Parameter]
-    public BatteryBoxStatus CurrentStatus { get; set; }
+    private AppState State => GetState<AppState>();
+
 
 }

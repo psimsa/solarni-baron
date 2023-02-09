@@ -11,30 +11,30 @@
     <tbody>
     <tr>
         <td>Síť L1:</td>
-        <td style="@Helpers.GetGradient(CurrentStatus.GridOutputL1, 5000)">@Helpers.FormatMetric(CurrentStatus.GridOutputL1, "W")</td>
+        <td style="@Helpers.GetGradient(State.BatteryBoxStatus.GridOutputL1, 5000)">@Helpers.FormatMetric(State.BatteryBoxStatus.GridOutputL1, "W")</td>
     </tr>
     <tr>
         <td>Síť L2:</td>
-        <td style="@Helpers.GetGradient(CurrentStatus.GridOutputL2, 5000)">@Helpers.FormatMetric(CurrentStatus.GridOutputL2, "W")</td>
+        <td style="@Helpers.GetGradient(State.BatteryBoxStatus.GridOutputL2, 5000)">@Helpers.FormatMetric(State.BatteryBoxStatus.GridOutputL2, "W")</td>
     </tr>
     <tr>
         <td>Síť L3:</td>
-        <td style="@Helpers.GetGradient(CurrentStatus.GridOutputL3, 5000)">@Helpers.FormatMetric(CurrentStatus.GridOutputL3, "W")</td>
+        <td style="@Helpers.GetGradient(State.BatteryBoxStatus.GridOutputL3, 5000)">@Helpers.FormatMetric(State.BatteryBoxStatus.GridOutputL3, "W")</td>
     </tr>
     <tr>
         <td>Síť celkem:</td>
-        <td style="@Helpers.GetGradient(CurrentStatus.GridOutputTotal, 10000)">@Helpers.FormatMetric(CurrentStatus.GridOutputTotal, "W")</td>
+        <td style="@Helpers.GetGradient(State.BatteryBoxStatus.GridOutputTotal, 10000)">@Helpers.FormatMetric(State.BatteryBoxStatus.GridOutputTotal, "W")</td>
     </tr>
     <tr>
         <td>Dnes ze sítě:</td>
-        <td>@Helpers.FormatMetric(CurrentStatus.GridOutput, "Wh")</td>
+        <td>@Helpers.FormatMetric(State.BatteryBoxStatus.GridOutput, "Wh")</td>
     </tr>
     </tbody>
 </table>
 
 @code {
 
-    [Parameter]
-    public BatteryBoxStatus CurrentStatus { get; set; }
+    private AppState State => GetState<AppState>();
+
 
 }
