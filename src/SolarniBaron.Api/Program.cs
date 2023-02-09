@@ -7,6 +7,7 @@ using SolarniBaron.Domain.BatteryBox.Models;
 using SolarniBaron.Domain.BatteryBox.Queries.GetStats;
 using SolarniBaron.Domain.Contracts;
 using SolarniBaron.Domain.Extensions;
+using SolarniBaron.Domain.Ote.Models;
 using SolarniBaron.Domain.Ote.Queries.GetPricelist;
 using SolarniBaron.Domain.Ote.Queries.GetPriceOutlook;
 using SolarniBaron.Persistence;

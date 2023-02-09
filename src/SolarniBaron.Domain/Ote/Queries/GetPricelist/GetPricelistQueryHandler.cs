@@ -9,12 +9,14 @@ using Microsoft.Extensions.Logging;
 using SolarniBaron.Domain.Clustering;
 using SolarniBaron.Domain.CNB.Queries.GetExchangeRate;
 using SolarniBaron.Domain.Contracts;
+using SolarniBaron.Domain.Ote.Models;
 
 namespace SolarniBaron.Domain.Ote.Queries.GetPricelist;
 
 public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery, GetPricelistQueryResponse>
 {
     private readonly ISolarniBaronDispatcher _dispatcher;
+    private readonly IPriceClusteringWorker _priceClusteringWorker;
     private readonly IApiHttpClient _client;
     private readonly ICache _cache;
     private readonly ILogger<GetPricelistQueryHandler> _logger;
@@ -27,9 +29,11 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
 
     public GetPricelistQueryHandler(
         ISolarniBaronDispatcher dispatcher,
+        IPriceClusteringWorker priceClusteringWorker,
         IApiHttpClient client, ICache cache, ILogger<GetPricelistQueryHandler> logger)
     {
         _dispatcher = dispatcher;
+        _priceClusteringWorker = priceClusteringWorker;
         _client = client;
         _cache = cache;
         _logger = logger;
@@ -115,8 +119,7 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
             return isValid ? basePriceEur : 0;
         }).Select((item, index) => new KeyValuePair<int, decimal>(index, item)).OrderBy(_ => _.Value).ToList();
 
-        var km = new PriceClusteringWorker();
-        var clusters = km.GetClusters(basicPrices.Select(_ => _.Value).ToArray(), 4);
+        var clusters = _priceClusteringWorker.GetClusters(basicPrices.Select(_ => _.Value).ToArray(), 4);
 
         var toReturn = new PriceListItem[24];
         for (int i = 0; i < 24; i++)

@@ -35,6 +35,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestHelpers", "test\TestHel
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{4AF65C04-8A4D-4087-8475-4C113EE78D47}"
 	ProjectSection(SolutionItems) = preProject
+		.github\workflows\azure-static-web-apps-black-bay-0f0291503.yml = .github\workflows\azure-static-web-apps-black-bay-0f0291503.yml
+		.github\workflows\build-docker.yml = .github\workflows\build-docker.yml
 		.github\workflows\build.yml = .github\workflows\build.yml
 		.github\workflows\codeql.yml = .github\workflows\codeql.yml
 	EndProjectSection
