@@ -1,4 +1,4 @@
-﻿namespace SolarniBaron.Domain.Ote.Queries.GetPricelist;
+﻿namespace SolarniBaron.Domain.Ote.Models;
 
 public record PriceListItem(
     int HourIndex,

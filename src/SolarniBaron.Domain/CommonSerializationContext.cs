@@ -2,6 +2,7 @@
 using SolarniBaron.Domain.BatteryBox.Commands.SetMode;
 using SolarniBaron.Domain.BatteryBox.Models;
 using SolarniBaron.Domain.BatteryBox.Models.BatteryBox;
+using SolarniBaron.Domain.Ote.Models;
 using SolarniBaron.Domain.Ote.Queries.GetPricelist;
 using SolarniBaron.Domain.Ote.Queries.GetPriceOutlook;
 

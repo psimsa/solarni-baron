@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using SolarniBaron.Domain.Clustering;
 using SolarniBaron.Domain.CNB.Queries.GetExchangeRate;
 using SolarniBaron.Domain.Contracts;
+using SolarniBaron.Domain.Ote.Models;
 
 namespace SolarniBaron.Domain.Ote.Queries.GetPricelist;
 
