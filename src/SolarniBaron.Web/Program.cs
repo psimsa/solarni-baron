@@ -1,5 +1,7 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Reflection;
+using System.Text.Json.Serialization;
 using BlazorApplicationInsights;
+using BlazorState;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using SolarniBaron.Domain;
@@ -25,6 +27,23 @@ builder.Services.AddBlazorApplicationInsights();
 builder.Services.AddSingleton(new ClientConfig(clientConfig["LocalGetStatsUrl"] ?? "api/batterybox/getstats"));
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+
+builder.Services.AddBlazorState(blazorStateOptions =>
+    {
+#if DEBUG
+        blazorStateOptions.UseReduxDevTools(reduxDevToolsOptions =>
+        {
+            reduxDevToolsOptions.Trace = true;
+            reduxDevToolsOptions.TraceLimit = 25;
+        });
+#endif
+        blazorStateOptions.Assemblies =
+            new Assembly[]
+            {
+                typeof(Program).GetTypeInfo().Assembly,
+            };
+    }
+);
 
 var webAssemblyHost = builder.Build();
 
