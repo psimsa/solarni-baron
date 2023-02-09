@@ -1,6 +1,7 @@
 ﻿using DotnetDispatcher.Core;
 using SolarniBaron.Domain.Clustering;
 using SolarniBaron.Domain.Contracts;
+using SolarniBaron.Domain.Ote.Models;
 using SolarniBaron.Domain.Ote.Queries.GetPricelist;
 
 namespace SolarniBaron.Domain.Ote.Queries.GetPriceOutlook;
