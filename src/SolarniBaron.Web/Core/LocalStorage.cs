@@ -9,6 +9,7 @@ public interface IStorage
     Task<T?> GetItem<T>(string key);
     Task SetItem(string key, string value);
     Task SetItem<T>(string key, T value);
+    Task RemoveItem(string key);
 }
 
 public class LocalStorage : IStorage
@@ -40,5 +41,10 @@ public class LocalStorage : IStorage
     {
         var item = JsonSerializer.Serialize(value);
         await SetItem(key, item);
+    }
+
+    public async Task RemoveItem(string key)
+    {
+        await _js.InvokeVoidAsync("localStorage.removeItem", key);
     }
 }

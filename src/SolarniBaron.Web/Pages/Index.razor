@@ -65,6 +65,18 @@
             </div>
         </div>
     </div>
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="heading-actions">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-actions" aria-expanded="false" aria-controls="collapse-actions">
+                Akce
+            </button>
+        </h2>
+        <div id="collapse-actions" class="accordion-collapse collapse" aria-labelledby="heading-actions" data-bs-parent="#fve-data">
+            <div class="accordion-body">
+                <button class="btn btn-outline-primary" style="margin-left: fill" @onclick="Logout">Odhlásit</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="progress" style="@(State.IsBackgroundSyncing ? "" : "display: none")">
@@ -105,6 +117,12 @@
     private void RefreshPage()
     {
         Navigation.NavigateTo(Navigation.Uri, true);
+    }
+
+    private async Task Logout()
+    {
+        await Storage.RemoveItem("loginInfo");
+        GoToLogin();
     }
 
 }
