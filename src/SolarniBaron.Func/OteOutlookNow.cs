@@ -13,15 +13,17 @@ namespace SolarniBaron.Func;
 public partial class OteOutlookNow
 {
     private readonly ISolarniBaronDispatcher _dispatcher;
+    private readonly CommonSerializationContext _serializationContext;
     private readonly ILogger _logger;
 
     [LoggerMessage(EventId = 0, Level = LogLevel.Error, Message = "Error getting OTE data")]
     private partial void LogErrorGettingOteData();
 
 
-    public OteOutlookNow(ISolarniBaronDispatcher dispatcher, ILoggerFactory loggerFactory)
+    public OteOutlookNow(ISolarniBaronDispatcher dispatcher, CommonSerializationContext serializationContext, ILoggerFactory loggerFactory)
     {
         _dispatcher = dispatcher;
+        _serializationContext = serializationContext;
         _logger = loggerFactory.CreateLogger<OteOutlookNow>();
     }
 
@@ -38,10 +40,15 @@ public partial class OteOutlookNow
             return req.CreateResponse(HttpStatusCode.NotFound);
         }
 
+        var hourPriceItem = result.Data?.HourlyRateBreakdown?.FirstOrDefault(x => x.HourIndex == pragueDateTimeNow.Hour);
+        if (hourPriceItem is null)
+        {
+            return req.CreateResponse(HttpStatusCode.NotFound);
+        }
+
         var response = req.CreateResponse(HttpStatusCode.OK);
         response.Headers.Add("Content-Type", "application/json; charset=utf-8");
-        await response.WriteStringAsync(
-            JsonSerializer.Serialize(result.Data?.HourlyRateBreakdown?.FirstOrDefault(x => x.HourIndex == pragueDateTimeNow.Hour)));
+        await response.WriteStringAsync(JsonSerializer.Serialize(hourPriceItem, _serializationContext.PriceListItem));
         return response;
     }
 }

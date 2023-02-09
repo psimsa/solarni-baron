@@ -8,14 +8,14 @@ using SolarniBaron.Domain.Ote.Queries.GetPriceOutlook;
 
 namespace SolarniBaron.Domain;
 
-[GenerateDispatcher(typeof(GetPriceOutlookQuery))]
-[GenerateDispatcher(typeof(GetPricelistQuery))]
-[GenerateDispatcher(typeof(SetModeCommand))]
-[GenerateDispatcher(typeof(GetStatsQuery))]
-[GenerateDispatcher(typeof(GetExchangeRateQuery))]
+[GenerateDispatcher(typeof(GetPriceOutlookQuery), typeof(GetPriceOutlookQueryHandler))]
+[GenerateDispatcher(typeof(GetPricelistQuery), typeof(GetPricelistQueryHandler))]
+[GenerateDispatcher(typeof(SetModeCommand), typeof(SetModeCommandHandler))]
+[GenerateDispatcher(typeof(GetStatsQuery), typeof(GetStatsQueryHandler))]
+[GenerateDispatcher(typeof(GetExchangeRateQuery), typeof(GetExchangeRateQueryHandler))]
 public partial class SolarniBaronDispatcher : DispatcherBase
 {
     public SolarniBaronDispatcher(IServiceProvider serviceProvider) : base(serviceProvider)
-    {       
+    {
     }
 }

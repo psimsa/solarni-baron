@@ -39,7 +39,6 @@ public record BatteryBoxStatus(
     DateTimeOffset LastCall,
     [property: JsonPropertyName("operationMode")]
     OperationMode OperationMode = OperationMode.Home1)
-
 {
     public static BatteryBoxStatus FromBatteryBoxUnitData(BatteryBoxUnitData bbUnitData, string? unitId)
     {

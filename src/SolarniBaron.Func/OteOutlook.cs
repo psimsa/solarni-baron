@@ -13,15 +13,17 @@ namespace SolarniBaron.Func;
 public partial class OteOutlook
 {
     private readonly ISolarniBaronDispatcher _dispatcher;
+    private readonly CommonSerializationContext _serializationContext;
     private readonly ILogger _logger;
 
     [LoggerMessage(EventId = 0, Level = LogLevel.Error, Message = "Error getting OTE data")]
     private partial void LogErrorGettingOteData();
 
 
-    public OteOutlook(ISolarniBaronDispatcher dispatcher, ILoggerFactory loggerFactory)
+    public OteOutlook(ISolarniBaronDispatcher dispatcher, CommonSerializationContext serializationContext, ILoggerFactory loggerFactory)
     {
         _dispatcher = dispatcher;
+        _serializationContext = serializationContext;
         _logger = loggerFactory.CreateLogger<OteOutlook>();
     }
 
@@ -40,7 +42,7 @@ public partial class OteOutlook
 
         var response = req.CreateResponse(HttpStatusCode.OK);
         response.Headers.Add("Content-Type", "application/json; charset=utf-8");
-        await response.WriteStringAsync(JsonSerializer.Serialize(result.Data));
+        await response.WriteStringAsync(JsonSerializer.Serialize(result.Data!, _serializationContext.GetPriceOutlookQueryResponse));
         return response;
     }
 }
