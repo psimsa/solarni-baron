@@ -64,6 +64,8 @@ public class StatusFetchingService : IStatusFetchingService, IDisposable
                 _logger.LogDebug("Starting background sync");
                 var response = await _client.PostAsync(urls[i], JsonContent.Create(_loginInfo), token);
                 response.EnsureSuccessStatusCode();
+                await _actionDispatcherService.DispatchAction(new AppState.SetShouldDisplayLoginBarAction(false));
+
 
                 var messageResponse = await response.Content.ReadFromJsonAsync(CommonSerializationContext.Default.BatteryBoxStatus, token);
                 if (messageResponse != null)
@@ -83,8 +85,6 @@ public class StatusFetchingService : IStatusFetchingService, IDisposable
             {
                 _logger.LogError(e, "Error while fetching status");
                 
-                await _actionDispatcherService.DispatchAction(new AppState.SetShouldDisplayLoginBarAction(true));
-                await _actionDispatcherService.DispatchAction(new AppState.SetBatteryBoxStatusAction(BatteryBoxStatus.Empty()));
                 i++;
                 if (i >= urls.Length)
                 {
@@ -94,6 +94,8 @@ public class StatusFetchingService : IStatusFetchingService, IDisposable
                 {
                     continue;
                 }
+                await _actionDispatcherService.DispatchAction(new AppState.SetShouldDisplayLoginBarAction(true));
+                await _actionDispatcherService.DispatchAction(new AppState.SetBatteryBoxStatusAction(BatteryBoxStatus.Empty()));
             }
             finally
             {
