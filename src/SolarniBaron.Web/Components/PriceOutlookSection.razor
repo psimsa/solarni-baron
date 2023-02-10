@@ -10,7 +10,7 @@
         <Chart Id="oteoutlook" Type="@Chart.ChartType.Line"
                Data="@(State.PriceOutlook.Select(x => x.BasePriceEur).ToArray())"
                HighlightIndex="@HighlightedIndex"
-         Breakpoints="@( State.PriceOutlook.GroupBy(_ => _.PriceCluster).OrderBy(_=>_.Key).Select(_ => _.Min(x => x.BasePriceEur)).ToArray())"
+               Clusters="@(State.PriceOutlook.Select(_=>_.PriceCluster).ToArray())"
                Labels="@(State.PriceOutlook.Select(x => x.HourIndex.ToString()).ToArray())">
         </Chart>
     </div>
@@ -26,18 +26,4 @@
 
     private int HighlightedIndex { get; set; }
     private int LastHour { get; set; }
-
-    protected override void OnAfterRender(bool firstRender)
-    {
-        var nowHour = DateTime.Now.Hour;
-        if (State.PriceOutlook?.Count > 0 && nowHour != LastHour)
-        {
-            Console.WriteLine($"Setting index to new valude");
-            var currentHourItem = State.PriceOutlook.FirstOrDefault(_ => _.HourIndex == nowHour);
-            if (currentHourItem is null) return;
-            HighlightedIndex = State.PriceOutlook?.ToList().IndexOf(currentHourItem) ?? 0;
-            LastHour = nowHour;
-        }
-    }
-
 }

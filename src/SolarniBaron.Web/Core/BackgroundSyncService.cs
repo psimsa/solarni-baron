@@ -126,7 +126,7 @@ public class BackgroundSyncService : IBackgroundSyncService, IDisposable
     {
         if (DateTime.Now - _lastSync < TimeSpan.FromMinutes(10) && DateTime.Now.Hour == _lastSync.Hour)
         {
-            return;
+            // return;
         }
         
         var response = await _client.GetAsync($"{urls[i]}{OteOutlookUrl}", token);
@@ -136,7 +136,9 @@ public class BackgroundSyncService : IBackgroundSyncService, IDisposable
             await response.Content.ReadFromJsonAsync<GetPriceOutlookQueryResponse>(new JsonSerializerOptions(){PropertyNameCaseInsensitive = true});
         if (messageResponse != null)
         {
-            await _actionDispatcherService.DispatchAction(new AppState.SetPriceOutlookAction(messageResponse.HourlyRateBreakdown));
+            var messageResponseHourlyRateBreakdown = messageResponse.HourlyRateBreakdown.ToArray();
+            // messageResponseHourlyRateBreakdown[3] = messageResponseHourlyRateBreakdown[3] with {BasePriceEur = new Random().Next(0, 100)};
+            await _actionDispatcherService.DispatchAction(new AppState.SetPriceOutlookAction(messageResponseHourlyRateBreakdown ));
 
             await _storage.SetItem("ote", messageResponse);
         }
