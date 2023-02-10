@@ -20,11 +20,17 @@
     [Parameter]
     public decimal[] Data { get; set; }
 
+    [Parameter]
+    public int HighlightItem { get; set; }
+
     /*[Parameter]
     public string[] BackgroundColor { get; set; }*/
 
     [Parameter]
     public string[] Labels { get; set; }
+
+    [Parameter]
+    public EventCallback OnRendered { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -43,13 +49,14 @@
                 {
                     Datasets = new[]
                     {
-                        new {Data = Data, Label="Výhled cen (EUR/MWh)"}
+                        new {Data = Data, Label="Výhled cen (EUR/MWh)", PointRadius = 3}
                     },
                     Labels = Labels
                 }
             };
 
             await JSRuntime.InvokeVoidAsync("setup", Id, config);
+            // await OnRendered.InvokeAsync();
         }
     }
 

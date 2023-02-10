@@ -1,5 +1,6 @@
 ﻿using BlazorState;
 using MediatR;
+using Microsoft.JSInterop;
 using SolarniBaron.Domain.BatteryBox.Models;
 using SolarniBaron.Domain.BatteryBox.Models.BatteryBox;
 using SolarniBaron.Domain.Ote.Models;
@@ -71,16 +72,18 @@ public class AppState : State<AppState>
 
     public class SetPriceOutlookHandler : ActionHandler<SetPriceOutlookAction>
     {
+        private readonly IJSRuntime _runtime;
         private AppState State => Store.GetState<AppState>();
 
-        public SetPriceOutlookHandler(IStore store) : base(store)
+        public SetPriceOutlookHandler(IStore store, IJSRuntime runtime) : base(store)
         {
+            _runtime = runtime;
         }
 
-        public override Task<Unit> Handle(SetPriceOutlookAction action, CancellationToken cancellationToken)
+        public override async Task<Unit> Handle(SetPriceOutlookAction action, CancellationToken cancellationToken)
         {
             State.PriceOutlook = action.NewPriceOutlook;
-            return Unit.Task;
+            return Unit.Value;
         }
     }
 }
