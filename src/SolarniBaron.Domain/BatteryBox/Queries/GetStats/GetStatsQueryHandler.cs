@@ -50,7 +50,7 @@ public class GetStatsQueryHandler : IQueryHandler<GetStatsQuery, GetStatsQueryRe
             var absoluteExpiration = DateTimeOffset.UtcNow.Add(nextRefresh);
 
             await _cache.SetAsync(cacheKey, JsonSerializer.SerializeToUtf8Bytes(stats),
-                new DistributedCacheEntryOptions() { AbsoluteExpiration = absoluteExpiration });
+                new DistributedCacheEntryOptions() {AbsoluteExpiration = absoluteExpiration});
 
             _logger.LogDateInfo(stats.LastCall, nextRefresh, absoluteExpiration);
 
@@ -62,5 +62,4 @@ public class GetStatsQueryHandler : IQueryHandler<GetStatsQuery, GetStatsQueryRe
             throw;
         }
     }
-
 }

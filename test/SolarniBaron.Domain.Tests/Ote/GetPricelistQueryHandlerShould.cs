@@ -38,7 +38,7 @@ public class GetPricelistQueryHandlerShould
 
         _dispatcherMock.Setup(x => x.Dispatch(It.IsAny<GetExchangeRateQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Result<GetExchangeRateQueryResponse>(ResponseStatus.Ok, new GetExchangeRateQueryResponse(24.520m)))
-        .Verifiable();
+            .Verifiable();
 
         var handler = new GetPricelistQueryHandler(_dispatcherMock.Object, new PriceClusteringWorker(), _httpClientMock.Object,
             new Cache(_cacheMock.Object),
@@ -86,7 +86,7 @@ public class GetPricelistQueryHandlerShould
         _cacheMock.VerifyAll();
         _dispatcherMock.VerifyAll();
 
-        Assert.NotNull(response.HourlyRateBreakdown);           
+        Assert.NotNull(response.HourlyRateBreakdown);
         Assert.Equal(24.520m, response.ExchangeRate);
         Assert.Equal(24, response.HourlyRateBreakdown.Length);
 

@@ -61,7 +61,7 @@ public class OigBatteryBoxClientShould
                     && data["table"]?.ToString() == "box_prms"
                     && data["column"]?.ToString() == "mode")
                 {
-                    return new HttpResponseMessage() { StatusCode = HttpStatusCode.OK, Content = new StringContent("Ok") };
+                    return new HttpResponseMessage() {StatusCode = HttpStatusCode.OK, Content = new StringContent("Ok")};
                 }
 
                 throw new ArgumentException(nameof(content));
@@ -86,7 +86,7 @@ public class OigBatteryBoxClientShould
     {
         SetupValidAuthentication(_apiHttpClientMock);
         _apiHttpClientMock.Setup(_ => _.PostAsync(It.IsAny<string>(), It.IsAny<HttpContent>())).ReturnsAsync(
-            new HttpResponseMessage() { StatusCode = HttpStatusCode.BadRequest, Content = new StringContent("Something wrong happened") });
+            new HttpResponseMessage() {StatusCode = HttpStatusCode.BadRequest, Content = new StringContent("Something wrong happened")});
 
         var client = new OigBatteryBoxClient(_apiHttpClientMock.Object, NullLogger<OigBatteryBoxClient>.Instance);
         var (result, message) = await client.SetMode("hello", "world", "asdf", "4");
@@ -97,12 +97,12 @@ public class OigBatteryBoxClientShould
     private void SetupValidAuthentication(Mock<IApiHttpClient> client)
     {
         client.Setup(_ => _.SendAsync(It.IsAny<HttpRequestMessage>()))
-            .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent("Here be dragons") });
+            .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK) {Content = new StringContent("Here be dragons")});
     }
 
     private void SetupInvalidAuthentication(Mock<IApiHttpClient> client)
     {
         client.Setup(_ => _.SendAsync(It.IsAny<HttpRequestMessage>()))
-            .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent("") });
+            .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK) {Content = new StringContent("")});
     }
 }

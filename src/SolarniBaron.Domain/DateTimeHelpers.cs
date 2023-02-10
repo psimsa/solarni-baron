@@ -1,4 +1,5 @@
 ﻿namespace SolarniBaron.Domain;
+
 public class DateTimeHelpers
 {
     public static TimeZoneInfo GetPragueTimeZoneInfo() =>

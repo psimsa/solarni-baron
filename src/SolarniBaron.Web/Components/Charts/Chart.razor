@@ -34,7 +34,7 @@
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         var newChecksum = Data.Sum() + HighlightIndex + Clusters.Sum() + Labels.Sum(_ => _.Length) + Data[0];
-        
+
         if (firstRender || newChecksum != CheckSum)
         {
             var radiuses = Enumerable.Range(0, Data.Length).Select(_ => 4).ToArray();
@@ -80,4 +80,5 @@
             CheckSum = newChecksum;
         }
     }
+
 }

@@ -10,7 +10,7 @@
         <Chart Id="oteoutlook" Type="@Chart.ChartType.Line"
                Data="@(State.PriceOutlook.Select(x => x.BasePriceEur).ToArray())"
                HighlightIndex="@HighlightedIndex"
-               Clusters="@(State.PriceOutlook.Select(_=>_.PriceCluster).ToArray())"
+               Clusters="@(State.PriceOutlook.Select(_ => _.PriceCluster).ToArray())"
                Labels="@(State.PriceOutlook.Select(x => x.HourIndex.ToString()).ToArray())">
         </Chart>
     </div>

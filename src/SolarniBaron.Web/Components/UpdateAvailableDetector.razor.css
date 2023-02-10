@@ -7,11 +7,7 @@
 }
 
 @keyframes fadein {
-  from {
-    right: -100%;
-  }
+  from { right: -100%; }
 
-  to {
-    right: 2rem;
-  }
+  to { right: 2rem; }
 }
