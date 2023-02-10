@@ -1,5 +1,4 @@
-﻿
-using DotnetDispatcher.Core;
+﻿using DotnetDispatcher.Core;
 
 namespace SolarniBaron.Domain.Ote.Queries.GetPricelist;
 

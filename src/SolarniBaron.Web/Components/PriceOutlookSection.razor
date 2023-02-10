@@ -6,12 +6,14 @@
 @if (State.PriceOutlook?.Count > 0)
 {
     <h3>Aktuálně @CurrentHour?.BasePriceEur.ToString("N2") EUR/MWh / @CurrentHour?.WithSurchargeCzkTotal.ToString("N2") CZK/MWh, hladina @CurrentHour?.PriceScore, cluster @CurrentHour?.PriceCluster </h3>
-    <Chart Id="oteoutlook" Type="@Chart.ChartType.Line"
-           Data="@(State.PriceOutlook.Select(x => x.BasePriceEur).ToArray())"
-           Labels="@(State.PriceOutlook.Select(x => x.HourIndex.ToString()).ToArray())"
-           OnRendered="HighlightHour"
-           >
-    </Chart>
+    <div class="chart-container" style="position: relative;">
+        <Chart Id="oteoutlook" Type="@Chart.ChartType.Line"
+               Data="@(State.PriceOutlook.Select(x => x.BasePriceEur).ToArray())"
+               HighlightIndex="@HighlightedIndex"
+               Clusters="@(State.PriceOutlook.Select(_ => _.PriceCluster).ToArray())"
+               Labels="@(State.PriceOutlook.Select(x => x.HourIndex.ToString()).ToArray())">
+        </Chart>
+    </div>
 }
 
 
@@ -19,16 +21,9 @@
     private AppState State => GetState<AppState>();
     private PriceListItem? CurrentHour => State.PriceOutlook?.FirstOrDefault(_ => _.HourIndex == DateTime.Now.Hour);
 
-    [Inject] private IJSRuntime JSRuntime { get; set; }
+    [Inject]
+    private IJSRuntime JSRuntime { get; set; }
 
-    private async Task HighlightHour()
-    {
-        if (State.PriceOutlook?.Count == 24)
-        {
-            /*var now = DateTime.Now.Hour;
-            var highlightedIndex = State.PriceOutlook?.ToList().IndexOf(State.PriceOutlook.FirstOrDefault(_ => _.HourIndex == now)) ?? 0;
-            await JSRuntime.InvokeVoidAsync("highlightItem", "oteoutlook", highlightedIndex);*/
-        }
-    }
-
+    private int HighlightedIndex { get; set; }
+    private int LastHour { get; set; }
 }

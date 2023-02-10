@@ -17,7 +17,8 @@ public class GetPriceOutlookQueryHandler : IQueryHandler<GetPriceOutlookQuery, R
         _priceClusteringWorker = priceClusteringWorker;
     }
 
-    public async Task<Result<GetPriceOutlookQueryResponse>> Query(GetPriceOutlookQuery getPriceOutlookQuery, CancellationToken cancellationToken = default)
+    public async Task<Result<GetPriceOutlookQueryResponse>> Query(GetPriceOutlookQuery getPriceOutlookQuery,
+        CancellationToken cancellationToken = default)
     {
         if (getPriceOutlookQuery == null)
         {
@@ -33,7 +34,7 @@ public class GetPriceOutlookQueryHandler : IQueryHandler<GetPriceOutlookQuery, R
         {
             return new Result<GetPriceOutlookQueryResponse>("No pricelist for today");
         }
-        
+
         if (tomorrow?.HourlyRateBreakdown == null)
         {
             return new Result<GetPriceOutlookQueryResponse>(new GetPriceOutlookQueryResponse(today.HourlyRateBreakdown));
@@ -47,7 +48,7 @@ public class GetPriceOutlookQueryHandler : IQueryHandler<GetPriceOutlookQuery, R
             .OrderBy(_ => _.Value.BasePriceEur).ToList();
 
         var clusters = _priceClusteringWorker.GetClusters(sortedItemsWithOriginalIndex.Select(_ => _.Value.BasePriceEur).ToArray(), 4);
-                                                                                                                           
+
         for (int i = 0; i < 24; i++)
         {
             var indexInOriginalList = sortedItemsWithOriginalIndex[i].Key;

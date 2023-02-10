@@ -84,7 +84,7 @@ public partial class OigBatteryBoxClient : IBatteryBoxClient
 
         var content = new StringContent(serializedLoginInfo);
         content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-        var message = new HttpRequestMessage(HttpMethod.Post, Constants.LoginUrl) { Content = content, };
+        var message = new HttpRequestMessage(HttpMethod.Post, Constants.LoginUrl) {Content = content,};
 
         var loginInfoResponse = await _client.SendAsync(message);
         if (loginInfoResponse.Content.Headers.ContentLength == 0)

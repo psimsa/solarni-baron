@@ -21,8 +21,11 @@ public class AppState : State<AppState>
     }
 
     public record SetBatteryBoxStatusAction(BatteryBoxStatus NewBatteryBoxStatus) : IAction;
+
     public record SetIsBackgroundSyncingAction(bool NewIsBackgroundSyncing) : IAction;
+
     public record SetShouldDisplayLoginBarAction(bool NewShouldDisplayLoginBar) : IAction;
+
     public record SetPriceOutlookAction(IReadOnlyCollection<PriceListItem>? NewPriceOutlook) : IAction;
 
     public class SetBatteryBoxStatusHandler : ActionHandler<SetBatteryBoxStatusAction>

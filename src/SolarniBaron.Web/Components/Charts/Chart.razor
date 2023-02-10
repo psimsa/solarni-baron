@@ -21,23 +21,38 @@
     public decimal[] Data { get; set; }
 
     [Parameter]
-    public int HighlightItem { get; set; }
+    public int[] Clusters { get; set; }
 
-    /*[Parameter]
-    public string[] BackgroundColor { get; set; }*/
+    [Parameter]
+    public int HighlightIndex { get; set; }
 
     [Parameter]
     public string[] Labels { get; set; }
 
-    [Parameter]
-    public EventCallback OnRendered { get; set; }
+    private decimal CheckSum { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-    // Here we create an anonymous type with all the options 
-    // that need to be sent to Chart.js
-        if (firstRender)
+        var newChecksum = Data.Sum() + HighlightIndex + Clusters.Sum() + Labels.Sum(_ => _.Length) + Data[0];
+
+        if (firstRender || newChecksum != CheckSum)
         {
+            var radiuses = Enumerable.Range(0, Data.Length).Select(_ => 4).ToArray();
+            radiuses[HighlightIndex] = 8;
+
+            var colors = new string[Data.Length];
+            for (var i = 0; i < Data.Length; i++)
+            {
+                colors[i] = Clusters[i] switch
+                {
+                    0 => "red",
+                    1 => "orange",
+                    2 => "yellow",
+                    3 => "green",
+                    _ => "black"
+                    };
+            }
+
             var config = new
             {
                 Type = Type.ToString().ToLower(),
@@ -49,14 +64,20 @@
                 {
                     Datasets = new[]
                     {
-                        new {Data = Data, Label="Výhled cen (EUR/MWh)", PointRadius = 3}
+                        new {Data = Data, Label = "Výhled cen (EUR/MWh)", PointRadius = radiuses, PointBackgroundColor = colors}
                     },
                     Labels = Labels
                 }
             };
-
-            await JSRuntime.InvokeVoidAsync("setup", Id, config);
-            // await OnRendered.InvokeAsync();
+            if (firstRender)
+            {
+                await JSRuntime.InvokeVoidAsync("setup", Id, config);
+            }
+            else
+            {
+                await JSRuntime.InvokeVoidAsync("update", Id, config);
+            }
+            CheckSum = newChecksum;
         }
     }
 

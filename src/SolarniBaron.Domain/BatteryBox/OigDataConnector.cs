@@ -67,7 +67,7 @@ public partial class OigDataConnector : IDisposable, IBatteryBoxDataConnector
 
             var actualUnitId = string.IsNullOrWhiteSpace(unitId) ? stateObject.First().Key : unitId;
 
-            var batteryBoxObject = stateObject[actualUnitId] with { UnitId = actualUnitId };
+            var batteryBoxObject = stateObject[actualUnitId] with {UnitId = actualUnitId};
 
             LogDeserializedStatusResponse(batteryBoxObject);
 
