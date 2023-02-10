@@ -10,12 +10,6 @@
     <NotConnectedComponent GoToLogin="GoToLogin" RefreshPage="RefreshPage"/>
 }
 
-@*<Chart Id="pie1" Type="@Chart.ChartType.Pie"
-       Data="@(new[] { "1", "2" })"
-       BackgroundColor="@(new[] { "blue","green" })"
-       Labels="@(new[] { "Fail","Ok" })">
-</Chart>*@
-
 <div class="accordion" id="fve-data">
     <div class="accordion-item">
         <h2 class="accordion-header" id="heading-stats">
@@ -26,6 +20,18 @@
         <div id="collapse-stats" class="accordion-collapse collapse show" aria-labelledby="heading-stats" data-bs-parent="#fve-data">
             <div class="accordion-body">
                 <GeneralSection/>
+            </div>
+        </div>
+    </div>
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="heading-prices">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-prices" aria-expanded="false" aria-controls="collapse-prices">
+                Výhled cen (aktuálně @State.PriceOutlook?.FirstOrDefault(_ => _.HourIndex == DateTime.Now.Hour)?.BasePriceEur.ToString("N2") EUR/MWh)
+            </button>
+        </h2>
+        <div id="collapse-prices" class="accordion-collapse collapse" aria-labelledby="heading-prices" data-bs-parent="#fve-data">
+            <div class="accordion-body">
+                <PriceOutlookSection/>
             </div>
         </div>
     </div>
@@ -73,7 +79,10 @@
         </h2>
         <div id="collapse-actions" class="accordion-collapse collapse" aria-labelledby="heading-actions" data-bs-parent="#fve-data">
             <div class="accordion-body">
-                <button class="btn btn-outline-primary" style="margin-left: fill" @onclick="Logout">Odhlásit</button>
+                <div class="d-flex justify-content-end">
+                    <button class="btn btn-outline-primary" @onclick="RefreshPage">Načíst znovu</button>
+                    <button class="btn btn-outline-primary" style="margin-left: fill" @onclick="Logout">Odhlásit</button>
+                </div>
             </div>
         </div>
     </div>

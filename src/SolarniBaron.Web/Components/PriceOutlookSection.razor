@@ -1,0 +1,18 @@
+@using SolarniBaron.Domain.BatteryBox.Models
+@using SolarniBaron.Web.Components.Charts
+@inherits BlazorState.BlazorStateComponent
+
+@if (State.PriceOutlook?.Count > 0)
+{
+    <h3>Aktuálně @State.PriceOutlook?.FirstOrDefault(_ => _.HourIndex == DateTime.Now.Hour)?.BasePriceEur.ToString("N2") EUR/MWh, @State.PriceOutlook?.FirstOrDefault(_ => _.HourIndex == DateTime.Now.Hour)?.WithSurchargeCzkTotal.ToString("N2") CZK/MWh</h3>
+    <Chart Id="pie1" Type="@Chart.ChartType.Line"
+       Data="@(State.PriceOutlook.Select(x => x.BasePriceEur).ToArray())"
+       Labels="@(State.PriceOutlook.Select(x=>x.HourIndex.ToString()).ToArray())">
+    </Chart>
+}
+
+
+@code {
+    private AppState State => GetState<AppState>();
+
+}
