@@ -126,7 +126,7 @@ public class BackgroundSyncService : IBackgroundSyncService, IDisposable
     {
         if (DateTime.Now - _lastSync < TimeSpan.FromMinutes(10) && DateTime.Now.Hour == _lastSync.Hour)
         {
-            // return;
+            return;
         }
         
         var response = await _client.GetAsync($"{urls[i]}{OteOutlookUrl}", token);
