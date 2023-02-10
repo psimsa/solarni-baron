@@ -4,9 +4,9 @@ window.setup = (id, config) => {
   var c = new Chart(ctx, config);
   window.addEventListener("resize", function () {
     // console.log('resizing');
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
-    c.resize();
+    //canvas.width = canvas.offsetWidth;
+    //canvas.height = canvas.offsetHeight;
+    //c.resize();
   });
 }
 

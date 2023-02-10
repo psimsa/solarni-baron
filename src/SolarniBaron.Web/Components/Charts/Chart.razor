@@ -21,7 +21,10 @@
     public decimal[] Data { get; set; }
 
     [Parameter]
-    public int HighlightItem { get; set; }
+    public decimal[] Breakpoints { get; set; }
+
+    [Parameter]
+    public int HighlightIndex { get; set; }
 
     /*[Parameter]
     public string[] BackgroundColor { get; set; }*/
@@ -38,6 +41,24 @@
     // that need to be sent to Chart.js
         if (firstRender)
         {
+            var radiuses = Enumerable.Range(0, Data.Length).Select(_ => 4).ToArray();
+            radiuses[HighlightIndex] = 8;
+
+            var colors = new string[Data.Length];
+            for (var i = 0; i < Data.Length; i++)
+            {
+                // Find index of the breakpoint that is closest less than to the current value
+                var index = Breakpoints.Select((x, j) => new { x, j }).Where(_ => _.x <= Data[i]).MaxBy(_ => _.x)?.j ?? 0;
+                colors[i] = index switch
+                {
+                    0 => "red",
+                    1 => "orange",
+                    2 => "yellow",
+                    3 => "green",
+                    _ => "black"
+                };
+            }
+            
             var config = new
             {
                 Type = Type.ToString().ToLower(),
@@ -49,7 +70,7 @@
                 {
                     Datasets = new[]
                     {
-                        new {Data = Data, Label="Výhled cen (EUR/MWh)", PointRadius = 3}
+                        new {Data = Data, Label="Výhled cen (EUR/MWh)", PointRadius = radiuses, PointBackgroundColor = colors}
                     },
                     Labels = Labels
                 }
