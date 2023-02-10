@@ -1,66 +1,63 @@
 @inject IJSRuntime JSRuntime
- 
+
 <canvas id="@Id"></canvas>
- 
+
 @code {
+
     public enum ChartType
     {
         Pie,
-        Bar
+        Bar,
+        Line
     }
- 
+
     [Parameter]
     public string Id { get; set; }
- 
+
     [Parameter]
     public ChartType Type { get; set; }
- 
+
     [Parameter]
-    public string[] Data { get; set; }
- 
+    public decimal[] Data { get; set; }
+
     [Parameter]
-    public string[] BackgroundColor { get; set; }
- 
+    public int HighlightItem { get; set; }
+
+    /*[Parameter]
+    public string[] BackgroundColor { get; set; }*/
+
     [Parameter]
     public string[] Labels { get; set; }
- 
-    protected override async Task OnAfterRenderAsync(bool firstRender) 
+
+    [Parameter]
+    public EventCallback OnRendered { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
     // Here we create an anonymous type with all the options 
     // that need to be sent to Chart.js
-        if(firstRender)
+        if (firstRender)
         {
             var config = new
             {
                 Type = Type.ToString().ToLower(),
                 Options = new
                 {
-                    Responsive = true,
-                    Scales = new
-                    {
-                        YAxes = new[]
-                        {
-                            new
-                            {
-                                Ticks = new
-                                {
-                                    BeginAtZero = true
-                                }
-                            }
-                        }
-                    }
+                    Responsive = true
                 },
                 Data = new
                 {
                     Datasets = new[]
                     {
-                        new {Data = Data, BackgroundColor = BackgroundColor}
+                        new {Data = Data, Label="Výhled cen (EUR/MWh)", PointRadius = 3}
                     },
                     Labels = Labels
                 }
             };
 
             await JSRuntime.InvokeVoidAsync("setup", Id, config);
+            // await OnRendered.InvokeAsync();
         }
     }
+
 }

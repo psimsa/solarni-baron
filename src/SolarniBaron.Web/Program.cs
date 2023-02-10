@@ -21,12 +21,12 @@ builder.Services.Configure<JsonSerializerContext>(jso =>
 });
 
 builder.Services.AddScoped<IStorage, LocalStorage>();
-builder.Services.AddScoped<IStatusFetchingService, StatusFetchingService>();
+builder.Services.AddScoped<IBackgroundSyncService, BackgroundSyncService>();
 builder.Services.AddScoped<IActionDispatcherService, ActionDispatcherService>();
 
 builder.Services.AddBlazorApplicationInsights();
 
-builder.Services.AddScoped(_ => new ClientConfig(clientConfig["LocalGetStatsUrl"] ?? "api/batterybox/getstats"));
+builder.Services.AddScoped(_ => new ClientConfig(clientConfig["LocalUrl"] ?? "api/batterybox/getstats"));
 
 builder.Services.AddScoped(_ => new HttpClient {BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)});
 
@@ -46,7 +46,7 @@ builder.Services.AddBlazorState(blazorStateOptions =>
 
 var webAssemblyHost = builder.Build();
 
-_ = webAssemblyHost.Services.GetRequiredService<IStatusFetchingService>().Start(CancellationToken.None);
+_ = webAssemblyHost.Services.GetRequiredService<IBackgroundSyncService>().Start(CancellationToken.None);
 
 await webAssemblyHost.RunAsync();
 
