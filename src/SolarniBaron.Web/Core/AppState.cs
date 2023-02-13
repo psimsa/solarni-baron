@@ -12,7 +12,7 @@ public class AppState : State<AppState>
     public BatteryBoxStatus BatteryBoxStatus { get; private set; }
     public bool IsBackgroundSyncing { get; private set; }
     public bool ShouldDisplayLoginBar { get; private set; }
-    public IReadOnlyCollection<PriceListItem>? PriceOutlook { get; private set; }
+    public PriceListItem[]? PriceOutlook { get; private set; }
 
     public override void Initialize()
     {
@@ -26,7 +26,7 @@ public class AppState : State<AppState>
 
     public record SetShouldDisplayLoginBarAction(bool NewShouldDisplayLoginBar) : IAction;
 
-    public record SetPriceOutlookAction(IReadOnlyCollection<PriceListItem>? NewPriceOutlook) : IAction;
+    public record SetPriceOutlookAction(PriceListItem[]? NewPriceOutlook) : IAction;
 
     public class SetBatteryBoxStatusHandler : ActionHandler<SetBatteryBoxStatusAction>
     {

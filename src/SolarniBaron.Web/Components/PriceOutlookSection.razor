@@ -3,7 +3,7 @@
 @using SolarniBaron.Web.Components.Charts
 @inherits BlazorState.BlazorStateComponent
 
-@if (State.PriceOutlook?.Count > 0)
+@if (State.PriceOutlook?.Length > 0)
 {
     <h3>Aktuálně @CurrentHour?.BasePriceEur.ToString("N2") EUR/MWh / @CurrentHour?.WithSurchargeCzkTotal.ToString("N2") CZK/MWh, hladina @CurrentHour?.PriceScore, cluster @CurrentHour?.PriceCluster </h3>
     <div class="chart-container" style="position: relative;">
@@ -24,6 +24,6 @@
     [Inject]
     private IJSRuntime JSRuntime { get; set; }
 
-    private int HighlightedIndex { get; set; }
+    private int HighlightedIndex => Array.IndexOf(State.PriceOutlook ?? Array.Empty<PriceListItem>(), CurrentHour);
     private int LastHour { get; set; }
 }
