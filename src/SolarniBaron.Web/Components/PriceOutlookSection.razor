@@ -20,10 +20,7 @@
 @code {
     private AppState State => GetState<AppState>();
     private PriceListItem? CurrentHour => State.PriceOutlook?.FirstOrDefault(_ => _.HourIndex == DateTime.Now.Hour);
-
-    [Inject]
-    private IJSRuntime JSRuntime { get; set; }
-
+                                                    
     private int HighlightedIndex => Array.IndexOf(State.PriceOutlook ?? Array.Empty<PriceListItem>(), CurrentHour);
     private int LastHour { get; set; }
 }
