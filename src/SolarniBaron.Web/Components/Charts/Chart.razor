@@ -33,7 +33,17 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var newChecksum = Data.Sum() + HighlightIndex + Clusters.Sum() + Labels.Sum(_ => _.Length) + Data[0];
+        decimal highlightIndexValue;
+        try
+        {
+            highlightIndexValue = Data[HighlightIndex];
+        }
+        catch (Exception)
+        {
+            highlightIndexValue = new Random().Next(-500, -300);
+        }
+
+        var newChecksum = Data.Sum() + HighlightIndex + Clusters.Sum() + highlightIndexValue;
 
         if (firstRender || newChecksum != CheckSum)
         {
