@@ -5,7 +5,7 @@
 
 @if (State.PriceOutlook?.Length > 0)
 {
-    <h3>Aktuálně @CurrentHour?.BasePriceEur.ToString("N2") EUR/MWh / @CurrentHour?.WithSurchargeCzkTotal.ToString("N2") CZK/MWh, výkup @CurrentHour.BuyPriceCzk.ToString("N2") CZK, hladina @CurrentHour?.PriceScore, cluster @CurrentHour?.PriceCluster </h3>
+    <h3>Aktuálně @CurrentHour?.BasePriceEur.ToString("N2") EUR/MWh / @CurrentHour?.WithSurchargeCzkTotal.ToString("N2") CZK/MWh, výkup @CurrentHour.BuyPriceCzk.ToString("N2") CZK/MWh, hladina @CurrentHour?.PriceScore, cluster @CurrentHour?.PriceCluster </h3>
     <div class="chart-container" style="position: relative;">
         <Chart Id="oteoutlook" Type="@Chart.ChartType.Line"
                Data="@(State.PriceOutlook.Select(x => x.BasePriceEur).ToArray())"
