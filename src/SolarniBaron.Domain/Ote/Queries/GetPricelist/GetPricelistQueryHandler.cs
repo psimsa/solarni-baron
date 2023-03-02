@@ -131,6 +131,7 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
             decimal withSurchargeCzk = basePriceCzk + surcharge;
             decimal withSurchargeCzkVat = withSurchargeCzk * vatPct / 100;
             decimal withSurchargeCzkTotal = withSurchargeCzk + withSurchargeCzkVat;
+            decimal buyPriceCzk = basePriceCzk - 600;
 
             var toReturnItem = new PriceListItem(item.Key,
                 item.Value,
@@ -140,6 +141,7 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
                 withSurchargeCzk,
                 withSurchargeCzkVat,
                 withSurchargeCzkTotal,
+                buyPriceCzk,
                 i,
                 clusters[i]);
             toReturn[item.Key] = toReturnItem;

@@ -9,9 +9,10 @@ public record PriceListItem(
     decimal WithSurchargeCzk,
     decimal WithSurchargeCzkVat,
     decimal WithSurchargeCzkTotal,
+    decimal BuyPriceCzk,
     int PriceScore,
     int PriceCluster)
 {
-    public static PriceListItem Empty = new(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    public static PriceListItem Empty = new(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     // public int Hour => HourIndex + 1;
 }
