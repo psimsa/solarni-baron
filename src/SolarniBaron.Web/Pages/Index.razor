@@ -26,7 +26,7 @@
     <div class="accordion-item">
         <h2 class="accordion-header" id="heading-prices">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-prices" aria-expanded="false" aria-controls="collapse-prices">
-                Výhled cen (aktuálně @State.PriceOutlook?.FirstOrDefault(_ => _.HourIndex == DateTime.Now.Hour)?.BasePriceEur.ToString("N2") EUR/MWh)
+                Výhled cen (aktuálně @State.PriceOutlook?.FirstOrDefault(_ => _.HourIndex == DateTime.Now.Hour)?.BasePriceEur.ToString("N2") EUR/MWh, výkup @State.PriceOutlook?.FirstOrDefault(_ => _.HourIndex == DateTime.Now.Hour)?.BuyPriceCzk.ToString("N2") CZK/MWh)
             </button>
         </h2>
         <div id="collapse-prices" class="accordion-collapse collapse" aria-labelledby="heading-prices" data-bs-parent="#fve-data">
@@ -98,7 +98,6 @@
         <span class="visually-hidden">Loading...</span>
     </div>
 </div>
-
 
 
 @code {
