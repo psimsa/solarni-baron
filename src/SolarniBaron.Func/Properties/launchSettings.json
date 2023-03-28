@@ -2,8 +2,13 @@
   "profiles": {
     "SolarniBaron_Func": {
       "commandName": "Project",
-      "commandLineArgs": "--port 7092",
-      "launchBrowser": false
+      "commandLineArgs": "--port 7092"
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "httpPort": 34640,
+      "useSSL": false
     }
   }
 }

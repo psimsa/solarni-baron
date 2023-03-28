@@ -24,7 +24,7 @@ public partial class GetStats
     }
 
     [Function("batterybox/getstats")]
-    public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData req)
+    public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData req)
     {
         var loginInfo = JsonSerializer.Deserialize<LoginInfo>(req.Body);
         var data = await _dispatcher.Dispatch(new GetStatsQuery(loginInfo.Email, loginInfo.Password, loginInfo.UnitId));

@@ -28,7 +28,7 @@ public partial class OteDay
     }
 
     [Function("ote/day/{date}")]
-    public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req, string date)
+    public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData req, string date)
     {
         var canParse = DateOnly.TryParse(date, out var parsedDate);
         if (!canParse)

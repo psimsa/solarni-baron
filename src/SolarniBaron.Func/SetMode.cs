@@ -21,7 +21,7 @@ public class SetMode
     }
 
     [Function("batterybox/setmode")]
-    public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData req)
+    public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData req)
     {
         var setModeInfo = JsonSerializer.Deserialize<SetModeInfo>(req.Body);
         var data = await _dispatcher.Dispatch(new SetModeCommand(setModeInfo.Email, setModeInfo.Password, setModeInfo.UnitId,
