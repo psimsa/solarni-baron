@@ -38,6 +38,6 @@ jobs:
         with:
           push: ${{ env.IS_MAIN }}
           tags: kodiak.azurecr.io/fve/solarni-baron:${{env.VERSION}},kodiak.azurecr.io/fve/solarni-baron:latest
-          file: ./src/SolarniBaron.Api/Dockerfile
+          file: ./src/SolarniBaron.Func/Dockerfile
           context: .
           # platforms: linux/amd64,linux/arm64
