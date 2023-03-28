@@ -26,7 +26,7 @@ namespace SolarniBaron.Func
         }
 
         [Function("ote/now")]
-        public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req)
+        public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData req)
         {
             var pragueDateTimeNow = DateTimeHelpers.GetPragueDateTimeNow();
             var result = await _dispatcher.Dispatch(new GetPricelistQuery(DateOnly.FromDateTime(pragueDateTimeNow)));

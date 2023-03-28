@@ -28,7 +28,7 @@ public partial class OteOutlook
     }
 
     [Function("ote/outlook")]
-    public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req)
+    public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData req)
     {
         var pragueDateTimeNow = DateTimeHelpers.GetPragueDateTimeNow();
 
