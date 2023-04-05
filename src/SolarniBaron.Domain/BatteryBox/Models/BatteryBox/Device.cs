@@ -14,16 +14,16 @@ public record Device
     [property: JsonPropertyName("latdat")] decimal Latdat,
     [property: JsonPropertyName("latreq")] decimal Latreq,
     [property: JsonPropertyName("lastcall")]
-    [property: JsonConverter(typeof(DateTimeJsonConverter))]
-    DateTime Lastcall,
+    [property: JsonConverter(typeof(DateTimeOffsetJsonConverter))]
+    DateTimeOffset Lastcall,
     [property: JsonPropertyName("lastupdate")]
     string Lastupdate,
     [property: JsonPropertyName("lastset")]
-    [property: JsonConverter(typeof(DateTimeJsonConverter))]
-    DateTime Lastset,
+    [property: JsonConverter(typeof(DateTimeOffsetJsonConverter))]
+    DateTimeOffset Lastset,
     [property: JsonPropertyName("lastweather")]
-    [property: JsonConverter(typeof(DateTimeJsonConverter))]
-    DateTime Lastweather,
+    [property: JsonConverter(typeof(DateTimeOffsetJsonConverter))]
+    DateTimeOffset Lastweather,
     [property: JsonPropertyName("userlaston")]
     string Userlaston,
     [property: JsonPropertyName("type")] string Type,
