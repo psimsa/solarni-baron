@@ -75,7 +75,7 @@ app.MapGet("api/ote/day/{date?}",
         async (DateOnly? date, ISolarniBaronDispatcher dispatcher) =>
         {
             var result = await dispatcher.Dispatch(
-                new GetPricelistQuery(date ?? DateOnly.FromDateTime(DateTimeHelpers.GetPragueDateTimeNow())));
+                new GetPricelistQuery(date ?? DateOnly.FromDateTime(DateTimeHelpers.GetPragueDateTimeNow().DateTime)));
             return result == null ? Results.NotFound() : Results.Ok(result);
         })
     .WithName("GetPricelist")
@@ -86,7 +86,7 @@ app.MapGet("api/ote/now",
         async (ISolarniBaronDispatcher dispatcher) =>
         {
             var pragueDateTimeNow = DateTimeHelpers.GetPragueDateTimeNow();
-            var result = await dispatcher.Dispatch(new GetPricelistQuery(DateOnly.FromDateTime(pragueDateTimeNow)));
+            var result = await dispatcher.Dispatch(new GetPricelistQuery(DateOnly.FromDateTime(pragueDateTimeNow.DateTime)));
             if (result is null)
             {
                 return Results.BadRequest();
@@ -106,7 +106,7 @@ app.MapGet("api/ote/outlook",
         {
             var pragueDateTimeNow = DateTimeHelpers.GetPragueDateTimeNow();
 
-            var result = await dispatcher.Dispatch(new GetPriceOutlookQuery(pragueDateTimeNow));
+            var result = await dispatcher.Dispatch(new GetPriceOutlookQuery(pragueDateTimeNow.DateTime));
             if (result is null || result.Status != ResponseStatus.Ok)
             {
                 return Results.BadRequest(result?.ErrorMessage);
@@ -124,7 +124,7 @@ app.MapGet("api/ote/outlook/now",
         {
             var pragueDateTimeNow = DateTimeHelpers.GetPragueDateTimeNow();
 
-            var result = await dispatcher.Dispatch(new GetPriceOutlookQuery(pragueDateTimeNow));
+            var result = await dispatcher.Dispatch(new GetPriceOutlookQuery(pragueDateTimeNow.DateTime));
             if (result is null || result.Status != ResponseStatus.Ok)
             {
                 return Results.BadRequest(result?.ErrorMessage);

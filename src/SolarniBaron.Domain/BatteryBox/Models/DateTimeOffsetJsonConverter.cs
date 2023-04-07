@@ -1,27 +1,30 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace SolarniBaron.Domain.BatteryBox.Models;
 
-public class DateTimeJsonConverter : JsonConverter<DateTime>
+public class DateTimeOffsetJsonConverter : JsonConverter<DateTimeOffset>
 {
-    public override DateTime Read(
+    public override DateTimeOffset Read(
         ref Utf8JsonReader reader,
         Type typeToConvert,
         JsonSerializerOptions options)
     {
         var pragueTimeZoneInfo = DateTimeHelpers.GetPragueTimeZoneInfo();
-        var currentTimeZoneInfo = TimeZoneInfo.Local;
+        
         var parsedDate = DateTime.ParseExact(reader.GetString()!,
-            "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
-        var totalOffset = currentTimeZoneInfo.BaseUtcOffset - pragueTimeZoneInfo.BaseUtcOffset;
-        return parsedDate.AddMinutes(totalOffset.TotalMinutes);
+            "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None);
+
+        TimeSpan pragueTimeZoneOffset = pragueTimeZoneInfo.GetUtcOffset(parsedDate);
+
+        return new DateTimeOffset(parsedDate, pragueTimeZoneOffset);
     }
 
     public override void Write(
         Utf8JsonWriter writer,
-        DateTime dateTimeValue,
+        DateTimeOffset dateTimeValue,
         JsonSerializerOptions options)
     {
         writer.WriteStringValue(dateTimeValue.ToString(

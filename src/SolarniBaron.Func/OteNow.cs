@@ -29,7 +29,7 @@ namespace SolarniBaron.Func
         public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData req)
         {
             var pragueDateTimeNow = DateTimeHelpers.GetPragueDateTimeNow();
-            var result = await _dispatcher.Dispatch(new GetPricelistQuery(DateOnly.FromDateTime(pragueDateTimeNow)));
+            var result = await _dispatcher.Dispatch(new GetPricelistQuery(DateOnly.FromDateTime(pragueDateTimeNow.DateTime)));
 
             if (result is null)
             {

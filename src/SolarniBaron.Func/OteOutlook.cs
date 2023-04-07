@@ -32,7 +32,7 @@ public partial class OteOutlook
     {
         var pragueDateTimeNow = DateTimeHelpers.GetPragueDateTimeNow();
 
-        var result = await _dispatcher.Dispatch(new GetPriceOutlookQuery(pragueDateTimeNow));
+        var result = await _dispatcher.Dispatch(new GetPriceOutlookQuery(pragueDateTimeNow.DateTime));
 
         if (result is null)
         {
