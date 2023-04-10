@@ -35,9 +35,19 @@ jobs:
 
       - name: Build and push container image to registry
         uses: docker/build-push-action@v4
+        if: ${{ env.IS_MAIN == 'true' }}
         with:
-          push: ${{ env.IS_MAIN }}
-          tags: kodiak.azurecr.io/fve/solarni-baron:${{env.VERSION}},kodiak.azurecr.io/fve/solarni-baron:latest
-          file: ./src/SolarniBaron.Func/Dockerfile
+          push: true
+          tags: kodiak.azurecr.io/fve/solarni-baron:latest
+          file: ./src/SolarniBaron.Api/Dockerfile
+          context: .
+
+      - name: Build and push container image to registry (preview)
+        uses: docker/build-push-action@v4
+        if: ${{ env.IS_MAIN != 'true' }}
+        with:
+          push: true
+          tags: kodiak.azurecr.io/fve/solarni-baron:latest-preview
+          file: ./src/SolarniBaron.Api/Dockerfile
           context: .
           # platforms: linux/amd64,linux/arm64

@@ -17,9 +17,11 @@
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.18.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="7.0.4" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SolarniBaron.Web\SolarniBaron.Web.csproj" />
     <ProjectReference Include="..\SolarniBaron.Caching\SolarniBaron.Caching.csproj" />
     <ProjectReference Include="..\SolarniBaron.Domain\SolarniBaron.Domain.csproj" />
     <ProjectReference Include="..\SolarniBaron.Persistence\SolarniBaron.Persistence.csproj" />

@@ -3,12 +3,13 @@
 FROM mcr.microsoft.com/azure-functions/dotnet-isolated:4-dotnet-isolated7.0 AS base
 WORKDIR /home/site/wwwroot
 EXPOSE 80
+ENV AzureFunctionsJobHost__cors__http__allowedOrigins="*"
 
-FROM mcr.microsoft.com/dotnet/runtime:7.0 as runtime6.0
+FROM mcr.microsoft.com/dotnet/runtime:7.0 as runtime7.0
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
-# Copy .NET Core 6.0 runtime from the 6.0 image
-COPY --from=runtime6.0 /usr/share/dotnet/host /usr/share/dotnet/host
-COPY --from=runtime6.0 /usr/share/dotnet/shared /usr/share/dotnet/shared
+# Copy .NET Core 7.0 runtime from the 7.0 image
+COPY --from=runtime7.0 /usr/share/dotnet/host /usr/share/dotnet/host
+COPY --from=runtime7.0 /usr/share/dotnet/shared /usr/share/dotnet/shared
 WORKDIR /src
 COPY ["src/SolarniBaron.Func/SolarniBaron.Func.csproj", "src/SolarniBaron.Func/"]
 COPY ["src/SolarniBaron.Caching/SolarniBaron.Caching.csproj", "src/SolarniBaron.Caching/"]
