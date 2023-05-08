@@ -1,4 +1,4 @@
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
@@ -47,12 +47,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolarniBaron.Func", "src\So
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolarniBaron.Caching", "src\SolarniBaron.Caching\SolarniBaron.Caching.csproj", "{0DEF62CC-517E-45E5-ADC8-041C0AB76C93}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "build\_build.csproj", "{6A38E11D-08CD-4B19-A3CD-16D9E9C86855}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6A38E11D-08CD-4B19-A3CD-16D9E9C86855}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A38E11D-08CD-4B19-A3CD-16D9E9C86855}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3262F8D8-A503-404B-AE7C-92D79BC34E2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3262F8D8-A503-404B-AE7C-92D79BC34E2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3262F8D8-A503-404B-AE7C-92D79BC34E2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
