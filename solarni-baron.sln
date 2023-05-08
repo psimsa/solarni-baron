@@ -1,4 +1,5 @@
-﻿Microsoft Visual Studio Solution File, Format Version 12.00
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
@@ -33,14 +34,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolarniBaron.Domain.Tests",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestHelpers", "test\TestHelpers\TestHelpers.csproj", "{172BE558-6161-4207-BEB7-6C6260E65BA1}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{4AF65C04-8A4D-4087-8475-4C113EE78D47}"
-	ProjectSection(SolutionItems) = preProject
-		.github\workflows\azure-static-web-apps-black-bay-0f0291503.yml = .github\workflows\azure-static-web-apps-black-bay-0f0291503.yml
-		.github\workflows\build-docker.yml = .github\workflows\build-docker.yml
-		.github\workflows\build.yml = .github\workflows\build.yml
-		.github\workflows\codeql.yml = .github\workflows\codeql.yml
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolarniBaron.Web", "src\SolarniBaron.Web\SolarniBaron.Web.csproj", "{8ED6788A-0E5C-467C-A6E6-FB35E8918ACA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolarniBaron.Func", "src\SolarniBaron.Func\SolarniBaron.Func.csproj", "{E65F31F3-85D7-4642-9310-17D6FB1E0C86}"
@@ -55,8 +48,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{6A38E11D-08CD-4B19-A3CD-16D9E9C86855}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6A38E11D-08CD-4B19-A3CD-16D9E9C86855}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3262F8D8-A503-404B-AE7C-92D79BC34E2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3262F8D8-A503-404B-AE7C-92D79BC34E2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3262F8D8-A503-404B-AE7C-92D79BC34E2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -101,6 +92,8 @@ Global
 		{0DEF62CC-517E-45E5-ADC8-041C0AB76C93}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0DEF62CC-517E-45E5-ADC8-041C0AB76C93}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0DEF62CC-517E-45E5-ADC8-041C0AB76C93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A38E11D-08CD-4B19-A3CD-16D9E9C86855}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A38E11D-08CD-4B19-A3CD-16D9E9C86855}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -114,7 +107,6 @@ Global
 		{48CEA2AF-8C56-4F0E-A482-958D239D9546} = {5FD01C16-ED92-4D53-8C3B-712F9BEC0F95}
 		{5551895D-0DFF-428B-B6E7-92E25A0C3E87} = {5FD01C16-ED92-4D53-8C3B-712F9BEC0F95}
 		{172BE558-6161-4207-BEB7-6C6260E65BA1} = {5FD01C16-ED92-4D53-8C3B-712F9BEC0F95}
-		{4AF65C04-8A4D-4087-8475-4C113EE78D47} = {80EFBFB9-DBF9-4BAD-B450-250E8DA115A1}
 		{8ED6788A-0E5C-467C-A6E6-FB35E8918ACA} = {9DA209FC-896B-4320-8EAD-1F51486D8383}
 		{E65F31F3-85D7-4642-9310-17D6FB1E0C86} = {9DA209FC-896B-4320-8EAD-1F51486D8383}
 		{0DEF62CC-517E-45E5-ADC8-041C0AB76C93} = {9DA209FC-896B-4320-8EAD-1F51486D8383}
