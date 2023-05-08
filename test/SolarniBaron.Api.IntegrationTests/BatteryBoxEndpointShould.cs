@@ -68,6 +68,9 @@ public class BatteryBoxEndpointShould
 
         var responseBody = await response.Content.ReadAsStringAsync();
         Assert.Equal("\"Could not authenticate with OIG server\"", responseBody);
+
+        _apiClientMock.VerifyAll();
+        _cacheMock.VerifyAll();
     }
 
     [Fact(Skip = "Not implemented")]
