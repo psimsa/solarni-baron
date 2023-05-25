@@ -13,7 +13,7 @@ public partial class OigDataConnector : IDisposable, IBatteryBoxDataConnector
     [LoggerMessage(1102, LogLevel.Debug, "Deserialized status response {statusResponse}")]
     public partial void LogDeserializedStatusResponse(BatteryBoxUnitData statusResponse);
 
-    [LoggerMessage(1103, LogLevel.Debug, "Converting response to BatteryBoxStatus")]
+    [LoggerMessage(1103, LogLevel.Debug, "Converting response to BatteryBoxUnitData")]
     public partial void LogConvertingResponseToBatteryBoxStatus();
 
     [LoggerMessage(1104, LogLevel.Debug, "Setting mode of {unitId} to {mode}")]
