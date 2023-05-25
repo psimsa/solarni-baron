@@ -14,6 +14,17 @@ Content-Type: application/json
     "unitId": "{{unitId}}"
 }
 
+### GET https://{{baseUrl}}/api/ote/2023-02-02
+
+### Get rawstats for box
+POST https://{{baseUrl}}/api/batterybox/getstatsraw
+Content-Type: application/json
+
+{
+    "email": "{{email}}",
+    "password": "{{password}}"
+}
+
 ### Set box mode
 POST https://{{baseUrl}}/api/batterybox/setmode
 Content-Type: application/json
