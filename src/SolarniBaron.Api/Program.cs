@@ -5,6 +5,7 @@ using SolarniBaron.Domain;
 using SolarniBaron.Domain.BatteryBox.Commands.SetMode;
 using SolarniBaron.Domain.BatteryBox.Models;
 using SolarniBaron.Domain.BatteryBox.Queries.GetStats;
+using SolarniBaron.Domain.BatteryBox.Queries.GetStatsRaw;
 using SolarniBaron.Domain.Contracts;
 using SolarniBaron.Domain.Extensions;
 using SolarniBaron.Domain.Ote.Models;
@@ -158,6 +159,30 @@ app.MapPost("api/batterybox/getstats",
             }
         })
     .WithName("GetStats")
+    .Produces<BatteryBoxStatus>()
+    .WithOpenApi();
+
+app.MapPost("api/batterybox/getstatsraw",
+        async ([FromBody] LoginInfo loginInfo, ISolarniBaronDispatcher dispatcher, ILogger<Program> logger) =>
+        {
+            try
+            {
+                var data = await dispatcher.Dispatch(new GetStatsRawQuery(loginInfo.Email, loginInfo.Password, loginInfo.UnitId));
+                if (data is null)
+                {
+                    logger.LogError("Error fetching data");
+                    return Results.BadRequest();
+                }
+
+                return Results.Ok(data.BatteryBoxUnitData);
+            }
+            catch (Exception e)
+            {
+                logger.LogError("Error fetching data: {error}", e.Message);
+                return Results.BadRequest(e.Message);
+            }
+        })
+    .WithName("GetStatsRaw")
     .Produces<BatteryBoxStatus>()
     .WithOpenApi();
 
