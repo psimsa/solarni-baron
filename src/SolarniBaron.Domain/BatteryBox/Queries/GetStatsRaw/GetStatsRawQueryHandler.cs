@@ -59,7 +59,7 @@ public class GetStatsRawQueryHandler : IQueryHandler<GetStatsRawQuery, GetStatsR
 
             var dateTimeOffset= new DateTimeOffset(parsedDate, pragueTimeZoneOffset);
 
-            var nextRefresh = dateTimeOffset - DateTime.Now;
+            var nextRefresh = dateTimeOffset.AddSeconds(110) - DateTime.Now;
             nextRefresh = nextRefresh.TotalSeconds > 9 ? nextRefresh : TimeSpan.FromSeconds(9);
 
             var absoluteExpiration = DateTimeOffset.UtcNow.Add(nextRefresh);
