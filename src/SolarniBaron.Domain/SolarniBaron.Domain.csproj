@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DotnetDispatcher.Core" Version="0.2.3" />
-    <PackageReference Include="DotnetDispatcher.Generator" Version="0.2.3" />
+    <PackageReference Include="DotnetDispatcher.Core" Version="0.2.4" />
+    <PackageReference Include="DotnetDispatcher.Generator" Version="0.2.4" />
     <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
