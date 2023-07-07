@@ -2,6 +2,7 @@
 using DotnetDispatcher.Core;
 using SolarniBaron.Domain.BatteryBox.Commands.SetMode;
 using SolarniBaron.Domain.BatteryBox.Queries.GetStats;
+using SolarniBaron.Domain.BatteryBox.Queries.GetStatsRaw;
 using SolarniBaron.Domain.CNB.Queries.GetExchangeRate;
 using SolarniBaron.Domain.Ote.Queries.GetPricelist;
 using SolarniBaron.Domain.Ote.Queries.GetPriceOutlook;
@@ -12,6 +13,7 @@ namespace SolarniBaron.Domain;
 [GenerateDispatcher(typeof(GetPricelistQuery), typeof(GetPricelistQueryHandler))]
 [GenerateDispatcher(typeof(SetModeCommand), typeof(SetModeCommandHandler))]
 [GenerateDispatcher(typeof(GetStatsQuery), typeof(GetStatsQueryHandler))]
+[GenerateDispatcher(typeof(GetStatsRawQuery), typeof(GetStatsRawQueryHandler))]
 [GenerateDispatcher(typeof(GetExchangeRateQuery), typeof(GetExchangeRateQueryHandler))]
 public partial class SolarniBaronDispatcher : DispatcherBase
 {

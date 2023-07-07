@@ -33,8 +33,14 @@ public record BatteryBoxStatus(
     decimal OutputToday,
     [property: JsonPropertyName("consumptionToday")]
     decimal ConsumptionToday,
-    [property: JsonPropertyName("gridOutputToday")]
-    decimal GridOutput,
+    [property: JsonPropertyName("gridConsumptionToday")]
+    decimal GridConsumptionToday,
+    [property: JsonPropertyName("gridDeliveryToday")]
+    decimal GridDeliveryToday,
+    [property: JsonPropertyName("batteryChargeToday")]
+    decimal BatteryChargeToday,
+    [property: JsonPropertyName("batteryDischargeToday")]
+    decimal BatteryDischargeToday,
     [property: JsonPropertyName("lastCall")]
     DateTimeOffset LastCall,
     [property: JsonPropertyName("operationMode")]
@@ -59,6 +65,9 @@ public record BatteryBoxStatus(
             bbUnitData.DcIn.FvAd,
             bbUnitData.AcOut.EnDay,
             bbUnitData.AcIn.AcAd,
+            bbUnitData.AcIn.AcPd,
+            bbUnitData.Batt.BatApd,
+            bbUnitData.Batt.BatAnd,
             bbUnitData.Device.Lastcall,
             bbUnitData.BoxPrms.Mode
         );
@@ -66,6 +75,9 @@ public record BatteryBoxStatus(
 
     public static BatteryBoxStatus Empty() =>
         new BatteryBoxStatus("",
+            0,
+            0,
+            0,
             0,
             0,
             0,
