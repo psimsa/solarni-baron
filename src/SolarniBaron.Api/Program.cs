@@ -29,7 +29,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var serviceName = "SolarniBaron.Api";
+var serviceName = "SolarniBaron";
 var serviceVersion = "1.0.0";
 
 var otlpOptions = (OtlpExporterOptions options) =>
