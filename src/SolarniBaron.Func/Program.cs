@@ -11,7 +11,7 @@ using SolarniBaron.Domain;
 using SolarniBaron.Domain.Extensions;
 using SolarniBaron.Persistence;
 
-var serviceName = "SolarniBaron.Func";
+var serviceName = "SolarniBaron";
 var serviceVersion = "1.0.0";
 
 var otlpOptions = (OtlpExporterOptions options) =>
