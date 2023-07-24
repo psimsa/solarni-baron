@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Caching.Distributed;
+using SolarniBaron.Domain.Ote.Queries.GetPricelist;
 
 namespace SolarniBaron.Domain.Contracts;
 
