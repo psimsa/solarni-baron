@@ -1,5 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Logging;
+using OpenTelemetry.Exporter;
+using OpenTelemetry.Logs;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 using SolarniBaron.Caching;
 using SolarniBaron.Domain;
 using SolarniBaron.Domain.BatteryBox.Commands.SetMode;
@@ -14,7 +19,9 @@ using SolarniBaron.Domain.Ote.Queries.GetPriceOutlook;
 using SolarniBaron.Persistence;
 using Microsoft.AspNetCore.ResponseCompression;
 
+#if DEBUG
 IdentityModelEventSource.ShowPII = true;
+#endif
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,7 +36,52 @@ builder.Services.AddRazorPages();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddApplicationInsightsTelemetry();
+var serviceName = "SolarniBaron";
+var serviceVersion = "1.0.0";
+
+var otlpOptions = (OtlpExporterOptions options) =>
+{
+    options.Endpoint = new Uri("https://otlp.eu01.nr-data.net");
+    options.Protocol = OtlpExportProtocol.Grpc;
+    options.Headers = "api-key=eu01xxefc1a87820b35d1becb5efd5c5FFFFNRAL";
+};
+
+Action<ResourceBuilder> setupResource = (ResourceBuilder rb) =>
+{
+    rb.AddService(serviceName: serviceName, serviceVersion: serviceVersion);
+};
+
+builder.Services.AddOpenTelemetry()
+  .WithTracing(builder =>
+  {
+      builder.AddConsoleExporter()
+       // .AddSource(serviceName)
+       .AddAspNetCoreInstrumentation()
+       .AddHttpClientInstrumentation()
+       .AddOtlpExporter(otlpOptions)
+       .ConfigureResource(setupResource);
+  })
+  .WithMetrics(builder =>
+  {
+      builder
+      .AddAspNetCoreInstrumentation()
+      .AddHttpClientInstrumentation()
+      .AddOtlpExporter(otlpOptions)
+      .AddConsoleExporter()
+      .ConfigureResource(setupResource)
+      ;
+  })
+  ;
+
+builder.Logging.AddOpenTelemetry(options =>
+{
+    var rb = ResourceBuilder.CreateDefault();
+    setupResource(rb);
+    options.IncludeScopes = true;
+    options.ParseStateValues = true;
+    options.AddOtlpExporter(otlpOptions);
+    options.SetResourceBuilder(rb);
+});
 
 builder.Services.AddDomain();
 builder.Services.AddPersistence();

@@ -1,8 +1,6 @@
 ﻿using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
-using AngleSharp;
-using AngleSharp.Html.Dom;
 using DotnetDispatcher.Core;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
@@ -17,7 +15,7 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
 {
     private readonly ISolarniBaronDispatcher _dispatcher;
     private readonly IPriceClusteringWorker _priceClusteringWorker;
-    private readonly IApiHttpClient _client;
+    private readonly IOteService _oteService;
     private readonly ICache _cache;
     private readonly ILogger<GetPricelistQueryHandler> _logger;
 
@@ -30,11 +28,11 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
     public GetPricelistQueryHandler(
         ISolarniBaronDispatcher dispatcher,
         IPriceClusteringWorker priceClusteringWorker,
-        IApiHttpClient client, ICache cache, ILogger<GetPricelistQueryHandler> logger)
+        IOteService oteService, ICache cache, ILogger<GetPricelistQueryHandler> logger)
     {
         _dispatcher = dispatcher;
         _priceClusteringWorker = priceClusteringWorker;
-        _client = client;
+        _oteService = oteService;
         _cache = cache;
         _logger = logger;
     }
@@ -57,49 +55,15 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
             {
                 LogCacheNotHit(getPricelistQuery.Date.ToString("yyyy-MM-dd"), cacheKey);
 
-                var date = getPricelistQuery.Date.ToString("yyyy-MM-dd");
-                var url = $"{Constants.OteUrl}/?date={date}";
-                var response = await _client.GetAsync(url);
-                if (response?.IsSuccessStatusCode != true)
-                {
-                    LogErrorGettingOteData($"Status code: {response?.StatusCode}");
-                    return null;
-                }
+                /*var ote = new PublicDataServiceSoapClient();
 
-                var content = await response.Content.ReadAsStringAsync(cancellationToken);
-                var config = Configuration.Default.WithDefaultLoader();
-                var context = BrowsingContext.New(config);
-                var document = await context.OpenAsync(req => req.Content(content), cancel: cancellationToken);
-                try
-                {
-                    var reportTables = document.QuerySelectorAll("div.bigtable table.report_table");
-                    if (reportTables.Length < 2)
-                    {
-                        LogErrorGettingOteData("No data found");
-                        return null;
-                    }
+                var result = await ote.GetDamPriceEAsync(getPricelistQuery.Date.ToDateTime(TimeOnly.MinValue), getPricelistQuery.Date.ToDateTime(TimeOnly.MaxValue), 0, 24, true);
 
-                    var table = reportTables[1];
+                var priceItems = result.Result.Select(x => x.Price.ToString(CultureInfo.InvariantCulture));*/
+                var priceItems = await _oteService.GetPricesForDay(getPricelistQuery.Date.ToDateTime(TimeOnly.MinValue));
 
-                    var rows = table.QuerySelectorAll("tr");
-
-                    var dataRows = rows.Skip(1).OfType<IHtmlTableRowElement>().ToList();
-
-
-                    var data = dataRows.Take(dataRows.Count() - 1).Select(row =>
-                    {
-                        var toReturn = PriceListItem.Empty;
-                        var data = row.Cells[1].TextContent;
-                        var isValid = decimal.TryParse(data.Replace(',', '.'), out var basePriceEur);
-                        return basePriceEur.ToString(CultureInfo.InvariantCulture);
-                    });
-                    return string.Join('|', data);
-                }
-                catch (Exception e)
-                {
-                    LogErrorGettingOteData(e.Message);
-                    return null;
-                }
+                var priceList = string.Join('|', priceItems.Select(x=>x.ToString(CultureInfo.InvariantCulture)));
+                return priceList;
             }, new DistributedCacheEntryOptions() {AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(2)});
 
         switch (priceString)
@@ -115,7 +79,7 @@ public partial class GetPricelistQueryHandler : IQueryHandler<GetPricelistQuery,
 
         var basicPrices = priceString.Split('|').Select(item =>
         {
-            var isValid = decimal.TryParse(item, out var basePriceEur);
+            var isValid = decimal.TryParse(item, CultureInfo.InvariantCulture, out var basePriceEur);
             return isValid ? basePriceEur : 0;
         }).Select((item, index) => new KeyValuePair<int, decimal>(index, item)).OrderBy(_ => _.Value).ToList();
 
