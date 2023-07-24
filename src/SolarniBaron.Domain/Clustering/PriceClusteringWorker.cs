@@ -63,6 +63,10 @@ internal class PriceClusteringWorker : IPriceClusteringWorker
     private static decimal GetMean(decimal[] values)
     {
         decimal sum = values.Sum();
+        if (sum == 0)
+        {
+            return 0;
+        }
         return sum / values.Length;
     }
 

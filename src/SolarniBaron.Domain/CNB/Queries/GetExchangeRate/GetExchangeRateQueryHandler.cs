@@ -39,7 +39,7 @@ public partial class GetExchangeRateQueryHandler : IQueryHandler<GetExchangeRate
                 $"{Constants.CnbUrl}?date={getExchangeRateQuery.Date:dd.MM.yyyy}");
             var euroLine = response.Split('\n').FirstOrDefault(line => line.StartsWith("EMU"));
             var euroRate = euroLine?.Split('|')[4];
-            var success = decimal.TryParse(euroRate?.Replace(',', '.'), out var rateValue);
+            var success = decimal.TryParse(euroRate?.Replace(',', '.'), CultureInfo.InvariantCulture, out var rateValue);
             return rateValue.ToString(CultureInfo.InvariantCulture);
         }, new DistributedCacheEntryOptions() {AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(2)});
 
