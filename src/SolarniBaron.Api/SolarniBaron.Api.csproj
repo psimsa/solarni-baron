@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DotnetDispatcher.Core" Version="0.2.8" />
+    <PackageReference Include="DotnetDispatcher.Core" Version="0.2.9" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.9" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.9" />
     <PackageReference Include="Microsoft.NETCore.Platforms" Version="7.0.4" />
