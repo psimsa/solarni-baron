@@ -132,14 +132,9 @@
 <script>
     if (window.location.hostname.includes('localhost')) {
       switch (window.location.port) {
-        case '5121':
+        case '7129':
           Blazor.start({
-            environment: 'dev-standalone'
-          })
-          break
-        case '4280':
-          Blazor.start({
-            environment: 'dev-swa'
+            environment: 'dev'
           })
           break
         default:

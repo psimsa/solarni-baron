@@ -17,6 +17,7 @@ using SolarniBaron.Domain.Ote.Models;
 using SolarniBaron.Domain.Ote.Queries.GetPricelist;
 using SolarniBaron.Domain.Ote.Queries.GetPriceOutlook;
 using SolarniBaron.Persistence;
+using Microsoft.AspNetCore.ResponseCompression;
 
 #if DEBUG
 IdentityModelEventSource.ShowPII = true;
@@ -24,7 +25,13 @@ IdentityModelEventSource.ShowPII = true;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+var configuration = builder.Configuration;
+
+var serveBlazor = configuration.GetValue<bool>("serveBlazor");
+
+builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -104,9 +111,19 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    if(serveBlazor)
+        app.UseWebAssemblyDebugging();
 }
 
 app.UseHttpsRedirection();
+if(serveBlazor)
+{
+    app.UseBlazorFrameworkFiles();
+    app.UseStaticFiles();
+}
+
+app.UseRouting();
+
 
 /*app.UseAuthentication();
 app.UseAuthorization();*/
@@ -255,6 +272,12 @@ app.MapPost("api/batterybox/setmode",
     .WithName("SetMode")
     .Produces<SetModeCommandResponse>()
     .WithOpenApi();
+if(serveBlazor)
+{
+    app.MapRazorPages();
+    app.MapControllers();
+    app.MapFallbackToFile("index.html");
+}
 
 app.Run();
 
