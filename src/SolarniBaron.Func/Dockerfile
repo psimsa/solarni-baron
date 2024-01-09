@@ -4,8 +4,8 @@ FROM mcr.microsoft.com/azure-functions/dotnet-isolated:4-dotnet-isolated7.0 AS b
 WORKDIR /home/site/wwwroot
 EXPOSE 80
 
-FROM mcr.microsoft.com/dotnet/runtime:7.0 as runtime6.0
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+FROM mcr.microsoft.com/dotnet/runtime:8.0 as runtime6.0
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 # Copy .NET Core 6.0 runtime from the 6.0 image
 COPY --from=runtime6.0 /usr/share/dotnet/host /usr/share/dotnet/host
 COPY --from=runtime6.0 /usr/share/dotnet/shared /usr/share/dotnet/shared
